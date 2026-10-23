@@ -1288,7 +1288,7 @@
       ]
     },
     "ui/components/layout/Sidebar.tsx": {
-      "summary": "Desktop navigation: a glass island that floats 8px off the window's edge,",
+      "summary": "Desktop navigation: a glass island that floats off the window's edge —",
       "exports": [
         "SidebarItem",
         "Sidebar"
