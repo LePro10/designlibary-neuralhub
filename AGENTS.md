@@ -8,7 +8,7 @@ component needs) into the target project and use them as source. Every file
 says *why* it is built the way it is — keep those decisions.
 
 Live showcase with every component, knobs and code:
-`https://lepro10.github.io/designlibary-neuralhub/` (also `pnpm dev` here).
+`https://ui.neuralhub.dev/` (also `pnpm dev` here).
 
 ---
 
