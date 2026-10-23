@@ -102,11 +102,13 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
         onPointerLeave={(e) => { if (e.pointerType === 'mouse') intend(false); }}
         onFocus={() => { window.clearTimeout(timer.current); setPeek(true); }}
         onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPeek(false); }}
-        className="glass flex h-full flex-col overflow-hidden rounded-dialog p-2"
+        // Collapsed it is barely there: thin, clear glass with a faint rim. Opened (peek or pin) it fills in.
+        className={cn('glass flex h-full flex-col overflow-hidden rounded-dialog p-2 transition-[background-color,border-color] duration-300 ease-out-soft',
+          !open && '!border-white/[.05] !bg-[rgb(22_24_23/.22)]')}
         initial={false}
         animate={{ width: open ? OPEN : RAIL }}
         // A peeking island floats over the page; a pinned one sits in its place.
-        style={{ boxShadow: peek && !pinned ? 'var(--shadow-dialog), inset 0 1px 0 var(--glass-hi)' : undefined }}
+        style={{ boxShadow: peek && !pinned ? 'var(--shadow-dialog), inset 0 1px 0 var(--glass-hi)' : open ? undefined : 'inset 0 1px 0 rgb(255 255 255 / .04)' }}
         transition={SPRING.sheet}
       >
         {/* Brand, and — only while open — a quiet pin at the far end of the same row. */}
@@ -127,7 +129,7 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
         </div>
         {search && (
           <button type="button" onClick={search} aria-keyshortcuts="Control+K Meta+K"
-            className="mb-2 flex h-9 w-full shrink-0 items-center gap-3 rounded-field bg-fill-2 px-[13px] text-chip text-dim shadow-edge transition-colors hover:bg-fill-3 hover:text-ink">
+            className={cn('mb-2 flex h-9 w-full shrink-0 items-center gap-3 rounded-field px-[13px] text-chip text-dim transition-[background-color,box-shadow,color] duration-300 hover:bg-fill-3 hover:text-ink', open ? 'bg-fill-2 shadow-edge' : 'bg-transparent')}>
             <Search size={16} strokeWidth={1.6} className="shrink-0" />
             <span className={fade} style={show}>Search</span>
             <kbd className={cn('ml-auto font-mono text-tiny text-faint', fade)} style={show}>{MOD_KEY}K</kbd>
@@ -164,7 +166,7 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
         </ul>
         {/* You: always at the foot, set apart by a hairline and a slightly deeper ground. */}
         {(footer || onSettings) && (
-          <div className="-mx-2 -mb-2 mt-2 flex shrink-0 items-center gap-1 border-t-hair border-line bg-black/[.14] p-2">
+          <div className={cn('-mx-2 -mb-2 mt-2 flex shrink-0 items-center gap-1 border-t-hair p-2 transition-[background-color,border-color] duration-300', open ? 'border-line bg-black/[.14]' : 'border-transparent')}>
             <div className="min-w-0 flex-1">{footer?.(open)}</div>
             {onSettings && (
               <button type="button" onClick={() => { haptic('select'); onSettings(); }} aria-label="Settings" title="Settings" tabIndex={open ? 0 : -1}
