@@ -135,7 +135,7 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | Nothing there | `Empty` | icon, one line, one detail, one action |
 | Error / hint | `Callout` | keeps input, offers retry |
 | Status | `StatusDot` (`glow`, `pulse`) | |
-| App frame | `AppShell nav={…}` (builds `TabBar` + `Sidebar`) | 4 in the bar, the rest grow out of it; sidebar island peeks on hover intent, pins with ⌘\ |
+| App frame | `AppShell nav={…}` (builds `TabBar` + `Sidebar`) | 4 in the bar, the rest grow out of it; sidebar island: compact while collapsed, opens after 2 s rest (never on click), pins with ⌘\ |
 | A screen | `Page` (+ `Section`) | large title, ambient light by place |
 | Hero light | `Ambient` (SVG) — comes with `Page place` | palettes in `AMBIENT`, pose in `AMBIENT_POSE`, optional `motion` breathe/drift |
 | A title that arrives | `RevealText` (Page titles do it by themselves) | lines rise out of a mask |

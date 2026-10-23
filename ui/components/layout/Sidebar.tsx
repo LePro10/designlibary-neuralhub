@@ -1,10 +1,11 @@
 /**
- * Desktop navigation: a glass island that floats 8px off the window's edge,
+ * Desktop navigation: a glass island that floats off the window's edge —
+ * compact and centred while collapsed, full height once opened —
  * with the page's light running underneath it (the twin of the phone's tab
  * bar). Collapsed it is a 60px rail of quiet icons.
  *
- * Peek: rest the pointer on it (hover intent, 120ms — passing by does
- * nothing) and it opens to 228px *over* the page; leave and it folds back.
+ * Peek: stay on it for 2 s and it opens; a click cancels that until the
+ * pointer leaves, so switching places never opens it and it opens to 228px *over* the page; leave and it folds back.
  * Pin: ⌘\ or the small panel icon beside the brand (shown while open) keeps
  * it open, and the page makes room. The account sits at the foot, set apart. 
  *
@@ -38,7 +39,8 @@ export interface SidebarItem<T extends string = string> {
 }
 
 const RAIL = 60, OPEN = 228, INSET = 8;
-const INTENT_IN = 120, INTENT_OUT = 240;
+// Resting still for 2 s opens it; a click never does. Leaving folds it after 240 ms.
+const INTENT_IN = 2000, INTENT_OUT = 240;
 
 export function Sidebar<T extends string>({ items, value, onChange, brand, footer, onSettings, settingsActive, search, shortcuts = true, pinned: pinnedProp, onPinnedChange, className }: {
   items: SidebarItem<T>[];
@@ -68,6 +70,16 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
   const id = useId();
   const shell = useShell();
   const timer = useRef(0);
+  const clicked = useRef(false);
+  const frame = useRef<HTMLDivElement>(null);
+  const [full, setFull] = useState(0);
+  useLayoutEffect(() => {
+    const el = frame.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setFull(el.clientHeight - INSET * 2));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Tell the shell how much room the page has to leave (only a pinned island takes room).
   useLayoutEffect(() => { shell?.setSidebarSpace(INSET * 2 + (pinned ? OPEN : RAIL)); }, [pinned, shell]);
@@ -95,18 +107,23 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
   const fade = 'whitespace-nowrap transition-opacity duration-200';
   const show = { opacity: open ? 1 : 0, transitionDelay: open ? '60ms' : '0ms' };
   return (
-    <div className={cn('absolute inset-y-0 left-0 z-[var(--z-sidebar)]', className)} style={{ padding: INSET }}>
+    // Collapsed, the island hugs its icons and floats at the middle of the edge; opened it grows
+    // up and down to the full height (both ways at once, from the centre).
+    <div ref={frame} className={cn('pointer-events-none absolute inset-y-0 left-0 z-[var(--z-sidebar)] flex items-center', className)} style={{ padding: INSET }}>
       <motion.nav
         aria-label="Main"
-        onPointerEnter={(e) => { if (e.pointerType === 'mouse') intend(true); }}
-        onPointerLeave={(e) => { if (e.pointerType === 'mouse') intend(false); }}
-        onFocus={() => { window.clearTimeout(timer.current); setPeek(true); }}
+        onPointerEnter={(e) => { if (e.pointerType === 'mouse') { clicked.current = false; intend(true); } }}
+        onPointerLeave={(e) => { if (e.pointerType === 'mouse') { clicked.current = false; intend(false); } }}
+        // A click (switching place) cancels the peek until the pointer leaves.
+        onPointerDown={() => { if (!peek) { clicked.current = true; window.clearTimeout(timer.current); } }}
+        // Keyboard focus opens it at once; focus from a click does not.
+        onFocus={(e) => { if ((e.target as HTMLElement).matches(':focus-visible')) { window.clearTimeout(timer.current); setPeek(true); } }}
         onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPeek(false); }}
         // Collapsed it is barely there: thin, clear glass with a faint rim. Opened (peek or pin) it fills in.
-        className={cn('glass flex h-full flex-col overflow-hidden rounded-dialog p-2 transition-[background-color,border-color] duration-300 ease-out-soft',
+        className={cn('glass pointer-events-auto flex max-h-full flex-col overflow-hidden rounded-dialog p-2 transition-[background-color,border-color] duration-300 ease-out-soft',
           !open && '!border-white/[.05] !bg-[rgb(22_24_23/.22)]')}
         initial={false}
-        animate={{ width: open ? OPEN : RAIL }}
+        animate={{ width: open ? OPEN : RAIL, height: open && full ? full : 'auto' }}
         // A peeking island floats over the page; a pinned one sits in its place.
         style={{ boxShadow: peek && !pinned ? 'var(--shadow-dialog), inset 0 1px 0 var(--glass-hi)' : open ? undefined : 'inset 0 1px 0 rgb(255 255 255 / .04)' }}
         transition={SPRING.sheet}
@@ -128,11 +145,12 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
           </button>
         </div>
         {search && (
-          <button type="button" onClick={search} aria-keyshortcuts="Control+K Meta+K"
-            className={cn('mb-2 flex h-9 w-full shrink-0 items-center gap-3 rounded-field px-[13px] text-chip text-dim transition-[background-color,box-shadow,color] duration-300 hover:bg-fill-3 hover:text-ink', open ? 'bg-fill-2 shadow-edge' : 'bg-transparent')}>
-            <Search size={16} strokeWidth={1.6} className="shrink-0" />
+          <button type="button" onClick={search} aria-keyshortcuts="Control+K Meta+K" aria-label="Search"
+            // Quiet: a row like the others, a breath of fill when open, the shortcut only on hover.
+            className={cn('group mb-1.5 flex h-8 w-full shrink-0 items-center gap-3 rounded-field px-[14px] text-chip text-faint transition-[background-color,color] duration-300 hover:bg-fill-2 hover:text-ink', open && 'bg-fill-1')}>
+            <Search size={15} strokeWidth={1.6} className="shrink-0" />
             <span className={fade} style={show}>Search</span>
-            <kbd className={cn('ml-auto font-mono text-tiny text-faint', fade)} style={show}>{MOD_KEY}K</kbd>
+            <kbd className={cn('ml-auto font-mono text-tiny text-faint opacity-0 transition-opacity', open && 'group-hover:opacity-100')}>{MOD_KEY}K</kbd>
           </button>
         )}
         <ul className="scroller -mx-2 flex min-h-0 flex-1 flex-col px-2">

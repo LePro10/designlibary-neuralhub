@@ -11,7 +11,7 @@
   - Aktionen oben rechts in Daumenreichweite
   - Long-Press für Kontextmenüs
 - Darüber:
-  - Seitenleiste als schwebende Glasinsel: öffnet sich bei Hover-Absicht (120 ms) über dem Inhalt, ⌘\ pinnt sie, dann macht die Seite Platz
+  - Seitenleiste als schwebende Glasinsel: eingeklappt kompakt und mittig, öffnet sich nach 2 s Verweilen (ein Klick öffnet nie) und wächst dabei nach oben und unten über den Inhalt, ⌘\ pinnt sie, dann macht die Seite Platz
   - Dialoge mittig
   - Popover-Menüs
   - Rechtsklick
