@@ -40,22 +40,16 @@ Für ein Team ins Projekt (`.mcp.json` im Repo-Root):
 Cursor, Windsurf, Claude Desktop & Co.: derselbe `command`/`args`-Eintrag in
 deren MCP-Konfiguration.
 
-### B) Remote per HTTP (kein Download, eine URL für alle)
+### B) Remote per HTTP (optional, braucht einen Server)
+
+Eine statische Domain (GitHub Pages + name.com) kann keinen HTTP-Endpoint
+bedienen. Wer trotzdem eine URL will, deployt `mcp/server.mjs` als Worker
+(kostenlos, keine eigene Domain nötig):
 
 ```bash
-claude mcp add --transport http neuralhub-ui https://mcp.neuralhub.dev/mcp
+cd mcp && npx wrangler login && npx wrangler deploy
+claude mcp add --transport http neuralhub-ui https://neuralhub-ui-mcp.<account>.workers.dev/mcp
 ```
-
-```json
-{ "mcpServers": { "neuralhub-ui": { "type": "http", "url": "https://mcp.neuralhub.dev/mcp" } } }
-```
-
-Der Endpoint ist ein Cloudflare Worker (`mcp/server.mjs`, gleiche Datei wie bei A).
-Einmalig einrichten:
-
-1. `cd mcp && npx wrangler login && npx wrangler deploy` → ergibt `https://neuralhub-ui-mcp.<account>.workers.dev/mcp`
-2. Im Cloudflare-Dashboard unter *Workers → neuralhub-ui-mcp → Settings → Domains & Routes* die Custom Domain `mcp.neuralhub.dev` hinzufügen.
-3. Optional Auto-Deploy: Repo-Secrets `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ACCOUNT_ID` setzen, dann deployt `.github/workflows/mcp.yml` bei Änderungen in `mcp/`.
 
 ## Testen
 
