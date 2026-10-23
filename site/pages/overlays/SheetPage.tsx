@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarClock, MapPin, Paperclip, Send, Trash2 } from 'lucide-react';
+import { CalendarClock, Check, MapPin, Paperclip, Trash2 } from 'lucide-react';
 import { Button } from '@ui/components/core/Button';
 import { Field, Input, TextArea } from '@ui/components/core/Field';
 import { List, Row } from '@ui/components/core/List';
@@ -48,16 +48,16 @@ export default function SheetPage() {
   const [confirmPhone, setConfirmPhone] = useState(false);
   return (
     <Doc eyebrow="Overlays" title="Panel" source={['ui/components/overlays/Sheet.tsx', 'ui/components/overlays/ConfirmSheet.tsx']}
-      lead="For long tasks only — writing a mail, editing a profile, picking files. On phones a full-height panel slides up; on desktop it is a light, centred dialog. Small choices never get one: they are a pull-down menu, an inline picker or a confirm button.">
+      lead="For tasks — adding an event, writing a mail, picking files. On phones a floating card rises, rounded all round and exactly as tall as its content; on desktop it is a light, centred dialog. One compact header: close, title, the action. Small choices never get one: they are a pull-down menu, an inline picker or a confirm button.">
       <Demo
         title="Playground"
         center={false}
         controls={{
-          snaps: select(['full', 'tall', 'half', 'peek'] as const, 'full'),
+          height: select(['fit', 'full', 'half'] as const, 'fit'),
           content: select(['form', 'long', 'short'] as const),
           title: text('New event'),
           glass: bool(false),
-          footer: bool(true),
+          tools: bool(false),
         }}
         code={(v) => `const [open, setOpen] = useState(false);
 
@@ -65,12 +65,13 @@ export default function SheetPage() {
 <Sheet
   open={open}
   onClose={() => setOpen(false)}
-  title="${v.title}"${v.snaps === 'full' ? '' : `\n  snaps={SNAPS.${v.snaps}}`}${v.glass ? '\n  glass' : ''}${v.footer ? `\n  footer={<Button block onClick={save}>Save</Button>}` : ''}
+  title="${v.title}"
+  action={<Button size="sm" onClick={save}>Add</Button>}${v.height === 'fit' ? '' : `\n  snaps={SNAPS.${v.height}}`}${v.glass ? '\n  glass' : ''}${v.tools ? `\n  footer={<Button variant="ghost" Icon={Paperclip}>Attach</Button>}` : ''}
 >
   …
 </Sheet>`}
       >
-        {(v) => <Playground snaps={v.snaps} content={v.content} title={v.title} glass={v.glass} footer={v.footer} />}
+        {(v) => <Playground snaps={v.height} content={v.content} title={v.title} glass={v.glass} footer={v.tools} />}
       </Demo>
 
       <DocSection title="Confirm the irreversible" description="ConfirmSheet is for what is external and for good: sending to other people, paying, deleting forever. On a phone the buttons stack, the safe one nearest the thumb; on desktop they sit in a row. Everything reversible gets a toast with Undo; small local things a ConfirmButton.">
@@ -101,9 +102,10 @@ export default function SheetPage() {
         </Demo>
       </DocSection>
 
-      <DocSection title="Heights" description="Full height is the default — a panel is for a task that deserves the screen. The other presets remain for the rare half-height case (a map pin, a preview).">
+      <DocSection title="Heights" description="By default the card fits its content — a short form is a short card, a long one grows up to nearly the full screen and then scrolls. Snaps remain for the rare case that wants fixed stops (a map pin, a preview).">
         <Props rows={[
-          { name: 'SNAPS.full', type: '[.94]', default: 'default', description: 'One stop, full height: compose, edit, pick files.' },
+          { name: '(none)', type: 'fit', default: 'default', description: 'As tall as the content, up to 94% of the screen; drag down or flick to close.' },
+          { name: 'SNAPS.full', type: '[.94]', description: 'One stop, full height regardless of content.' },
           { name: 'SNAPS.tall', type: '[.86, .94]', description: 'Long content that should open nearly full.' },
           { name: 'SNAPS.half', type: '[.62, .94]', description: 'A preview that can be pulled up.' },
           { name: 'SNAPS.peek', type: '[.45, .94]', description: 'A quick look (details of a pin on a map).' },
@@ -112,7 +114,7 @@ export default function SheetPage() {
 
       <DocSection title="Rules">
         <Rules items={[
-          { do: 'Put the primary action in `footer` — it stays above the home indicator and visible at every snap.', dont: 'A Save button at the end of long content, below the fold of the first snap.' },
+          { do: 'Put the primary action in `action` — a small button at the top right, always visible.', dont: 'A big bar of buttons at the bottom; a Save button at the end of long content.' },
           { do: 'Choices → pull-down Menu, values → InlinePicker, confirmations → ConfirmButton.', dont: 'A half-height sheet to pick one of five options — half the screen moves to change one word.' },
           { do: 'Nest one level at most (a file picker over a composer).', dont: 'Panels three deep — use a Stack inside one panel instead.' },
         ]} />
@@ -120,6 +122,7 @@ export default function SheetPage() {
           <p><strong>Compositor transitions.</strong> Opening and closing are a spring sampled once at 120 Hz and handed to the browser as Web Animations on the sheet and its backdrop. The content can render, fetch and re-layout while it slides — the motion does not stutter. A finger landing mid-flight takes over exactly where the sheet is.</p>
           <p><strong>Back gesture & focus.</strong> Every open sheet is a layer: Android back and browser back close the top one, Escape too. Tab stays inside, and on close focus returns to the button that opened it.</p>
           <p><strong>Keyboard.</strong> When the on-screen keyboard opens, the sheet fills exactly the visible area above it — otherwise the title and the first field slide off the top. A field under the sheet is blurred on open so the keyboard does not stay up behind it.</p>
+          <p><strong>Floating, fitted.</strong> The card stands 8px off the edges with all corners rounded, so it reads as an object over the page rather than a second page. Its height is measured once before it rises, so the backdrop fades exactly with its travel; afterwards it follows its content.</p>
           <p><strong>Lower snaps.</strong> The sheet is as tall as its top snap; at a lower snap, an inner padding keeps the footer and the end of the content at the visible edge — they were unreachable before.</p>
         </Why>
       </DocSection>
@@ -127,9 +130,10 @@ export default function SheetPage() {
       <DocSection title="Props">
         <Props rows={[
           { name: 'open / onClose', type: 'boolean / () => void', description: 'Controlled. onClose runs for backdrop, flick, back gesture, Escape, close button.' },
-          { name: 'title / eyebrow', type: 'string', description: 'Light display title (22px) and a small label above it.' },
-          { name: 'snaps', type: 'readonly number[]', default: 'SNAPS.full', description: 'Fractions of the surface height; the first is where it opens.' },
-          { name: 'footer', type: 'ReactNode', description: 'Pinned under the content, above the safe area.' },
+          { name: 'title / eyebrow', type: 'string', description: 'Small centred title and a tiny label above it.' },
+          { name: 'action', type: 'ReactNode', description: 'Primary action at the top right — a small Button ("Add", "Send").' },
+          { name: 'snaps', type: 'readonly number[]', default: 'fit', description: 'Fractions of the surface height; leave out to fit the content.' },
+          { name: 'footer', type: 'ReactNode', description: 'Secondary tools under the content (attach, formatting).' },
           { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Desktop dialog width: 380 / 500 / 1000px.' },
           { name: 'glass', type: 'boolean', description: 'Translucent glass surface (over photos, maps, video).' },
           { name: 'hideClose', type: 'boolean', description: 'No round close button (sheets with their own Cancel).' },
@@ -138,7 +142,7 @@ export default function SheetPage() {
 import { SNAPS } from '@/ui/lib/tokens';
 
 <Sheet open={open} onClose={close} title="New event"
-  footer={<Button block size="lg" onClick={save}>Save</Button>}>
+  action={<Button size="sm" onClick={save}>Save</Button>}>
   <Field label="Title"><Input /></Field>
 </Sheet>`} />
       </DocSection>
@@ -147,17 +151,17 @@ import { SNAPS } from '@/ui/lib/tokens';
   );
 }
 
-function Playground({ snaps, content, title, glass, footer }: { snaps: SnapName; content: 'short' | 'long' | 'form'; title: string; glass: boolean; footer: boolean }) {
+function Playground({ snaps, content, title, glass, footer }: { snaps: SnapName | 'fit'; content: 'short' | 'long' | 'form'; title: string; glass: boolean; footer: boolean }) {
   const [a, setA] = useState(false);
   const [b, setB] = useState(false);
-  const foot = (close: () => void, channel: string) => footer ? (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-2">
-      <Button variant="ghost" size="lg" Icon={Paperclip} onClick={() => toast('Attach is a demo', { channel })}>Attach</Button>
-      <Button block size="lg" Icon={Send} onClick={() => { close(); toast.success('Sent', { channel }); }}>Send</Button>
+  const foot = (channel: string) => footer ? (
+    <div className="flex gap-1.5">
+      <Button variant="ghost" size="sm" Icon={Paperclip} onClick={() => toast('Attach is a demo', { channel })}>Attach</Button>
     </div>
   ) : undefined;
   const sheet = (open: boolean, close: () => void, channel: string) => (
-    <Sheet open={open} onClose={close} title={title} eyebrow="Calendar" snaps={SNAPS[snaps]} glass={glass} footer={foot(close, channel)}>
+    <Sheet open={open} onClose={close} title={title} eyebrow="Calendar" snaps={snaps === 'fit' ? undefined : SNAPS[snaps]} glass={glass} footer={foot(channel)}
+      action={<Button size="sm" Icon={Check} onClick={() => { close(); toast.success('Added', { channel }); }}>Add</Button>}>
       <SheetBody long={content === 'long'} form={content === 'form'} />
     </Sheet>
   );
@@ -165,7 +169,7 @@ function Playground({ snaps, content, title, glass, footer }: { snaps: SnapName;
     <Side
       desktop={<>
         <Button onClick={() => setA(true)}>Open panel</Button>
-        <p className="mt-3 max-w-[340px] text-small text-dim">On a wide window this opens as a dialog. Make the window narrow and the same button opens a full-height panel.</p>
+        <p className="mt-3 max-w-[340px] text-small text-dim">On a wide window this opens as a dialog. Make the window narrow and the same button opens a floating card.</p>
         {sheet(a, () => setA(false), 'page')}
       </>}
       phone={

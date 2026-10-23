@@ -7,7 +7,7 @@
   - Menüs klappen als kleines, durchscheinendes Pull-down direkt am Knopf auf
   - Auswahl öffnet sich inline unter der Zeile
   - Bestätigen im Knopf selbst
-  - Vollbild-Panels nur für lange Aufgaben wie Mail schreiben
+  - Panels als schwebende Karte, so hoch wie ihr Inhalt, mit kompaktem Kopf (Schließen · Titel · Aktion) — nur für Aufgaben wie Termin anlegen oder Mail schreiben
   - Aktionen oben rechts in Daumenreichweite
   - Long-Press für Kontextmenüs
 - Darüber:

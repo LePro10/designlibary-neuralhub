@@ -32,7 +32,7 @@ function Toolbar({ channel }: { channel: string }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Menu title="Account" width={260} align="start"
-        items={ACCOUNTS.map((x) => ({ id: x.id, label: x.name, detail: x.mail, glyph: <Avatar name={x.name} color={x.color} size={26} />, checked: x.id === acc, onSelect: () => setAcc(x.id) }))}
+        items={ACCOUNTS.map((x) => ({ id: x.id, label: x.name, detail: x.mail, glyph: <Avatar name={x.name} color={x.color} size={22} />, checked: x.id === acc, onSelect: () => setAcc(x.id) }))}
         trigger={(open, isOpen) => (
           <button type="button" onClick={open} aria-expanded={isOpen} className="pressable flex h-8 items-center gap-1.5 rounded-full bg-fill-3 pr-2.5 pl-1 text-chip text-bright hover:bg-fill-4">
             <Avatar name={a.name} color={a.color} size={24} />{a.name}<ChevronDown size={13} strokeWidth={1.75} className={`text-dim transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />

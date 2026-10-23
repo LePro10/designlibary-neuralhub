@@ -1558,7 +1558,7 @@
       ]
     },
     "ui/components/overlays/MenuList.tsx": {
-      "summary": "The one look of every small menu (pull-down, context menu): a translucent",
+      "summary": "The one look of every small menu (pull-down, context menu): clear glass",
       "exports": [
         "MENU_SURFACE",
         "menuHeight",
@@ -1591,7 +1591,7 @@
       ]
     },
     "ui/components/overlays/Sheet.tsx": {
-      "summary": "Panel for long tasks — writing a mail, editing a profile, picking files.",
+      "summary": "Panel for tasks — writing a mail, adding an event, picking files.",
       "exports": [
         "SheetProps",
         "Sheet"

@@ -1,7 +1,11 @@
 /**
- * Panel for long tasks — writing a mail, editing a profile, picking files.
- * Phones: a full-height panel that slides up (drag the handle or flick down
- * to dismiss); desktop: a light centred dialog.
+ * Panel for tasks — writing a mail, adding an event, picking files.
+ * Phones: a floating card, 8px off the edges and rounded all round (like
+ * iOS 26), exactly as tall as its content up to nearly the full screen; drag
+ * it or flick down to dismiss. Desktop: a light centred dialog.
+ *
+ * The header is compact: close on the left, a small centred title, the
+ * primary action (`action`) on the right — no big title, no heavy footer.
  *
  * Not for small choices: a choice is a pull-down `Menu`, a value is an
  * `InlinePicker`, a confirmation is a `ConfirmButton`. Half-height snaps
@@ -37,10 +41,12 @@ export interface SheetProps {
   onClose: () => void;
   title?: string;
   eyebrow?: string;
-  /** Fractions of the surface height; the first is where it opens. Default: full (0.94). Presets in `SNAPS`. */
+  /** Fractions of the surface height; the first is where it opens. Default: fits its content. Presets in `SNAPS`. */
   snaps?: readonly number[];
   children: ReactNode;
-  /** Pinned under the content (primary action). Stays above the home indicator. */
+  /** Primary action at the top right (a small Button: "Add", "Send"). */
+  action?: ReactNode;
+  /** Pinned under the content (secondary tools: attach, formatting). */
   footer?: ReactNode;
   /** Desktop dialog width. */
   size?: 'sm' | 'md' | 'lg';
@@ -77,35 +83,51 @@ export function Sheet(props: SheetProps) {
   );
 }
 
-function Header({ title, eyebrow, onClose, hideClose }: { title?: string; eyebrow?: string; onClose: () => void; hideClose?: boolean }) {
-  if (!title && !eyebrow && hideClose) return null;
+function Header({ title, eyebrow, onClose, hideClose, action }: { title?: string; eyebrow?: string; onClose: () => void; hideClose?: boolean; action?: ReactNode }) {
+  if (!title && !eyebrow && hideClose && !action) return null;
+  const close = !hideClose && (
+    <button type="button" onClick={onClose} onPointerDown={(e) => e.stopPropagation()} aria-label="Close"
+      className="pressable relative grid h-8 w-8 shrink-0 place-items-center rounded-full bg-fill-3 text-ink shadow-edge hover:bg-fill-4 hover:text-bright after:absolute after:-inset-1.5 after:content-['']">
+      <X size={15} strokeWidth={1.75} />
+    </button>
+  );
   return (
-    <div className="flex items-start justify-between gap-4 px-5 pb-3">
-      <div className="min-w-0">
-        {eyebrow && <div className="eyebrow mb-1">{eyebrow}</div>}
-        {title && <h2 className="display truncate text-headline">{title}</h2>}
+    // Three columns, the outer two the same width, so the title is truly centred.
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pb-2">
+      <div className="flex justify-start">{close}</div>
+      <div className="min-w-0 max-w-[60vw] text-center">
+        {eyebrow && <div className="truncate text-tiny text-faint">{eyebrow}</div>}
+        {title && <h2 className="truncate text-body font-medium tracking-[-.01em] text-bright">{title}</h2>}
       </div>
-      {!hideClose && (
-        <button type="button" onClick={onClose} onPointerDown={(e) => e.stopPropagation()} aria-label="Close"
-          className="pressable relative grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full bg-fill-3 text-ink hover:bg-fill-4 hover:text-bright after:absolute after:-inset-[7px] after:content-['']">
-          <X size={15} strokeWidth={1.75} />
-        </button>
-      )}
+      <div className="flex justify-end" onPointerDown={(e) => e.stopPropagation()}>{action}</div>
     </div>
   );
 }
 
+// Frosted by default (reads like a surface, still shows the light behind); `glass` for clear glass.
 const surfaceCls = (glass?: boolean) => glass
-  ? 'glass !shadow-sheet'
-  : 'border-line-2 bg-sheet shadow-sheet';
+  ? 'glass !shadow-dialog'
+  : 'bg-[rgb(22_24_23/.84)] shadow-[var(--shadow-edge),var(--shadow-dialog)] backdrop-blur-[30px] backdrop-saturate-[160%]';
 
-function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer, boxRef, target, glass, hideClose, bodyClassName }: Inner) {
+/** Space between the floating card and the screen edges. */
+const GAP = 8;
+
+function Drawer({ onClose, title, eyebrow, snaps: snapProp, children, footer, action, boxRef, target, glass, hideClose, bodyClassName }: Inner) {
   const vh = surfaceHeight(target);
-  const height = Math.round(vh * snaps[snaps.length - 1]);
-  const yFor = (snap: number) => height - vh * snap;
-  const y = useMotionValue(height);
+  // No snaps: the card fits its content (measured), up to nearly the full surface.
+  const fit = !snapProp;
+  const snaps = snapProp ?? SNAPS.full;
+  const cap = Math.round(vh * 0.94) - GAP;
+  const [fitH, setFitH] = useState(cap);
+  const height = fit ? fitH : Math.round(vh * snaps[snaps.length - 1]);
+  const hRef = useRef(height);
+  hRef.current = height;
+  // Where the card is fully out of sight (below the edge, past its gap and shadow).
+  const off = () => hRef.current + GAP + 40;
+  const yFor = (snap: number) => (fit ? 0 : height - vh * snap);
+  const y = useMotionValue(vh);
   const opened = yFor(snaps[0]);
-  const dim = (v: number) => Math.min(1, Math.max(0, (height - v) / (height - opened || 1)));
+  const dim = (v: number) => Math.min(1, Math.max(0, (off() - v) / (off() - opened || 1)));
   const backdrop = useTransform(y, dim);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -116,7 +138,7 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer,
    * sits below the edge. This inner padding keeps the footer and the end of
    * the content at the visible edge. It follows the snap, not every pixel.
    */
-  const [hidden, setHidden] = useState(() => Math.max(0, Math.round(opened)));
+  const [hidden, setHidden] = useState(() => (fit ? 0 : Math.max(0, Math.round(opened))));
   const drag = useRef<{ id: number; y0: number; s0: number; v: number; ly: number; lt: number; on: boolean } | null>(null);
   const [isPresent, safeToRemove] = usePresence();
 
@@ -147,10 +169,22 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer,
   };
 
   useLayoutEffect(() => {
+    // Measure first, so the card starts just below the edge and the backdrop maps to its real height.
+    if (fit && sheetRef.current) { hRef.current = sheetRef.current.offsetHeight; setFitH(hRef.current); }
+    y.jump(off());
     glide(opened, OPEN);
     return () => { run.current?.halt(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // A fitted card follows its content as it grows or shrinks (it is anchored at the bottom).
+  useLayoutEffect(() => {
+    const el = sheetRef.current;
+    if (!fit || !el) return;
+    const ro = new ResizeObserver(() => { hRef.current = el.offsetHeight; setFitH(el.offsetHeight); });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fit]);
 
   // Short content drags the whole sheet, long content scrolls. Re-measured whenever it changes size.
   useLayoutEffect(() => {
@@ -206,7 +240,7 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer,
   useEffect(() => {
     if (isPresent) return;
     let done = false;
-    glide(height, SHUT).then(() => { done = true; safeToRemove(); });
+    glide(off(), SHUT).then(() => { done = true; safeToRemove(); });
     return () => { if (!done) run.current?.halt(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPresent]);
@@ -238,6 +272,12 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer,
     if (!d || d.id !== e.pointerId) return;
     drag.current = null;
     if (!d.on) return;
+    if (fit) {
+      if (d.v > 700 || y.get() > height * 0.35) { onClose(); return; }
+      haptic('tick');
+      animate(y, 0, { ...OPEN, velocity: d.v });
+      return;
+    }
     const shown = (height - y.get()) / vh;
     if (d.v > 700 || shown < snaps[0] * 0.55) { onClose(); return; }
     let best = snaps[0];
@@ -257,24 +297,29 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer,
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={cn('fixed inset-x-0 bottom-0 z-[81] flex flex-col rounded-t-sheet border-t-hair outline-none will-change-transform', surfaceCls(glass))}
+        className={cn('fixed inset-x-2 z-[81] flex flex-col overflow-hidden rounded-sheet outline-none will-change-transform', surfaceCls(glass))}
         ref={(n: HTMLDivElement | null) => { sheetRef.current = n; boxRef.current = n; }}
-        style={{ y, height: kb ? Math.min(height, kb.h - 8) : height, bottom: kb?.bottom ?? 0, paddingBottom: hidden }}
+        style={{
+          y,
+          bottom: `max(${GAP}px, calc(var(--safe-bottom) - 12px))`,
+          ...(kb ? { bottom: kb.bottom + GAP } : {}),
+          ...(fit ? { maxHeight: kb ? Math.min(cap, kb.h - GAP * 2) : cap } : { height: kb ? Math.min(height, kb.h - GAP * 2) : height }),
+          paddingBottom: hidden,
+        }}
       >
-        <div className="shrink-0 cursor-grab touch-none pt-2 select-none active:cursor-grabbing" {...handlers}>
-          <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-white/[.18]" />
-          <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} />
+        <div className="shrink-0 cursor-grab touch-none pt-1.5 select-none active:cursor-grabbing" {...handlers}>
+          <div className="mx-auto mb-1.5 h-[3px] w-8 rounded-full bg-white/[.16]" />
+          <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} action={action} />
         </div>
         <div
           ref={scrollRef}
-          className={cn('scroller page-scroll min-h-0 flex-1 px-5', bodyClassName)}
-          // Room for the home indicator even when the WebView reports no safe area.
-          style={{ paddingBottom: footer ? 24 : 'max(32px, calc(16px + var(--safe-bottom)))', ...(contentDrags ? { touchAction: 'none' } : {}) }}
+          className={cn('scroller page-scroll min-h-0 flex-1 px-4 pt-1', bodyClassName)}
+          style={{ paddingBottom: footer ? 12 : 16, ...(contentDrags ? { touchAction: 'none' } : {}) }}
           {...(contentDrags ? handlers : {})}
         >
           {children}
         </div>
-        {footer && <div className="shrink-0 border-t-hair border-line px-5 pt-3" style={{ paddingBottom: 'max(14px, var(--safe-bottom))' }}>{footer}</div>}
+        {footer && <div className="shrink-0 px-3 pb-3">{footer}</div>}
       </motion.div>
     </>
   );
@@ -282,7 +327,7 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer,
 
 const DIALOG_W = { sm: 'max-w-[380px]', md: 'max-w-[500px]', lg: 'max-w-[1000px]' } as const;
 
-function Dialog({ onClose, title, eyebrow, children, footer, size = 'md', boxRef, glass, hideClose, bodyClassName }: Inner) {
+function Dialog({ onClose, title, eyebrow, children, footer, action, size = 'md', boxRef, glass, hideClose, bodyClassName }: Inner) {
   return (
     <div className="fixed inset-0 z-[var(--z-sheet)] flex items-center justify-center p-6">
       <motion.div className="absolute inset-0 bg-black/45" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.14 } }} onClick={onClose} />
@@ -291,15 +336,15 @@ function Dialog({ onClose, title, eyebrow, children, footer, size = 'md', boxRef
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={cn('relative flex max-h-[86%] w-full flex-col rounded-dialog border-hair pt-4 outline-none', DIALOG_W[size], glass ? 'glass' : 'border-line-2 bg-sheet shadow-dialog')}
+        className={cn('relative flex max-h-[86%] w-full flex-col overflow-hidden rounded-dialog pt-3 outline-none', DIALOG_W[size], surfaceCls(glass))}
         initial={{ opacity: 0, scale: 0.97, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98, y: 4, transition: { duration: 0.14 } }}
         transition={OPEN}
       >
-        <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} />
-        <div className={cn('scroller min-h-0 flex-1 px-5 pb-6', bodyClassName)}>{children}</div>
-        {footer && <div className="shrink-0 border-t-hair border-line px-5 py-3">{footer}</div>}
+        <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} action={action} />
+        <div className={cn('scroller min-h-0 flex-1 px-5 pt-1 pb-5', bodyClassName)}>{children}</div>
+        {footer && <div className="shrink-0 px-4 pb-4">{footer}</div>}
       </motion.div>
     </div>
   );
