@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
 
-// GitHub Pages serves the showcase under /<repo>/; locally it runs at /.
+// Served from the custom domain ui.neuralhub.dev (root); override PAGES_BASE for a project-path deploy.
 export default defineConfig({
   base: process.env.PAGES_BASE ?? '/',
   plugins: [react(), tailwindcss()],

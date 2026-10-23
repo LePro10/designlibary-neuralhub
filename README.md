@@ -7,7 +7,7 @@ Effekte, Animationen, Mobile-Regeln und React-Komponenten. Aus dem Dashboard
 extrahiert, vereinheitlicht und um Varianten, Themes und eine AI-&-Chat-Familie
 erweitert.
 
-**Showcase:** https://lepro10.github.io/designlibary-neuralhub/. Jede Komponente
+**Showcase:** https://ui.neuralhub.dev/. Jede Komponente
 ist dort live, mit Reglern, Handy- und Desktop-Vorschau und kopierbarem Code.
 
 ---
