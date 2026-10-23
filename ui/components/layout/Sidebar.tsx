@@ -4,8 +4,9 @@
  * with the page's light running underneath it (the twin of the phone's tab
  * bar). Collapsed it is a 60px rail of quiet icons.
  *
- * Peek: stay on it for 2 s and it opens; a click cancels that until the
- * pointer leaves, so switching places never opens it and it opens to 228px *over* the page; leave and it folds back.
+ * Peek: rest on it (600 ms) and it opens to 176px *over* the page; a click
+ * cancels that until the pointer leaves, so switching places never opens
+ * it. Leave and it folds back.
  * Pin: ⌘\ or the small panel icon beside the brand (shown while open) keeps
  * it open, and the page makes room. The account sits at the foot, set apart. 
  *
@@ -38,11 +39,12 @@ export interface SidebarItem<T extends string = string> {
   signal?: Signal;
 }
 
-const RAIL = 60, OPEN = 228, INSET = 8;
-// Resting still for 2 s opens it; a click never does. Leaving folds it after 240 ms.
-const INTENT_IN = 2000, INTENT_OUT = 240;
+const RAIL = 60, OPEN = 176, INSET = 8;
+// Resting on it opens it (600 ms by default — long enough to pass by or click,
+// short enough to feel answered); a click never does. Leaving folds it after 240 ms.
+const INTENT_OUT = 240;
 
-export function Sidebar<T extends string>({ items, value, onChange, brand, footer, onSettings, settingsActive, search, shortcuts = true, pinned: pinnedProp, onPinnedChange, className }: {
+export function Sidebar<T extends string>({ items, value, onChange, brand, footer, onSettings, settingsActive, search, shortcuts = true, openDelay = 600, pinned: pinnedProp, onPinnedChange, className }: {
   items: SidebarItem<T>[];
   value: T;
   onChange: (id: T) => void;
@@ -57,6 +59,8 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
   /** Shows a search entry that calls this. */
   search?: () => void;
   shortcuts?: boolean;
+  /** How long the pointer rests before the island opens (ms). */
+  openDelay?: number;
   /** Kept open, with the page making room. Uncontrolled if left out. */
   pinned?: boolean;
   onPinnedChange?: (v: boolean) => void;
@@ -87,7 +91,7 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
 
   const intend = (v: boolean) => {
     window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setPeek(v), v ? INTENT_IN : INTENT_OUT);
+    timer.current = window.setTimeout(() => setPeek(v), v ? openDelay : INTENT_OUT);
   };
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
@@ -189,7 +193,7 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
             {onSettings && (
               <button type="button" onClick={() => { haptic('select'); onSettings(); }} aria-label="Settings" title="Settings" tabIndex={open ? 0 : -1}
                 aria-current={settingsActive ? 'page' : undefined}
-                className={cn('grid h-8 w-8 shrink-0 place-items-center rounded-item transition-[opacity,color,background-color] duration-200 hover:bg-fill-2 hover:text-bright', settingsActive ? 'bg-white/[.075] text-bright shadow-edge' : 'text-dim', !open && 'pointer-events-none')}
+                className={cn('grid h-8 shrink-0 place-items-center overflow-hidden rounded-item transition-[opacity,color,background-color] duration-200 hover:bg-fill-2 hover:text-bright', open ? 'w-8' : 'pointer-events-none w-0', settingsActive ? 'bg-white/[.075] text-bright shadow-edge' : 'text-dim')}
                 style={show}>
                 <Settings size={16} strokeWidth={1.6} />
               </button>

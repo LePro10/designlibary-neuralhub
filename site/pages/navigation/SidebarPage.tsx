@@ -7,13 +7,13 @@ export default function SidebarPage() {
   return (
     <Doc eyebrow="Navigation & Layout" title="Sidebar" source="ui/components/layout/Sidebar.tsx"
       lead="A glass island that floats 8px off the window's edge, with the page's light running underneath — the desktop twin of the tab bar. Rest the pointer on it and it opens over the page; pin it and the page makes room.">
-      <Demo padded={false} minHeight={420} description="Stay on the rail for 2 s (clicking an icon never opens it). ⌘/Ctrl + \ or the small panel icon beside the logo pins it. Account and settings at the foot are clickable. ⌘1–9 switch, ⌘K searches.">
+      <Demo padded={false} minHeight={420} description="Rest on the rail for a moment (clicking an icon never opens it). ⌘/Ctrl + \ or the small panel icon beside the logo pins it. Account and settings at the foot are clickable. ⌘1–9 switch, ⌘K searches.">
         {() => <div className="w-full p-4 @min-[760px]:p-8"><Browser height={820}><DemoApp mode="desktop" ambient /></Browser></div>}
       </Demo>
       <DocSection title="Behaviour">
         <ol className="mt-4 max-w-[680px] list-decimal space-y-2 pl-5 text-small leading-relaxed text-ink marker:text-dim">
           <li><strong className="font-medium text-bright">Rail</strong> — 60px of icons; the active one wears its place's colour on a raised highlight that slides between entries.</li>
-          <li><strong className="font-medium text-bright">Peek</strong> — stay on it for 2 s (a click cancels that, so switching places never opens it); leave and it folds after 240ms. Collapsed it is compact and centred; opening, it grows up and down to full height. It opens to 228px over the page with a long shadow; nothing underneath moves. Keyboard focus opens it too.</li>
+          <li><strong className="font-medium text-bright">Peek</strong> — rest on it for 600ms (a click cancels that, so switching places never opens it); leave and it folds after 240ms. Collapsed it is compact and centred; opening, it grows up and down to full height. It opens to 176px over the page with a long shadow; nothing underneath moves. Keyboard focus opens it too.</li>
           <li><strong className="font-medium text-bright">Pin</strong> — kept open; the island reports its width to the shell (<code className="inline-code">--sidebar-space</code>) and the page's content slides over, while its light still runs under the glass.</li>
           <li><strong className="font-medium text-bright">You</strong> — account (and an optional settings button) live at the foot, always, set apart by a hairline and a deeper ground. Both are destinations with an active state. The pin is only a quiet icon beside the logo, shown while open.</li>
           <li><strong className="font-medium text-bright">Groups</strong> — items sharing a <code className="inline-code">group</code> sit under its name when open; collapsed, the name becomes a short hairline of the same height, so nothing jumps.</li>
