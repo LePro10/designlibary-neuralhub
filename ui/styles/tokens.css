@@ -1,0 +1,216 @@
+/*
+ * NeuralHub tokens — the single source of truth for colour, type, radius,
+ * elevation and motion. Tailwind v4 turns every `--color-*`, `--text-*`,
+ * `--radius-*`, `--shadow-*` and `--ease-*` below into utilities
+ * (`bg-card`, `text-body`, `rounded-field`, `shadow-float`, `ease-out-soft`).
+ *
+ * Rule of thumb: the UI is grey-green ink on near-black. Colour is light,
+ * and light is content — it marks the one thing that matters on a screen
+ * (Luna, the hero, "now", the accent), never a whole surface.
+ *
+ * Accent and glass are themeable at runtime: set `data-accent` and
+ * `data-glass` on <html> (or any subtree). See the blocks further down.
+ */
+@theme {
+  /* ── Ground & surfaces (stepped, darkest first) ─────────────────────── */
+  --color-bg: #080909;        /* page ground */
+  --color-chrome: #0b0c0c;    /* sidebar, canvases */
+  --color-raised: #0e100f;    /* inset wells */
+  --color-card: #121413;      /* solid card */
+  --color-sheet: #111312;     /* sheets, dialogs */
+  --color-popover: #161817;   /* menus, toasts, tab-bar badge ring */
+  --color-card-2: #181a19;
+  --color-card-3: #202321;
+
+  /* Translucent fills — the only allowed "white on dark" steps. */
+  --color-fill-1: rgb(255 255 255 / 0.03);  /* resting field, track */
+  --color-fill-2: rgb(255 255 255 / 0.05);  /* hover, quiet tile */
+  --color-fill-3: rgb(255 255 255 / 0.08);  /* icon button, bubble */
+  --color-fill-4: rgb(255 255 255 / 0.12);  /* switch off, strong chip */
+
+  /* Hairlines */
+  --color-line: rgb(255 255 255 / 0.07);
+  --color-line-2: rgb(255 255 255 / 0.12);
+
+  /* Ink, brightest first */
+  --color-bright: #eef1ee;    /* titles, primary text, solid primary button */
+  --color-ink: #c6c9c6;       /* body text */
+  --color-dim: #7d847f;       /* secondary text, inactive icons */
+  --color-faint: #4a504c;     /* hints, chevrons, disabled */
+
+  /* ── Glow palette — light, not paint ───────────────────────────────── */
+  --color-ice: #b9d3ff;
+  --color-azure: #3b5bff;
+  --color-lilac: #a898ff;
+  --color-sand: #eadcbc;
+  --color-ember: #ff8a5c;     /* badge, "over limit", running now */
+  --color-mint: #9fe7c8;      /* success */
+  --color-live: #5b9bff;      /* something is live right now (stream, remote screen) */
+
+  /* Status */
+  --color-danger: #ff6b6b;
+  --color-warning: #ffb454;
+
+  /* Accent (themed below). Default = ice. */
+  --color-accent: #b9d3ff;
+  --color-accent-deep: #3b5bff;
+
+  /* Data series — chosen for separation on dark, not for brand. */
+  --color-series-1: #3987e5;
+  --color-series-2: #d95926;
+  --color-series-3: #199e70;
+  --color-series-4: #a898ff;
+
+  /* ── Type ───────────────────────────────────────────────────────────── */
+  --font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+
+  /* One scale. Every size in the UI is one of these. */
+  --text-micro: 9.5px;    --text-micro--line-height: 1.2;   /* .eyebrow */
+  --text-tiny: 10.5px;    --text-tiny--line-height: 1.2;    /* tab labels, kbd, axis */
+  --text-meta: 12px;      --text-meta--line-height: 1.4;    /* timestamps, counts */
+  --text-detail: 12.5px;  --text-detail--line-height: 1.45; /* row detail, footnotes */
+  --text-small: 13px;     --text-small--line-height: 1.45;  /* secondary copy */
+  --text-chip: 13.5px;    --text-chip--line-height: 1.3;    /* chips, menu items */
+  --text-button: 14.5px;  --text-button--line-height: 1.3;  /* buttons, desktop fields */
+  --text-body: 15px;      --text-body--line-height: 1.55;   /* row titles, copy */
+  --text-input: 16px;     --text-input--line-height: 1.4;   /* phone fields (no zoom) */
+  --text-lead: 17px;      --text-lead--line-height: 1.5;
+  --text-title: 20px;     --text-title--line-height: 1.25;  /* stat values, card titles */
+  --text-headline: 26px;  --text-headline--line-height: 1.1; /* sheet titles */
+  --text-display: 32px;   --text-display--line-height: 1.02; /* page title, phone */
+  --text-display-lg: 52px; --text-display-lg--line-height: 1.02; /* page title, desktop */
+  --text-hero: 64px;      --text-hero--line-height: 1;      /* big numbers */
+
+  /* ── Radius — named by what wears it ───────────────────────────────── */
+  --radius-chip: 8px;     /* tiny tiles, kbd, bubble tail */
+  --radius-tile: 10px;    /* icon tile in a row */
+  --radius-field: 14px;   /* inputs, search, sidebar items, code */
+  --radius-stat: 18px;    /* stat tiles, small cards */
+  --radius-list: 22px;    /* grouped lists, cards in lists, bubbles */
+  --radius-card: 24px;    /* .card */
+  --radius-dialog: 28px;  /* desktop dialog */
+  --radius-sheet: 30px;   /* phone bottom sheet */
+
+  /* ── Elevation ──────────────────────────────────────────────────────── */
+  --shadow-rim: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --shadow-float: 0 24px 60px -18px rgb(0 0 0 / 0.75);
+  --shadow-sheet: 0 -30px 80px -20px rgb(0 0 0 / 0.8);
+  --shadow-dialog: 0 40px 120px -30px rgb(0 0 0 / 0.9);
+  --shadow-fab: 0 8px 24px -8px rgb(0 0 0 / 0.8);
+  --shadow-glow: 0 0 40px -8px color-mix(in oklab, var(--color-accent) 55%, transparent);
+
+  /* ── Motion ─────────────────────────────────────────────────────────── */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);  /* default for everything that arrives */
+  --ease-in-out-draw: cubic-bezier(0.65, 0, 0.35, 1); /* strokes drawing, curtains */
+  --ease-pf: cubic-bezier(0.77, 0, 0.18, 1);        /* big page-level moves */
+  --ease-bounce-land: cubic-bezier(0.3, 0, 0.3, 1);  /* hops, drops */
+
+  --animate-spin-fast: spin 0.8s linear infinite;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Durations for CSS transitions. Springs live in ui/lib/motion.ts. */
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 450ms;
+
+  /* Safe areas, once. Never write env() in components. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Space a floating tab bar takes (incl. gap to the edge). 0 on desktop. */
+  --tabbar-space: calc(88px + var(--safe-bottom));
+
+  /* Z layers — never invent another. */
+  --z-header: 30;
+  --z-sidebar: 40;
+  --z-tabbar: 50;
+  --z-sheet: 80;
+  --z-context: 85;
+  --z-search: 88;
+  --z-grain: 90;
+  --z-toast: 95;
+  --z-popover: 120;
+  --z-intro: 200;
+
+  /* Orb + glow recipe of the active accent (see themes). */
+  --orb-1: #4a68ff;
+  --orb-2: #2437c9;
+  --orb-3: #0d1356;
+  --orb-swirl-a: #a898ff;
+  --orb-swirl-b: #b9d3ff;
+  --orb-blob: rgb(234 220 188 / 0.75);
+  --ring-a: #b9d3ff;   /* light-border sweep, bright end */
+  --ring-b: #96ffdc;   /* light-border sweep, tail */
+
+  /* Glass recipe (see data-glass). */
+  --glass-bg: rgb(22 24 23 / 0.62);
+  --glass-blur: 24px;
+  --glass-sat: 170%;
+  --glass-rim: rgb(255 255 255 / 0.09);
+  --glass-hi: rgb(255 255 255 / 0.09);
+}
+@media (min-width: 900px) {
+  :root { --tabbar-space: 0px; }
+}
+
+/* ── Accent themes ─────────────────────────────────────────────────────
+   Each theme recolours the accent, the deep accent (switch on, glow),
+   the orb and the light-border sweep. Surfaces and ink never change. */
+[data-accent="ice"] {
+  --color-accent: #b9d3ff; --color-accent-deep: #3b5bff;
+  --orb-1: #4a68ff; --orb-2: #2437c9; --orb-3: #0d1356;
+  --orb-swirl-a: #a898ff; --orb-swirl-b: #b9d3ff; --orb-blob: rgb(234 220 188 / 0.75);
+  --ring-a: #b9d3ff; --ring-b: #96ffdc;
+}
+[data-accent="mint"] {
+  --color-accent: #9fe7c8; --color-accent-deep: #13a77a;
+  --orb-1: #2fd3a0; --orb-2: #0f7f68; --orb-3: #032b27;
+  --orb-swirl-a: #6fd3ff; --orb-swirl-b: #c8ffe9; --orb-blob: rgb(234 255 214 / 0.7);
+  --ring-a: #b6ffe2; --ring-b: #7cc8ff;
+}
+[data-accent="ember"] {
+  --color-accent: #ffc0a3; --color-accent-deep: #f0622c;
+  --orb-1: #ff7a45; --orb-2: #b83a10; --orb-3: #3a0d04;
+  --orb-swirl-a: #ffd27a; --orb-swirl-b: #ffb8a0; --orb-blob: rgb(255 230 200 / 0.75);
+  --ring-a: #ffc9a8; --ring-b: #ffe28a;
+}
+[data-accent="lilac"] {
+  --color-accent: #cfc6ff; --color-accent-deep: #7b66e8;
+  --orb-1: #8b74ff; --orb-2: #4b33c9; --orb-3: #170c52;
+  --orb-swirl-a: #ff9fd8; --orb-swirl-b: #cfc6ff; --orb-blob: rgb(255 220 240 / 0.7);
+  --ring-a: #d9d0ff; --ring-b: #ffaee0;
+}
+[data-accent="sand"] {
+  --color-accent: #eadcbc; --color-accent-deep: #b88a4a;
+  --orb-1: #d9b77a; --orb-2: #8a6b3a; --orb-3: #281c0b;
+  --orb-swirl-a: #fff1cf; --orb-swirl-b: #b9d3ff; --orb-blob: rgb(255 248 230 / 0.7);
+  --ring-a: #f3e6c6; --ring-b: #b9d3ff;
+}
+[data-accent="graphite"] {
+  --color-accent: #eef1ee; --color-accent-deep: #8b938d;
+  --orb-1: #9aa39d; --orb-2: #4a504c; --orb-3: #121413;
+  --orb-swirl-a: #ffffff; --orb-swirl-b: #c6c9c6; --orb-blob: rgb(255 255 255 / 0.55);
+  --ring-a: #ffffff; --ring-b: #9aa39d;
+}
+
+/* ── Glass levels ──────────────────────────────────────────────────────
+   default = the dashboard. subtle = more opaque (busy backgrounds, low-end
+   phones). strong = more blur, more colour. clear = liquid, see-through. */
+[data-glass="subtle"] {
+  --glass-bg: rgb(20 22 21 / 0.82); --glass-blur: 16px; --glass-sat: 130%;
+  --glass-rim: rgb(255 255 255 / 0.08); --glass-hi: rgb(255 255 255 / 0.06);
+}
+[data-glass="strong"] {
+  --glass-bg: rgb(24 27 26 / 0.46); --glass-blur: 36px; --glass-sat: 190%;
+  --glass-rim: rgb(255 255 255 / 0.12); --glass-hi: rgb(255 255 255 / 0.14);
+}
+[data-glass="clear"] {
+  --glass-bg: rgb(30 33 32 / 0.2); --glass-blur: 10px; --glass-sat: 180%;
+  --glass-rim: rgb(255 255 255 / 0.16); --glass-hi: rgb(255 255 255 / 0.22);
+}
