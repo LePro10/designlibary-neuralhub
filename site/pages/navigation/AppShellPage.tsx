@@ -17,12 +17,12 @@ export default function AppShellPage() {
       </Demo>
       <DocSection title="Who owns which space">
         <Prose><p>The most important layout rule, learned the hard way when two layers both padded and the last 72px of every page hid under the tab bar: <strong>exactly one owner per space.</strong></p></Prose>
-        <div className="scroll-x mt-5 rounded-stat border border-line">
+        <div className="scroll-x mt-5 rounded-stat border-hair border-line">
           <table className="w-full min-w-[560px] text-left text-[13px]">
-            <thead><tr className="border-b border-line">{['Layer', 'Owns', 'Never owns'].map((h) => <th key={h} className="px-4 py-2.5 font-normal"><span className="eyebrow">{h}</span></th>)}</tr></thead>
+            <thead><tr className="border-b-hair border-line">{['Layer', 'Owns', 'Never owns'].map((h) => <th key={h} className="px-4 py-2.5 font-normal"><span className="eyebrow">{h}</span></th>)}</tr></thead>
             <tbody className="text-ink">
-              <tr className="border-b border-line"><td className="px-4 py-2.5 font-mono text-[12px] text-bright">AppShell</td><td className="px-4 py-2.5">full height, sidebar column, tab bar, <code className="inline-code">--tabbar-space</code></td><td className="px-4 py-2.5">any content spacing</td></tr>
-              <tr className="border-b border-line"><td className="px-4 py-2.5 font-mono text-[12px] text-bright">Page</td><td className="px-4 py-2.5">safe-area top + 44px, 16/32px gutters, max width, bottom = tab bar + 24px</td><td className="px-4 py-2.5">—</td></tr>
+              <tr className="border-b-hair border-line"><td className="px-4 py-2.5 font-mono text-[12px] text-bright">AppShell</td><td className="px-4 py-2.5">full height, sidebar column, tab bar, <code className="inline-code">--tabbar-space</code></td><td className="px-4 py-2.5">any content spacing</td></tr>
+              <tr className="border-b-hair border-line"><td className="px-4 py-2.5 font-mono text-[12px] text-bright">Page</td><td className="px-4 py-2.5">safe-area top + 44px, 16/32px gutters, max width, bottom = tab bar + 24px</td><td className="px-4 py-2.5">—</td></tr>
               <tr><td className="px-4 py-2.5 font-mono text-[12px] text-bright">Your content</td><td className="px-4 py-2.5">only itself</td><td className="px-4 py-2.5">distance to the edge, tab-bar height</td></tr>
             </tbody>
           </table>
@@ -36,9 +36,9 @@ export default function AppShellPage() {
       <DocSection title="Usage">
         <Usage code={`<AppShell
   sidebar={<Sidebar items={tabs} value={tab} onChange={setTab} brand={{ mark: <LogoMark />, word: <Wordmark /> }} />}
-  tabbar={<TabBar items={tabs} value={tab} onChange={setTab} />}
+  tabbar={<TabBar items={tabs} value={tab} onChange={setTab} />}  // tabs: { id, label, Icon, signal: 'amber' }
 >
-  <Page title="Plan" ambient="plan" actions={<IconButton label="New"><Plus /></IconButton>}>
+  <Page title="Plan" place="plan" actions={<IconButton label="New"><Plus /></IconButton>}>
     …
   </Page>
 </AppShell>`} />

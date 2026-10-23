@@ -4,8 +4,10 @@
 
 - Darunter:
   - Tab-Leiste (vier feste Ziele plus „More“)
-  - Sheets von unten
-  - Menüs als Sheet
+  - Menüs klappen als kleines, durchscheinendes Pull-down direkt am Knopf auf
+  - Auswahl öffnet sich inline unter der Zeile
+  - Bestätigen im Knopf selbst
+  - Vollbild-Panels nur für lange Aufgaben wie Mail schreiben
   - Aktionen oben rechts in Daumenreichweite
   - Long-Press für Kontextmenüs
 - Darüber:
@@ -45,7 +47,7 @@ Typecheck findet so etwas nicht.
 - Alles Tippbare ist mindestens 44×44. Kleine Optik vergrößert die Trefferfläche per Pseudo-Element.
 - Felder haben 16px Text auf dem Handy, damit der Browser nicht zoomt. Höhe: 48px auf dem Handy, 44px auf dem Desktop.
 - Hover-Zustände gibt es nur bei feinem Zeiger (`.hoverable`).
-- Kein `<select>`, auch nicht in Sheets.
+- Kein `<select>` und kein Bottom-Sheet für eine Auswahl.
 
 ## Gesten
 
@@ -59,7 +61,7 @@ Typecheck findet so etwas nicht.
 Geht die Bildschirmtastatur auf (der Visual Viewport schrumpft um mehr als 20 %):
 
 - Die Tab-Leiste gleitet weg.
-- Sheets füllen genau den sichtbaren Bereich.
+- Panels füllen genau den sichtbaren Bereich.
 - Der Composer verliert den Abstand zur Tab-Leiste.
 
 `useKeyboardOpen()` meldet das.

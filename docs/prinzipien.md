@@ -3,40 +3,40 @@
 Warum NeuralHub so aussieht und sich so anfühlt. Wer etwas Neues baut, prüft es
 gegen diese Liste. Nicht, ob es „schön“ ist, sondern ob es *dazu gehört*.
 
-## 1. Ruhiges Dunkel
+## 1. Ruhiges Dunkel, leicht gezeichnet
 
 - Der Grund ist fast schwarz (`#080909`), nicht reines Schwarz. Auf OLED schmiert so nichts, und Schatten haben noch Platz nach unten.
 - Die Grautöne sind leicht grün (`ink #c6c9c6`, `dim #7d847f`). Man sieht es kaum, aber es fühlt sich nach Material an statt nach Default.
-- Flächen sind gestuft (`bg → card → card-2 → card-3`). Innen gibt es nur vier Weißstufen (`fill-1…4`) und zwei Haarlinien.
-- Titel sind leicht (DM Sans 300) und eng gesetzt. Hierarchie entsteht durch Größe und Helligkeit, nie durch Fettdruck.
+- Kanten sind Haarlinien: 1px, auf Retina 0,5px (`border-hair`). Dicke Ränder machen alles schwer.
+- Die Schrift ist klein und leicht: Fließtext 14,5px, „medium“ ist Gewicht 460, fett gibt es nicht. Hierarchie entsteht durch Helligkeit und Abstand.
 
-## 2. Licht ist Inhalt
+## 2. Eine Farbe pro Ort
 
-Farbe tritt als **Licht** auf, nicht als Anstrich:
+Jeder Ort (Tab) hat seine Signalfarbe, zum Beispiel Plan Amber, Files Teal und Screen Koralle. Sie erscheint an genau drei Stellen:
 
-- Glow-Palette: ice, azure, lilac, sand, ember, mint
-- Mesh-Licht hinter dem Seitenkopf
-- der Lichtrand um die „Now“-Karte
-- der Schein des Primärknopfs
-- der Orb
+- im Licht oben auf der Seite
+- in der einen Hauptzahl
+- im aktiven Tab
 
-**Ein Leuchten pro Screen.** Wenn zwei Dinge leuchten, leuchtet keins.
+Nie als Fläche, nie als Verlaufstext, nie als leuchtender Knopf. So weiß man immer, wo man ist, ohne dass etwas schreit.
 
 Das Licht kommt immer von oben links: Glasränder, Glanz, Avatare und die Linse
 der Tab-Leiste folgen derselben Lichtquelle.
 
-## 3. Physische Bewegung
+## 3. Minimale, perfekte Bewegung
 
 - Alles, was ein Finger berührt, ist eine Feder: unterbrechbar, die Geschwindigkeit bleibt erhalten.
 - Sieben benannte Federn statt beliebiger Zahlen (`SPRING.snap … bouncy`).
+- Kurz und ohne Nachwackeln. Was erscheint, steigt 4 bis 8 px auf, was geht, ist in 120 bis 160 ms weg. Listen kommen 18 bis 30 ms versetzt.
 - Jede Wahl gibt Haptik (`select`), jede Raststufe ein `tick`.
-- Bewegung erklärt etwas, zum Beispiel woher etwas kommt, wohin es geht oder dass gerade jemand arbeitet. Deko-Bewegung ist die Ausnahme und schläft im Ruhemodus.
+- Heroes bekommen einen einzigen orchestrierten Moment: einen Titel, der aus einer Maske steigt, oder eine rollende Zahl. Alles andere bleibt ruhig.
 
 ## 4. Handy zuerst, Desktop gleichwertig
 
 - Handy:
   - Daumenreichweite
-  - Sheets von unten
+  - Menüs klappen direkt am Knopf auf, Auswahl öffnet sich inline in der Zeile
+  - Vollbild-Panels nur für lange Aufgaben
   - Wischen
   - Long-Press
   - 44px-Ziele
@@ -63,12 +63,11 @@ Schönheit, die den Akku leert, ist keine. Deshalb:
 
 - Schleifen bewegen nur `transform` und `opacity`.
 - Blur sitzt nie auf etwas, das sich bewegt.
-- Mesh-Licht wird einmal gerendert.
+- Das Licht ist ein SVG mit etwa 1 KB, ohne WebGL und ohne Korn.
 - Canvas läuft im Leerlauf mit 30 fps und hält außerhalb des Bildes an.
 
 Gemessen am Dashboard: Ein langsam driftender Verlauf kostete die halbe
-GPU-Last einer ruhenden Seite. Jetzt steht er still, und niemand vermisst die
-Bewegung.
+GPU-Last einer ruhenden Seite. Heute ist er ein SVG und kostet praktisch nichts.
 
 ## 7. Navigation führt ans Ziel
 

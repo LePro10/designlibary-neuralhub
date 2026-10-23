@@ -15,6 +15,16 @@
 Das Dashboard hatte 14 handgetippte Paare. Sie lassen sich alle auf diese
 sieben abbilden.
 
+## Grammatik
+
+- **Erscheinen:** 4 bis 8 px aufsteigen und einblenden (0,3 bis 0,6 s, ease-out-soft), oder als Feder aus dem Auslöser heraus.
+- **Verschwinden:** 120 bis 160 ms, ohne Überschwingen.
+- **Listen:** 18 bis 30 ms Versatz, höchstens acht Einträge gestaffelt.
+- **Titel:** steigen einmal aus einer Maske (`RevealText`, Page macht das selbst).
+- **Zahlen:** rollen Ziffer für Ziffer (`Odometer`).
+- **„Arbeitet“:** das Logo selbst (`LogoLoader`) statt eines leuchtenden Orbs.
+- **Reduzierte Bewegung:** `AppShell` setzt `MotionConfig reducedMotion="user"`.
+
 ## Easings
 
 - `ease-out-soft` (Standard für alles, was ankommt)
@@ -45,6 +55,6 @@ sieben abbilden.
 
 Am Dashboard (Handy-Viewport, 4× CPU-Drosselung):
 
-- Driftender Mesh-Verlauf: etwa ½ der GPU-Last einer ruhenden Seite. Er steht jetzt still.
+- Driftender Mesh-Verlauf: etwa ½ der GPU-Last einer ruhenden Seite. Heute ist er ein statisches SVG.
 - 32px-Orb im Composer unter einem Glas-Blur: etwa ⅔ der Leerlauf-GPU. Er ruht jetzt und dreht sich nur bei Hover.
 - Sheet-Federn in JS: Sie ruckelten, wenn Daten ankamen. Jetzt laufen sie auf dem Compositor.

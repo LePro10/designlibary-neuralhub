@@ -14,7 +14,7 @@ export function CopyButton({ text, label = 'Copy code', className }: { text: str
       aria-label={label}
       title={label}
       onClick={async () => { try { await navigator.clipboard.writeText(text); } catch { /* insecure context */ } haptic('success'); setDone(true); window.setTimeout(() => setDone(false), 1400); }}
-      className={cn('pressable grid h-8 w-8 place-items-center rounded-full text-dim transition-colors hover:bg-fill-3 hover:text-bright', className)}
+      className={cn('pressable grid h-7 w-7 place-items-center rounded-full text-faint transition-colors hover:bg-fill-3 hover:text-bright', className)}
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span key={done ? 'y' : 'n'} initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }} transition={{ duration: 0.15 }}>
@@ -28,12 +28,12 @@ export function CopyButton({ text, label = 'Copy code', className }: { text: str
 export function CodeBlock({ code, lang = 'tsx', className, title }: { code: string; lang?: string; className?: string; title?: string }) {
   const html = useMemo(() => highlight(code.trim()), [code]);
   return (
-    <div className={cn('relative overflow-hidden rounded-field border border-line bg-raised', className)}>
-      <div className="flex h-9 items-center justify-between border-b border-line pr-1 pl-3.5">
-        <span className="eyebrow">{title ?? lang}</span>
+    <div className={cn('relative overflow-hidden rounded-stat border-hair border-line-2 bg-raised', className)}>
+      <div className="flex h-8 items-center justify-between border-b-hair border-line pr-0.5 pl-3">
+        <span className="font-mono text-tiny text-faint">{title ?? lang}</span>
         <CopyButton text={code.trim()} />
       </div>
-      <pre className="sh scroll-x scroller-subtle p-3.5 font-mono text-[12.5px] leading-[1.7] text-ink"><code dangerouslySetInnerHTML={{ __html: html }} /></pre>
+      <pre className="sh scroll-x scroller-subtle p-3.5 font-mono text-[12px] leading-[1.7] text-ink"><code dangerouslySetInnerHTML={{ __html: html }} /></pre>
     </div>
   );
 }

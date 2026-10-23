@@ -75,7 +75,7 @@ function SpringLab() {
         </div>
       </div>
       <div ref={scope} className="relative mt-5 h-14 rounded-full bg-fill-1">
-        <div className="ball absolute top-1 left-1 h-12 w-12 rounded-full bg-bright shadow-glow" />
+        <div className="ball absolute top-1 left-1 h-12 w-12 rounded-full bg-bright" />
       </div>
       <Button className="mt-4" size="sm" variant="ghost" Icon={Play} onClick={play}>Play</Button>
     </div>

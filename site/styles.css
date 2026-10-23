@@ -4,10 +4,10 @@
 @source "./";
 
 /* Showcase-only bits. */
-.doc-prose p { color: var(--color-ink); line-height: 1.65; font-size: 15px; }
+.doc-prose p { color: var(--color-ink); line-height: 1.6; font-size: var(--text-body); }
 .doc-prose p + p { margin-top: .75rem; }
 .doc-prose code, .inline-code { font-family: var(--font-mono); font-size: .86em; padding: .1em .38em; border-radius: 6px; background: var(--color-fill-3); color: var(--color-bright); }
-.doc-prose strong { color: var(--color-bright); font-weight: 500; }
+.doc-prose strong { color: var(--color-bright); font-weight: 460; }
 .doc-prose a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, var(--color-accent) 40%, transparent); }
 .checker {
   background-color: #0d0f0e;

@@ -64,15 +64,15 @@ export function Demo<C extends Record<string, Control> = Record<string, never>>(
   const set = (k: keyof C, val: unknown) => setV((o) => ({ ...o, [k]: val }));
 
   return (
-    <div className={cn('@container my-6 overflow-hidden rounded-card border border-line bg-[linear-gradient(180deg,rgb(255_255_255/.025),rgb(255_255_255/.01))]', className)}>
+    <div className={cn('@container my-6 overflow-hidden rounded-card border-hair border-line-2', className)}>
       {(title || src) && (
-        <div className="flex items-center gap-3 border-b border-line py-2 pr-2 pl-4">
+        <div className="flex items-center gap-2 border-b-hair border-line py-1.5 pr-1.5 pl-3.5">
           <div className="min-w-0 flex-1">
-            {title && <h3 className="truncate text-chip font-medium text-bright">{title}</h3>}
+            {title && <h3 className="truncate text-chip text-ink">{title}</h3>}
           </div>
           {entries.length > 0 && (
-            <button type="button" aria-label="Reset controls" title="Reset" onClick={() => setV(initial(controls!))} className="pressable grid h-8 w-8 place-items-center rounded-full text-dim hover:bg-fill-3 hover:text-bright">
-              <RotateCcw size={14} />
+            <button type="button" aria-label="Reset controls" title="Reset" onClick={() => setV(initial(controls!))} className="pressable grid h-7 w-7 place-items-center rounded-full text-faint hover:bg-fill-3 hover:text-bright">
+              <RotateCcw size={13} strokeWidth={1.75} />
             </button>
           )}
           {src && (
@@ -81,7 +81,7 @@ export function Demo<C extends Record<string, Control> = Record<string, never>>(
           )}
         </div>
       )}
-      {description && <div className="border-b border-line px-4 py-3 text-[13px] leading-relaxed text-dim">{description}</div>}
+      {description && <div className="border-b-hair border-line px-3.5 py-2.5 text-small leading-relaxed text-dim">{description}</div>}
       <div className={cn('grid', entries.length > 0 && '@min-[760px]:grid-cols-[minmax(0,1fr)_272px]')}>
         <div className="relative min-w-0">
           {view === 'preview' ? (
@@ -96,10 +96,10 @@ export function Demo<C extends Record<string, Control> = Record<string, never>>(
           )}
         </div>
         {entries.length > 0 && (
-          <div className="space-y-4 border-t border-line bg-raised/60 p-4 @min-[760px]:border-t-0 @min-[760px]:border-l">
+          <div className="space-y-4 border-t-hair border-line bg-fill-1 p-4 @min-[760px]:border-t-0 @min-[760px]:border-l-hair">
             {entries.map(([k, c]) => (
               <div key={k}>
-                {c.type !== 'bool' && <div className="mb-2 flex items-center justify-between"><span className="eyebrow">{c.label ?? pretty(k)}</span>{c.type === 'range' && <span className="font-mono text-tiny text-dim tabular">{String(v[k])}{c.unit ?? ''}</span>}</div>}
+                {c.type !== 'bool' && <div className="mb-2 flex items-center justify-between"><span className="text-meta text-dim">{c.label ?? pretty(k)}</span>{c.type === 'range' && <span className="font-mono text-tiny text-faint tabular">{String(v[k])}{c.unit ?? ''}</span>}</div>}
                 {c.type === 'select' && (c.options.length <= 3 && c.options.join('').length < 22
                   ? <Segmented size="sm" className="w-full" value={v[k] as string} onChange={(x) => set(k, x)} options={c.options.map((o) => ({ value: o, label: o }))} label={k} />
                   : <Chips nowrap={false} className="!mx-0 !flex-wrap !px-0" value={v[k] as string} onChange={(x) => set(k, x)} options={c.options.map((o) => ({ value: o, label: o }))} />)}
@@ -113,12 +113,12 @@ export function Demo<C extends Record<string, Control> = Record<string, never>>(
                 )}
                 {c.type === 'bool' && (
                   <label className="flex items-center justify-between gap-3">
-                    <span className="eyebrow">{c.label ?? pretty(k)}</span>
+                    <span className="text-meta text-dim">{c.label ?? pretty(k)}</span>
                     <Switch size="sm" checked={v[k] as boolean} onChange={(x) => set(k, x)} label={c.label ?? k} />
                   </label>
                 )}
                 {c.type === 'range' && <Slider label={c.label ?? k} value={v[k] as number} min={c.min} max={c.max} step={c.step} onChange={(x) => set(k, x)} format={(x) => `${x}${c.unit ?? ''}`} />}
-                {c.type === 'text' && <input value={v[k] as string} onChange={(e) => set(k, e.target.value)} className="h-9 w-full rounded-[10px] border border-line bg-fill-2 px-3 text-[13px] text-bright outline-none focus:border-line-2" />}
+                {c.type === 'text' && <input value={v[k] as string} onChange={(e) => set(k, e.target.value)} className="h-8 w-full rounded-field border-hair border-line-2 bg-fill-1 px-2.5 text-small text-bright outline-none focus:border-white/25" />}
               </div>
             ))}
           </div>

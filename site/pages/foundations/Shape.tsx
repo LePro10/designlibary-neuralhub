@@ -1,17 +1,17 @@
 import { Doc, DocSection, Rules, Why } from '../../kit/Doc';
 
-const RADII = [['chip', 8, 'tiny tiles, kbd'], ['tile', 10, 'icon tile in a row'], ['field', 14, 'inputs, search, code'], ['stat', 18, 'stat tiles'], ['list', 22, 'grouped lists, bubbles'], ['card', 24, '.card'], ['dialog', 28, 'desktop dialog'], ['sheet', 30, 'phone sheet'], ['full', 9999, 'buttons, chips, pills']] as const;
-const SHADOWS = [['rim', 'inset top highlight'], ['float', 'glass, popovers'], ['fab', 'floating buttons'], ['sheet', 'bottom sheet'], ['dialog', 'dialog'], ['glow', 'primary button (accent)']] as const;
+const RADII = [['chip', 6, 'tiny tiles, kbd'], ['tile', 8, 'icon tile in a row'], ['field', 10, 'inputs, search, code'], ['menu', 13, 'pull-down menus'], ['stat', 14, 'stat tiles'], ['list', 16, 'grouped lists, bubbles'], ['card', 18, '.card'], ['dialog', 20, 'desktop dialog'], ['sheet', 22, 'full-height panel'], ['full', 9999, 'buttons, chips, pills']] as const;
+const SHADOWS = [['menu', 'pull-down menus'], ['float', 'glass bars'], ['fab', 'floating buttons'], ['sheet', 'panel'], ['dialog', 'dialog'], ['rim', 'inset top highlight']] as const;
 
 export default function ShapePage() {
   return (
     <Doc eyebrow="Foundations" title="Shape & depth" source="ui/styles/tokens.css"
-      lead="Soft, continuous corners named by what wears them — rounded-field, rounded-list, rounded-sheet — so nobody has to remember that a field is 14px. Depth comes from light at the top edge and long, soft shadows below.">
+      lead="Small, continuous corners named by what wears them, and edges drawn as hairlines: one device pixel on retina screens (border-hair). Only floating things cast a shadow.">
       <DocSection title="Radius">
         <div className="mt-5 grid grid-cols-3 gap-3 @min-[700px]:grid-cols-5">
           {RADII.map(([n, r, d]) => (
-            <div key={n} className="flex flex-col items-center gap-2.5 rounded-stat border border-line bg-fill-1 p-4">
-              <div className="h-16 w-full border border-line-2 bg-fill-3" style={{ borderRadius: r === 9999 ? 9999 : r }} />
+            <div key={n} className="flex flex-col items-center gap-2.5 rounded-stat border-hair border-line bg-fill-1 p-4">
+              <div className="h-16 w-full border-hair border-line-2 bg-fill-3" style={{ borderRadius: r === 9999 ? 9999 : r }} />
               <div className="text-center"><div className="font-mono text-[12px] text-bright">rounded-{n}</div><div className="text-tiny text-dim">{r === 9999 ? '∞' : `${r}px`} · {d}</div></div>
             </div>
           ))}

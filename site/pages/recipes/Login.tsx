@@ -20,7 +20,7 @@ export default function LoginRecipe() {
   return (
     <Doc eyebrow="Recipes" title="Sign in" lead="A first impression in 1.4 seconds: the mark draws in one stroke, the point of light falls into place, the form rises line by line. Wrong password? It shakes once and keeps what you typed.">
       <Demo padded={false} minHeight={760} description="Try any email and the password “wrong” for the error path; anything else signs in.">
-        {() => <div className="grid w-full gap-8 py-6 @min-[1000px]:grid-cols-2"><Phone><Login /></Phone><div className="hidden @min-[1000px]:block"><div className="relative h-[720px] overflow-hidden rounded-card border border-line"><Login /></div></div></div>}
+        {() => <div className="grid w-full gap-8 py-6 @min-[1000px]:grid-cols-2"><Phone><Login /></Phone><div className="hidden @min-[1000px]:block"><div className="relative h-[720px] overflow-hidden rounded-card border-hair border-line"><Login /></div></div></div>}
       </Demo>
       <DocSection title="Choreography">
         <ol className="mt-4 max-w-[680px] list-decimal space-y-1.5 pl-5 text-[14px] text-ink marker:text-dim">

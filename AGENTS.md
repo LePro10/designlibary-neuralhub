@@ -14,14 +14,14 @@ Live showcase with every component, knobs and code:
 
 ## 1. The design in five sentences
 
-1. **Quiet dark.** Near-black ground `#080909`, grey-green ink, 7% hairlines; nothing shouts.
-2. **Light is content.** Colour appears as *light* (glow palette) on the one thing that matters on a screen — one glow per screen.
-3. **Physical motion.** Springs you can grab and interrupt, a haptic on every choice, compositor-only loops.
-4. **Phone first, desktop equal.** Thumb reach, bottom sheets, swipes — and a pointer-shaped twin that can do the same.
+1. **Quiet dark, drawn light.** Near-black ground `#080909`, grey-green ink, hairline edges (0.5px on retina), small light type. Nothing shouts; nothing is bold.
+2. **One colour per place.** Each place (tab) owns a signal colour. It appears in exactly three spots: the light at the top, the one hero figure, the active tab. Never a surface, never gradient text, never a glow on a button.
+3. **Minimal, perfect motion.** Springs you can interrupt, short and without wobble; a haptic on every choice; exits faster than entrances; loops only on the compositor. Heroes get one orchestrated moment (title rising out of a mask, rolling number), the rest stays still.
+4. **Phone first, desktop equal.** Menus pull down from the button you tapped, choices expand inline, panels only for long tasks. The pointer gets the same features.
 5. **States are features.** Loading, empty, error, offline and live are designed, never patched.
 
-Voices: **DM Sans** (light 300 + tight tracking for display, regular for reading)
-and **IBM Plex Mono** (9.5px uppercase `.eyebrow` labels — the "index" voice).
+Voices: **DM Sans** (300 for display, 400 for reading, 460 as "medium" — never heavier)
+and **IBM Plex Mono** (9px uppercase `.eyebrow` for section labels only; field labels are quiet sans).
 
 ---
 
@@ -63,19 +63,23 @@ import '@fontsource/ibm-plex-mono/500.css';
 **Colour & type**
 - Use tokens: `bg-card`, `text-bright`, `border-line`, `bg-fill-2`, `text-accent` … or `var(--color-…)` in inline styles/SVG. **No raw hex, no rgba, no Tailwind palettes** (`zinc-800`, `emerald-400`) in app code.
 - Translucent white steps are only `fill-1…4` (3/5/8/12%) and `line`/`line-2` (7/12%).
-- Text sizes only from the scale: `text-micro tiny meta detail small chip button body input lead title headline display display-lg hero`. No `text-[13.5px]`. (A few library internals use in-between sizes for micro-layout — app code does not.)
-- Radii by role: `rounded-chip tile field stat list card dialog sheet full`. No `rounded-[18px]`.
+- Text sizes only from the scale: `text-micro 9 · tiny 10 · meta 11.5 · detail 12 · small 12.5 · chip 13 · button 13.5 · body 14.5 · input 16 · lead 16 · title 18 · headline 22 · display 28 · display-lg 42 · hero 52`. No `text-[13.5px]`. (A few library internals use in-between sizes for micro-layout — app code does not.)
+- Weights: `font-light` (300) for display, normal (400) for text, `font-medium` (460) for buttons and emphasis. **No `font-semibold`, no `font-bold`.**
+- Radii by role: `rounded-chip 6 · tile 8 · field 10 · menu 13 · stat 14 · list 16 · card 18 · dialog 20 · sheet 22 · full`. No `rounded-[18px]`.
+- Edges are hairlines: `border-hair` / `border-t-hair` / `border-b-hair` / `divide-hair` (1px, 0.5px on retina) with `border-line` or `border-line-2`. Not `border` (1px everywhere looks heavy). Only floating things (menus, toasts, tab bar, dialogs) cast a shadow.
+- Places: wrap a screen in `<Page place="plan">` (or set `data-signal="amber"`); inside, the place colour is `text-tab` / `bg-tab` / Button `tint`. Twelve signals in `SIGNALS`, NeuralHub's mapping in `PLACES` (`ui/lib/tokens.ts`).
+- No grain, no noise textures, no gradient text, no glowing buttons. The ambient light is the SVG `Ambient` (≈1 KB) — never WebGL, never an image per seed.
 - "The app's accent" = `accent` / `accent-deep` (themeable). Fixed glow colours (`ice`, `ember`, `mint`, `live` …) only where the meaning is fixed (ember = badge/over limit/now, mint = success, live = live right now, danger = destructive, warning = caution).
 - Titles are `display` (weight 300), never bold. Section labels are `.eyebrow`.
 
 **Layout & mobile**
-- One breakpoint: **900px**. Below: tab bar, sheets from the bottom, menus as sheets. Above: sidebar, dialogs, popovers.
+- One breakpoint: **900px**. Below: tab bar, menus that pull down from their trigger, choices that expand inline, full-height panels only for long tasks. Above: sidebar, popovers, dialogs.
 - Wrap the app in `AppShell` — it measures its own width and tells everything inside (`Surface`). Inside pages use **container queries** (`@min-[700px]:`), not viewport breakpoints, in anything that may sit in a narrow pane.
 - **Exactly one owner per space.** `AppShell` owns height and nav; `Page` owns all page padding (safe area + 44px top, 16/32px sides, max width 980/1240, bottom `var(--tabbar-space) + 24px`); content owns only itself. No negative margins to cancel padding, no `calc(100vh − …)`, no guessed `pb-[88px]` — use `var(--tabbar-space)`.
 - `h-dvh`, never `vh`. Safe areas only via `var(--safe-top/bottom)`, never `env()` in components.
 - Touch targets ≥ 44×44 (small visuals extend their hit area, see `IconButton size="sm"`).
 - Inputs: 16px text on phones (`text-input` / `inputClass`), so the browser never zooms.
-- **No native `<select>`** — use `Menu` (popover on desktop, sheet on phone).
+- **No native `<select>`** — use `Menu` (a small translucent pull-down anchored to its trigger, on phone and desktop). **No bottom sheet for a choice** — that is a `Menu` or an inline picker.
 - Horizontal drags inside a swipeable area carry `data-no-swipe`.
 - Desktop and phone can do the same things. Building a feature on one = checking the other.
 
@@ -86,6 +90,7 @@ import '@fontsource/ibm-plex-mono/500.css';
 
 **Motion & performance**
 - Springs only from `SPRING` (`snap toggle sheet pop soft grow bouncy`), easings from the tokens (`ease-out-soft` default). Don't type new stiffness/damping pairs.
+- Motion grammar: entrances rise 4–8px + fade (0.3–0.6s, ease-out-soft) or spring from the trigger; exits 120–160ms, no overshoot; lists stagger 18–30ms; nothing wobbles. Wrap apps in `AppShell` (it sets `MotionConfig reducedMotion="user"`).
 - Loops animate only `transform`/`opacity`. Never a blur on a moving element.
 - Decorative loops get `.deko` (they pause in rest mode, on `[inert]` pages, with reduced motion).
 - JS animations ask `prefersReducedMotion()` and jump to the end.
@@ -110,6 +115,7 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | Job | Use | Notes |
 |---|---|---|
 | The one main action | `Button` (primary) | max one per view; `busy` while saving |
+| An action in the place's colour | `Button variant="tint"` / `IconButton variant="tint"` | soft, inside a place |
 | Secondary / tertiary / destructive | `Button` ghost / quiet / danger | `glass` only over light, images, video |
 | Icon action | `IconButton` | sm draws 32 but hits 44 |
 | 2–5 views of the same data | `Segmented` | `sm` for secondary switches inside cards |
@@ -119,7 +125,7 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | Task done / multi-select | `Check` (`square`, `indeterminate`) | |
 | Continuous value | `Slider` | haptic per step, value bubble |
 | Text input | `Field` + `Input` / `TextArea` / `inputClass` | `SearchField` for search |
-| Settings / any list | `List` + `Row` | quiet monochrome icon tiles, value right in dim |
+| Settings / any list | `List` + `Row` | 46px rows, quiet icon tiles (`tint` for the place colour), separators start at the text |
 | Figures | `Stat`, `Trend`, big numbers with `display tabular text-hero` | |
 | People / accounts | `Avatar`, `AvatarStack` | `color` → glossy bead |
 | Loading | `SkeletonRow`, `SkeletonText`, `Skeleton`, `Spinner`, `Shimmer` | delay ~400ms |
@@ -128,7 +134,9 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | Status | `StatusDot` (`glow`, `pulse`) | |
 | App frame | `AppShell` + `TabBar` (phone) + `Sidebar` (desktop) | tab bar: 4 + "More" launcher |
 | A screen | `Page` (+ `Section`) | large title, ambient light by place |
-| Hero light | `Ambient` / `MeshGradient` | palettes in `AMBIENT` |
+| Hero light | `Ambient` (SVG) — comes with `Page place` | palettes in `AMBIENT`, pose in `AMBIENT_POSE`, optional `motion` breathe/drift |
+| A title that arrives | `RevealText` (Page titles do it by themselves) | lines rise out of a mask |
+| "Working on it" | `LogoLoader` | the mark at work instead of a glowing orb |
 | Brand mark | `LogoMark`, `Wordmark` | template for any product mark |
 | Bottom sheet / dialog | `Sheet` (`overlays/`) | drawer with snaps on phones (`SNAPS`), dialog on desktop; `footer` stays reachable |
 | Confirm something irreversible | `ConfirmSheet` | reversible things get a toast with Undo instead |

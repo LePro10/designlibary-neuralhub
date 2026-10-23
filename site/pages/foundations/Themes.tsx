@@ -62,7 +62,7 @@ function GlassCard({ level }: { level: GlassLevel }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => { if (ref.current) ref.current.dataset.glass = level; }, [level]);
   return (
-    <div ref={ref} className="relative h-48 overflow-hidden rounded-card border border-line">
+    <div ref={ref} className="relative h-48 overflow-hidden rounded-card border-hair border-line">
       <Backdrop variant="scene" />
       <div className="glass absolute inset-x-3 bottom-3 rounded-[20px] p-3.5">
         <div className="font-mono text-[12px] text-bright">{level}</div>

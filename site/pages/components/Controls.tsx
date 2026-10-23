@@ -85,7 +85,7 @@ function CheckDemo({ square, color }: { square: boolean; color: string }) {
   const all = s.every(Boolean), some = s.some(Boolean);
   return (
     <div className="w-full max-w-[320px] space-y-4">
-      {square && <label className="flex items-center gap-3 border-b border-line pb-3 text-body text-bright"><Check square checked={all} indeterminate={some && !all} onChange={(x) => setS(s.map(() => x))} label="All" color={color} /> Select all</label>}
+      {square && <label className="flex items-center gap-3 border-b-hair border-line pb-3 text-body text-bright"><Check square checked={all} indeterminate={some && !all} onChange={(x) => setS(s.map(() => x))} label="All" color={color} /> Select all</label>}
       {['Read chapter 4', 'Gym — legs', 'Reply to Mia'].map((t, i) => (
         <label key={t} className="flex items-center gap-3 text-body text-bright">
           <Check square={square} color={color} checked={s[i]} label={t} onChange={(x) => setS(s.map((y, j) => (j === i ? x : y)))} />

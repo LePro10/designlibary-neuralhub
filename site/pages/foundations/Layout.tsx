@@ -1,6 +1,6 @@
 import { Doc, DocSection, Rules, Why } from '../../kit/Doc';
 
-const Z = [['header', 30], ['sidebar', 40], ['tabbar', 50], ['sheet', '80/81'], ['context', 85], ['search', 88], ['grain', 90], ['toast', 95], ['popover', 120], ['intro', 200]] as const;
+const Z = [['header', 30], ['sidebar', 40], ['tabbar', 50], ['sheet', '80/81'], ['context', 85], ['search', 88], ['toast', 95], ['popover', 120], ['intro', 200]] as const;
 
 export default function LayoutPage() {
   return (
@@ -8,7 +8,7 @@ export default function LayoutPage() {
       lead="Phone first, desktop equal. One breakpoint (900px), safe areas from one place, 44px touch targets, and gestures that never fight the operating system. Desktop and phone can do the same things — just shaped for a thumb or a pointer.">
       <DocSection title="One breakpoint" description="Below 900px of its own width: tab bar, swipes, sheets from the bottom. Above: sidebar, centred dialogs, popover menus. Components in narrow panes use container queries (@container) instead of viewport breakpoints.">
         <div className="mt-5 grid gap-3 @min-[700px]:grid-cols-2">
-          <Card title="Phone · < 900" items={['Floating tab bar (4 + More)', 'Bottom sheets with snap points', 'Menus become sheets — no <select>', 'Actions in the top bar, in thumb reach', 'Long-press for context menus', '16px text in fields (no zoom)']} />
+          <Card title="Phone · < 900" items={['Floating tab bar (4 + More)', 'Menus pull down from their button — no <select>', 'Choices expand inline, panels only for long tasks', 'Actions in the top bar, in thumb reach', 'Long-press for context menus', '16px text in fields (no zoom)']} />
           <Card title="Desktop · ≥ 900" items={['Rail sidebar, opens over content', 'Centred dialogs, popover menus', 'Actions on the title line', 'Right-click for context menus', '⌘K search, ⌘1–9 tabs', 'Hover states (only on fine pointers)']} />
         </div>
       </DocSection>
@@ -44,7 +44,7 @@ export default function LayoutPage() {
         </ul>
       </DocSection>
       <DocSection title="Z layers" description="Never invent another.">
-        <div className="mt-5 flex flex-wrap gap-2">{Z.map(([n, z]) => <span key={n} className="rounded-full border border-line bg-fill-1 px-3 py-1.5 font-mono text-[12px] text-ink">{n} <span className="text-dim">{z}</span></span>)}</div>
+        <div className="mt-5 flex flex-wrap gap-2">{Z.map(([n, z]) => <span key={n} className="rounded-full border-hair border-line bg-fill-1 px-3 py-1.5 font-mono text-[12px] text-ink">{n} <span className="text-dim">{z}</span></span>)}</div>
       </DocSection>
       <DocSection title="Rules">
         <Rules items={[

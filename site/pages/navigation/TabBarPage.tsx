@@ -19,6 +19,7 @@ export default function TabBarPage() {
           <li><strong className="font-medium text-bright">Bar</strong> — <code className="inline-code">.glass</code>, 66px, max 440px wide, floating 10px above the home indicator.</li>
           <li><strong className="font-medium text-bright">Lens</strong> — <code className="inline-code">.glass-lens</code>: faint fill, specular rim brightest top-left, inner bevel, accent-tinted bottom glow.</li>
           <li><strong className="font-medium text-bright">Refraction row</strong> — a second, white, slightly larger icon row, clipped to the lens and counter-scaled against its squash so it stays crisp.</li>
+          <li><strong className="font-medium text-bright">Place colour</strong> — each item may carry its place's <code className="inline-code">signal</code>: the icon under the lens wears it and the lens picks up a faint tint.</li>
           <li><strong className="font-medium text-bright">Fade</strong> — content scrolling past the bar sinks into black instead of peeking out beneath it.</li>
         </ol>
       </DocSection>
@@ -40,7 +41,7 @@ export default function TabBarPage() {
           { name: 'position', type: 'MotionValue<number>', description: 'Drive the lens from a swipeable pager (float tab index).' },
           { name: 'floating', type: 'boolean', default: 'true', description: 'Absolute at the bottom of its shell, or in flow.' },
         ]} />
-        <Usage code={`const tabs = [\n  { id: 'luna', label: 'Luna', Icon: Sparkles },\n  { id: 'plan', label: 'Plan', Icon: CalendarDays, badge: 'Two stories due' },\n  …\n  { id: 'more', label: 'More', Icon: LayoutGrid, launcher: true },\n];\n<TabBar items={tabs} value={tab} onChange={setTab} onLaunch={() => setMoreOpen(true)} />`} />
+        <Usage code={`const tabs = [\n  { id: 'luna', label: 'Luna', Icon: Sparkles },\n  { id: 'plan', label: 'Plan', Icon: CalendarDays, signal: 'amber', badge: 'Two stories due' },\n  …\n  { id: 'more', label: 'More', Icon: LayoutGrid, launcher: true },\n];\n<TabBar items={tabs} value={tab} onChange={setTab} onLaunch={() => setMoreOpen(true)} />`} />
       </DocSection>
     </Doc>
   );
