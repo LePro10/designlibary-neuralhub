@@ -17,7 +17,7 @@ function Inbox({ channel, leading, fullSwipe }: { channel: string; leading: bool
     toast(verb, { channel, undo: () => setList(before) });
   };
   return (
-    <div className="card divide-y divide-line overflow-hidden !rounded-list">
+    <div className="list-rows overflow-hidden rounded-list border-hair border-line-2 bg-fill-1">
       {list.map((m) => {
         const unread = m.unread && !read[m.id];
         return (
@@ -28,24 +28,24 @@ function Inbox({ channel, leading, fullSwipe }: { channel: string; leading: bool
               { label: 'Flag', Icon: Flag, tone: 'warning', onAction: () => toast('Flagged', { channel }) },
               { label: 'Archive', Icon: Archive, tone: 'danger', onAction: () => drop(m.id, 'Archived') },
             ]}>
-            <button type="button" onClick={() => toast(`Open “${m.subject}”`, { channel })} className="flex w-full gap-3 px-4 py-3 text-left">
+            <button type="button" onClick={() => toast(`Open “${m.subject}”`, { channel })} className="flex w-full gap-3 px-3.5 py-2.5 text-left">
               <span className="relative">
-                <Avatar name={m.from} color={m.color} size={36} />
-                {unread && <i className="absolute -top-0.5 -left-0.5 h-2.5 w-2.5 rounded-full bg-azure ring-2 ring-card shadow-[0_0_8px_var(--color-azure)]" />}
+                <Avatar name={m.from} color={m.color} size={32} />
+                {unread && <i className="absolute top-0 -left-1 h-2 w-2 rounded-full bg-tab ring-2 ring-bg" />}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline gap-2">
                   <span className={cn('truncate text-body', unread ? 'text-bright' : 'text-ink')}>{m.from}</span>
                   <span className="ml-auto shrink-0 text-meta text-dim">{m.time}</span>
                 </span>
-                <span className="block truncate text-[13.5px] text-ink">{m.subject}</span>
+                <span className="block truncate text-chip text-ink">{m.subject}</span>
                 <span className="block truncate text-detail text-dim">{m.preview}</span>
               </span>
             </button>
           </SwipeRow>
         );
       })}
-      {list.length === 0 && <div className="px-4 py-10 text-center text-[13.5px] text-dim">Inbox zero.</div>}
+      {list.length === 0 && <div className="px-4 py-10 text-center text-chip text-dim">Inbox zero.</div>}
     </div>
   );
 }

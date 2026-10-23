@@ -11,14 +11,14 @@ import { MAILS, PhoneScreen, Side } from './_shared';
 
 function MailCard({ m }: { m: (typeof MAILS)[number] }) {
   return (
-    <div className="card flex gap-3 !rounded-list p-3.5">
-      <Avatar name={m.from} color={m.color} size={36} />
+    <div className="card flex gap-3 !rounded-list p-3">
+      <Avatar name={m.from} color={m.color} size={32} />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
           <span className={cn('truncate text-body', m.unread ? 'text-bright' : 'text-ink')}>{m.from}</span>
           <span className="ml-auto shrink-0 text-meta text-dim">{m.time}</span>
         </div>
-        <div className="truncate text-[13.5px] text-ink">{m.subject}</div>
+        <div className="truncate text-chip text-ink">{m.subject}</div>
         <div className="truncate text-detail text-dim">{m.preview}</div>
       </div>
     </div>

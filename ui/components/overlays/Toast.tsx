@@ -120,20 +120,20 @@ export function Toaster({ channel = 'main', position = 'bottom' }: { channel?: s
             <motion.div
               key={t.id}
               layout
-              initial={{ opacity: 0, y: top ? -16 : 16, scale: 0.96 }}
+              initial={{ opacity: 0, y: top ? -8 : 8, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: top ? -8 : 8, scale: 0.96 }}
-              transition={{ ...SPRING.snap, stiffness: 500, damping: 36 }}
+              exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.14 } }}
+              transition={{ ...SPRING.snap, damping: 38 }}
               // Long messages wrap instead of running off screen; one line stays a pill.
-              className="glass pointer-events-auto flex max-w-[min(100%,520px)] items-center gap-3 rounded-list py-2.5 pr-2.5 pl-4 text-[14px] leading-snug text-bright"
+              className="pointer-events-auto flex min-h-9 max-w-[min(100%,460px)] items-center gap-2 rounded-[18px] border-hair border-white/[.1] bg-[rgb(30_32_31/.74)] py-1.5 pr-1.5 pl-3.5 text-chip leading-snug text-bright shadow-menu backdrop-blur-[20px] backdrop-saturate-[160%]"
             >
               {t.tone === 'loading'
-                ? <i className="spinner shrink-0" />
-                : I && <I size={16} strokeWidth={1.9} className={cn('shrink-0', t.tone === 'success' && 'text-mint', t.tone === 'danger' && 'text-danger')} />}
-              <span className={cn('min-w-0 break-words', !t.undo && 'pr-2.5')}>{t.text}</span>
+                ? <i className="spinner shrink-0" style={{ ['--size' as string]: '13px' }} />
+                : I && <I size={14} strokeWidth={1.8} className={cn('shrink-0', t.tone === 'success' && 'text-mint', t.tone === 'danger' && 'text-danger')} />}
+              <span className={cn('min-w-0 break-words py-0.5', !t.undo && 'pr-2')}>{t.text}</span>
               {t.undo && (
                 <button type="button" onClick={() => { t.undo?.(); remove(t.id); }}
-                  className="shrink-0 rounded-full bg-white/10 px-3.5 py-1.5 text-small font-medium text-accent hover:bg-white/15">
+                  className="relative shrink-0 rounded-full px-2.5 py-1 text-chip font-medium text-accent transition-colors hover:bg-white/[.08] after:absolute after:-inset-2 after:content-['']">
                   {t.actionLabel ?? 'Undo'}
                 </button>
               )}

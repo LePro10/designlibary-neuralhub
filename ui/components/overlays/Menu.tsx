@@ -1,35 +1,41 @@
 /**
- * Click menu for toolbars (sort, filter, "more", account switch).
- * Desktop: a compact OS-style popover at the trigger, no backdrop.
- * Phones: a bottom sheet with 56px rows — the same items, thumb-sized.
- * Never a native <select>: it looks foreign and cannot carry icons or detail.
+ * Pull-down menu for toolbars and rows (sort, filter, "more", account switch,
+ * any choice that would otherwise be a <select>). On phones and desktop alike
+ * it grows out of the button you tapped — a small translucent card, no sheet,
+ * no dimmed screen — the way menus work in iOS apps.
  *
- * Keyboard like an OS menu: arrows, Home/End, first letter jumps, Tab and
- * Escape close, focus returns to the trigger. Scrolling the page or resizing
- * closes the popover (a fixed menu would otherwise float away from its button).
+ * Motion: grows from the trigger's corner (spring 520/36 from 0.7), rows
+ * follow 18ms apart; closing is quicker (140ms, shrinks to 0.94 and fades).
+ * It opens below the trigger and flips above when there is no room, and
+ * keeps 12px from the surface edges.
+ *
+ * A transparent catcher takes the next tap outside (it closes the menu and
+ * does nothing else, as on iOS). Keyboard like an OS menu: arrows, Home/End,
+ * first letter jumps, Tab and Escape close, focus returns to the trigger.
+ * Scrolling the page or resizing closes it.
  */
 import { AnimatePresence, motion } from 'motion/react';
-import { Check, type LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { cn } from '../../lib/cn';
 import { haptic } from '../../lib/haptics';
 import { useLayer } from '../../lib/layers';
+import { SPRING, prefersReducedMotion } from '../../lib/motion';
 import { useLayoutMode, usePortalTarget } from '../../lib/surface';
-import { SNAPS } from '../../lib/tokens';
 import { frameOf, toLocal, type Box } from './geometry';
-import { Sheet } from './Sheet';
+import { MENU_SURFACE, MenuItems, menuHeight } from './MenuList';
 
 export interface MenuEntry {
   label: string;
   /** Unique key when two entries share a label. */
   id?: string;
+  /** Shown at the right of the row. */
   Icon?: LucideIcon;
-  /** Something richer than an icon: avatar, colour dot, app icon. */
+  /** Something richer than an icon, at the left: avatar, colour dot, app icon. */
   glyph?: ReactNode;
-  /** Second line (phone) / right-aligned hint (desktop popover). */
+  /** Right-aligned hint, or a second line when the row has a glyph. */
   detail?: string;
-  /** Keyboard shortcut hint, desktop only ("⌘D"). */
+  /** Keyboard shortcut hint, pointer only ("⌘D"). */
   shortcut?: string;
   /** Radio-style selection; `kind: 'check'` for independent toggles. */
   checked?: boolean;
@@ -65,93 +71,56 @@ export function menuKeys(e: React.KeyboardEvent<HTMLElement>, close: () => void)
   }
 }
 
-export function Menu({ trigger, items, title, align = 'end', width = 232, block }: {
+/** Grows quickly, settles without a wobble. */
+const GROW = { ...SPRING.snap, damping: 36 };
+const EDGE = 12;
+
+export function Menu({ trigger, items, title, align = 'end', width = 220, block }: {
   /** Render the trigger; call `open()` from its onClick. */
   trigger: (open: () => void, isOpen: boolean) => ReactNode;
   items: MenuEntry[];
-  /** Sheet title on phones. */
+  /** Accessible name of the menu. */
   title?: string;
-  /** Popover edge aligned with the trigger. */
+  /** Which edge of the trigger the menu lines up with. */
   align?: 'start' | 'end';
+  /** Preferred width; kept between 180px and the surface width − 24px. */
   width?: number;
   /** The trigger fills its container's width and never grows past it. */
   block?: boolean;
 }) {
-  const mode = useLayoutMode();
   const target = usePortalTarget();
   const ref = useRef<HTMLSpanElement>(null);
   const [at, setAt] = useState<Box | null>(null);
-  const open = () => { haptic('select'); setAt(toLocal(ref.current!.getBoundingClientRect(), target)); };
+  const open = () => {
+    const el = ref.current?.firstElementChild ?? ref.current;
+    if (!el) return;
+    haptic('select');
+    setAt(toLocal(el.getBoundingClientRect(), target));
+  };
   const close = useCallback(() => setAt(null), []);
   const choose = (e: MenuEntry) => { if (!e.keepOpen) close(); haptic('select'); e.onSelect(); };
 
   return (
-    <span ref={ref} className={block ? 'relative flex w-full min-w-0' : 'relative inline-flex'}>
+    <span ref={ref} className={block ? 'relative flex w-full min-w-0 [&>*]:w-full' : 'relative inline-flex'}>
       {trigger(open, !!at)}
-      {mode === 'desktop'
-        ? <Popover at={at} align={align} width={width} items={items} onClose={close} onChoose={choose} target={target} />
-        : (
-          <Sheet open={!!at} onClose={close} title={title} snaps={[Math.min(SNAPS.tall[0], 0.22 + rowsHeight(items) / 900)]}>
-            <SheetRows items={items} onChoose={choose} />
-          </Sheet>
-        )}
+      <PullDown at={at} align={align} width={width} items={items} title={title} onClose={close} onChoose={choose} target={target} />
     </span>
   );
 }
 
-const rowsHeight = (items: MenuEntry[]) => items.length * 56 + items.filter((e) => e.section).length * 34;
-
-function SheetRows({ items, onChoose }: { items: MenuEntry[]; onChoose: (e: MenuEntry) => void }) {
-  // Split into groups at dividers/sections: each group is its own card.
-  const groups: { label?: string; items: MenuEntry[] }[] = [];
-  for (const e of items) {
-    if (!groups.length || e.divider || e.section) groups.push({ label: e.section, items: [] });
-    groups[groups.length - 1].items.push(e);
-  }
-  return (
-    <div role="menu" className="space-y-4">
-      {groups.map((g, gi) => (
-        <div key={gi}>
-          {g.label && <div className="eyebrow mb-2 px-1">{g.label}</div>}
-          <div className="card divide-y divide-line overflow-hidden !rounded-list">
-            {g.items.map((e) => (
-              <button key={e.id ?? e.label} type="button" disabled={e.disabled}
-                role={e.checked === undefined ? 'menuitem' : e.kind === 'check' ? 'menuitemcheckbox' : 'menuitemradio'}
-                aria-checked={e.checked}
-                onClick={() => onChoose(e)}
-                className={cn('flex min-h-[56px] w-full items-center gap-3.5 px-4 py-2 text-left transition-colors active:bg-fill-2 disabled:opacity-40', e.checked && 'bg-fill-1', e.destructive ? 'text-danger' : 'text-bright')}>
-                {e.glyph ?? (e.Icon && (
-                  <span className={cn('grid h-8 w-8 shrink-0 place-items-center rounded-tile border', e.destructive ? 'border-danger/20 bg-danger/10' : 'border-white/[.06] bg-fill-2 text-ink')}>
-                    <e.Icon size={16} strokeWidth={1.7} />
-                  </span>
-                ))}
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15.5px]">{e.label}</span>
-                  {e.detail && <span className="block truncate text-detail text-dim">{e.detail}</span>}
-                </span>
-                {e.checked !== undefined && (e.kind === 'check'
-                  ? <span className={cn('grid h-6 w-6 place-items-center rounded-[7px] border-[1.5px] transition-colors', e.checked ? 'border-transparent bg-bright text-bg' : 'border-white/25')}>{e.checked && <Check size={14} strokeWidth={2.8} />}</span>
-                  : e.checked && <span className="grid h-6 w-6 place-items-center rounded-full bg-bright text-bg"><Check size={14} strokeWidth={2.8} /></span>)}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Popover({ at, align, width, items, onClose, onChoose, target }: { at: Box | null; align: 'start' | 'end'; width: number; items: MenuEntry[]; onClose: () => void; onChoose: (e: MenuEntry) => void; target: HTMLElement }) {
+function PullDown({ at, align, width, items, title, onClose, onChoose, target }: {
+  at: Box | null; align: 'start' | 'end'; width: number; items: MenuEntry[]; title?: string;
+  onClose: () => void; onChoose: (e: MenuEntry) => void; target: HTMLElement;
+}) {
+  const touch = useLayoutMode() === 'phone';
   const box = useRef<HTMLDivElement>(null);
   useLayer(!!at, onClose);
   useEffect(() => {
     if (!at) return;
     const before = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const menu = box.current;
-    const down = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) onClose(); };
     const scroll = (e: Event) => { if (!box.current?.contains(e.target as Node)) onClose(); };
-    const t = window.setTimeout(() => window.addEventListener('pointerdown', down), 0);
-    // Focus into the menu: the checked entry, else the first — arrows work at once.
+    // Focus into the menu (the checked entry, else the first) so arrows work at once — keyboard users only see it.
     const f = requestAnimationFrame(() => {
       const el = box.current;
       (el?.querySelector<HTMLElement>('[aria-checked="true"]') ?? el?.querySelector<HTMLElement>('[role^="menuitem"]'))?.focus({ preventScroll: true });
@@ -159,73 +128,47 @@ function Popover({ at, align, width, items, onClose, onChoose, target }: { at: B
     window.addEventListener('resize', onClose);
     window.addEventListener('scroll', scroll, true);
     return () => {
-      window.clearTimeout(t); cancelAnimationFrame(f);
-      window.removeEventListener('pointerdown', down); window.removeEventListener('resize', onClose); window.removeEventListener('scroll', scroll, true);
+      cancelAnimationFrame(f);
+      window.removeEventListener('resize', onClose); window.removeEventListener('scroll', scroll, true);
       const now = document.activeElement;
       if ((!now || now === document.body || menu?.contains(now)) && before?.isConnected) before.focus({ preventScroll: true });
     };
   }, [at, onClose]);
 
   const frame = frameOf(target);
-  const rich = items.some((e) => e.glyph);
-  const h = items.length * (rich ? 52 : 34) + items.filter((e) => e.divider).length * 9 + items.filter((e) => e.section).length * 26 + 8;
-  const left = at ? Math.max(8, Math.min(frame.w - width - 8, align === 'end' ? at.right - width : at.left)) : 0;
-  const below = at ? at.bottom + 6 + h < frame.h - 8 || at.top < h + 14 : true;
+  const w = Math.max(180, Math.min(width, frame.w - EDGE * 2));
+  const h = menuHeight(items, touch);
+  const left = at ? Math.max(EDGE, Math.min(frame.w - w - EDGE, align === 'end' ? at.right - w : at.left)) : 0;
+  const below = at ? at.bottom + 6 + h < frame.h - EDGE || at.top < h + EDGE + 6 : true;
+  // Grow out of the trigger: the origin is the trigger's centre, at the menu edge that touches it.
+  const originX = at ? Math.max(14, Math.min(w - 14, at.left + at.width / 2 - left)) : 0;
+  const still = prefersReducedMotion();
 
   return createPortal(
     <AnimatePresence>
       {at && (
+        <motion.div key="catch" className="fixed inset-0 z-[var(--z-popover)]" onPointerDown={(e) => { e.preventDefault(); onClose(); }}
+          initial={false} exit={{ opacity: 0 }} transition={{ duration: 0.14 }} />
+      )}
+      {at && (
         <motion.div
+          key="menu"
           ref={box}
           role="menu"
+          aria-label={title}
           onKeyDown={(e) => menuKeys(e, onClose)}
-          initial={{ opacity: 0, scale: 0.96, y: below ? -4 : 4 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.12 } }}
-          transition={{ type: 'spring', stiffness: 600, damping: 38 }}
-          className="scroller fixed z-[var(--z-popover)] rounded-field border border-line-2 bg-popover/95 p-1 shadow-float backdrop-blur-xl"
+          className={`scroller fixed z-[var(--z-popover)] outline-none ${MENU_SURFACE}`}
           style={{
-            left, width,
-            maxHeight: below ? frame.h - at.bottom - 14 : at.top - 14,
+            left, width: w,
+            maxHeight: below ? frame.h - at.bottom - EDGE - 6 : at.top - EDGE - 6,
             ...(below ? { top: at.bottom + 6 } : { bottom: frame.h - at.top + 6 }),
-            transformOrigin: `${align === 'end' ? 'right' : 'left'} ${below ? 'top' : 'bottom'}`,
+            transformOrigin: `${originX}px ${below ? '0%' : '100%'}`,
           }}
+          initial={still ? { opacity: 0 } : { opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1, transition: { scale: GROW, opacity: { duration: 0.14 } } }}
+          exit={{ opacity: 0, scale: still ? 1 : 0.94, transition: { duration: 0.14, ease: [0.4, 0, 1, 1] } }}
         >
-          {items.map((e) => (
-            <div key={e.id ?? e.label}>
-              {e.divider && !e.section && <div className="mx-2 my-1 h-px bg-line" />}
-              {e.section && <div className="eyebrow px-2.5 pt-2.5 pb-1">{e.section}</div>}
-              <button
-                type="button"
-                disabled={e.disabled}
-                role={e.checked === undefined ? 'menuitem' : e.kind === 'check' ? 'menuitemcheckbox' : 'menuitemradio'}
-                aria-checked={e.checked}
-                onClick={() => onChoose(e)}
-                className={cn(
-                  'flex w-full items-center gap-2.5 rounded-[9px] px-2.5 text-left text-chip outline-none transition-colors hover:bg-white/[.07] focus-visible:bg-white/[.07] disabled:opacity-40',
-                  rich ? 'min-h-[52px] py-1.5' : 'h-[34px]',
-                  e.destructive ? 'text-danger' : 'text-ink hover:text-bright focus-visible:text-bright',
-                )}
-              >
-                {e.kind === 'check'
-                  ? <span className={cn('grid h-4 w-4 shrink-0 place-items-center rounded-[5px] border', e.checked ? 'border-transparent bg-bright text-bg' : 'border-white/25')}>{e.checked && <Check size={11} strokeWidth={3} />}</span>
-                  : e.glyph ? <span className="shrink-0">{e.glyph}</span> : e.Icon && <e.Icon size={15} strokeWidth={1.7} className={e.destructive ? '' : 'text-dim'} />}
-                {rich ? (
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[14px] text-bright">{e.label}</span>
-                    {e.detail && <span className="block truncate text-meta text-dim">{e.detail}</span>}
-                  </span>
-                ) : (
-                  <>
-                    <span className="min-w-0 flex-1 truncate">{e.label}</span>
-                    {e.detail && <span className="max-w-[45%] truncate text-meta text-dim">{e.detail}</span>}
-                    {e.shortcut && <kbd className="font-mono text-tiny text-faint">{e.shortcut}</kbd>}
-                  </>
-                )}
-                {e.checked && e.kind !== 'check' && <Check size={14} className="text-accent" />}
-              </button>
-            </div>
-          ))}
+          <MenuItems items={items} touch={touch} onChoose={onChoose} animate={!still} />
         </motion.div>
       )}
     </AnimatePresence>,

@@ -154,7 +154,7 @@ function Panel({ box, phone, onClose, groups, recent, placeholder, empty }: {
       )}
       {sections.map((s) => (
         <div key={s.label} className="mb-1">
-          <div className="eyebrow px-3 pt-3 pb-1.5">{s.label}</div>
+          <div className="px-2.5 pt-3 pb-1 text-tiny text-faint">{s.label}</div>
           {s.items.map(({ c, hits }) => {
             idx++;
             const i = idx;
@@ -163,12 +163,12 @@ function Panel({ box, phone, onClose, groups, recent, placeholder, empty }: {
               <button key={`${s.label}-${c.id}`} type="button" role="option" aria-selected={on} data-active={on}
                 onMouseEnter={() => { if (pointerMoved.current) setActive(i); }}
                 onClick={() => run(c)}
-                className={cn('relative flex w-full items-center gap-3 rounded-[12px] px-3 text-left transition-colors', phone ? 'min-h-[52px] py-2' : 'h-11', on ? 'text-bright' : 'text-ink')}>
-                {on && <motion.span layoutId="cmd-active" className="absolute inset-0 rounded-[12px] bg-fill-3 shadow-[inset_0_1px_0_rgb(255_255_255/.05)]" transition={SPRING.snap} />}
-                <span className="relative grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-white/[.06] bg-fill-2 text-ink">
-                  {c.glyph ?? (c.Icon && <c.Icon size={15} strokeWidth={1.7} />)}
+                className={cn('relative flex w-full items-center gap-2.5 rounded-[10px] px-2.5 text-left transition-colors', phone ? 'min-h-[46px] py-1.5' : 'h-10', on ? 'text-bright' : 'text-ink')}>
+                {on && <motion.span layoutId="cmd-active" className="absolute inset-0 rounded-[10px] bg-fill-3" transition={SPRING.snap} />}
+                <span className="relative grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px] bg-fill-3 text-ink">
+                  {c.glyph ?? (c.Icon && <c.Icon size={14} strokeWidth={1.7} />)}
                 </span>
-                <span className="relative min-w-0 flex-1 truncate text-[14px]"><Lit text={c.label} hits={hits} /></span>
+                <span className="relative min-w-0 flex-1 truncate text-body"><Lit text={c.label} hits={hits} /></span>
                 {c.detail && <span className="relative max-w-[40%] truncate text-meta text-dim">{c.detail}</span>}
                 {!phone && c.shortcut && <kbd className="relative font-mono text-tiny text-faint">{c.shortcut}</kbd>}
                 {!phone && on && <CornerDownLeft size={13} className="relative text-dim" />}
@@ -181,23 +181,23 @@ function Panel({ box, phone, onClose, groups, recent, placeholder, empty }: {
   );
 
   const input = (
-    <label className={cn('flex shrink-0 items-center gap-3 border-b border-line', phone ? 'px-4' : 'px-5')}>
-      <Search size={18} className="text-dim" />
+    <label className={cn('flex shrink-0 items-center gap-2.5 border-b-hair border-line', phone ? 'px-4' : 'px-4')}>
+      <Search size={16} strokeWidth={1.75} className="text-dim" />
       <input ref={field} value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={onKey} placeholder={placeholder}
         role="combobox" aria-expanded="true" aria-autocomplete="list" enterKeyHint="go"
-        className="h-14 min-w-0 flex-1 bg-transparent text-input text-bright outline-none placeholder:text-dim" />
+        className="h-12 min-w-0 flex-1 bg-transparent text-input text-bright outline-none placeholder:text-faint min-[900px]:text-body" />
       {phone
         ? <button type="button" onClick={onClose} className="py-2 pl-1 text-body text-ink">Cancel</button>
-        : <kbd className="rounded-md border border-line px-1.5 py-0.5 font-mono text-[10px] text-dim">ESC</kbd>}
+        : <kbd className="rounded-[5px] border-hair border-line-2 px-1.5 py-px font-mono text-tiny text-faint">esc</kbd>}
     </label>
   );
 
   if (phone) {
     return (
       <motion.div ref={box} role="dialog" aria-modal="true" aria-label="Command palette"
-        className="fixed inset-0 z-[var(--z-search)] flex flex-col bg-bg/95 backdrop-blur-xl outline-none"
+        className="fixed inset-0 z-[var(--z-search)] flex flex-col bg-bg/90 backdrop-blur-xl outline-none"
         style={{ paddingTop: 'var(--safe-top)', paddingBottom: 'var(--safe-bottom)' }}
-        initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16, transition: { duration: 0.15 } }} transition={SPRING.sheet}>
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8, transition: { duration: 0.14 } }} transition={SPRING.sheet}>
         {input}
         {body}
       </motion.div>
@@ -205,13 +205,13 @@ function Panel({ box, phone, onClose, groups, recent, placeholder, empty }: {
   }
   return (
     <div className="fixed inset-0 z-[var(--z-search)] flex justify-center px-6 pt-[12vh]">
-      <motion.div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+      <motion.div className="absolute inset-0 bg-black/40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.14 } }} onClick={onClose} />
       <motion.div ref={box} role="dialog" aria-modal="true" aria-label="Command palette"
-        className="glass relative flex max-h-[min(560px,72vh)] w-full max-w-[640px] flex-col overflow-hidden !rounded-[22px] outline-none"
-        initial={{ opacity: 0, scale: 0.97, y: -8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.12 } }} transition={SPRING.pop}>
+        className="glass relative flex max-h-[min(520px,72vh)] w-full max-w-[600px] flex-col overflow-hidden !rounded-dialog outline-none"
+        initial={{ opacity: 0, scale: 0.97, y: -6 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.12 } }} transition={{ ...SPRING.snap, damping: 38 }}>
         {input}
         {body}
-        <div className="flex shrink-0 items-center gap-4 border-t border-line px-4 py-2 text-meta text-faint">
+        <div className="flex shrink-0 items-center gap-4 border-t-hair border-line px-4 py-2 text-meta text-faint">
           <span><kbd className="font-mono">↑↓</kbd> move</span>
           <span><kbd className="font-mono">↵</kbd> open</span>
           <span><kbd className="font-mono">esc</kbd> close</span>

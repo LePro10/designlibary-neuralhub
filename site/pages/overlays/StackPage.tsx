@@ -27,7 +27,7 @@ function FolderView({ node, backLabel }: { node: Node; backLabel?: string }) {
   const { push, pop } = useStackNav();
   if (node.kind !== 'folder') {
     return (
-      <Page title={node.name} backLabel={backLabel} onBack={pop} ambient="files">
+      <Page title={node.name} backLabel={backLabel} onBack={pop} place="files">
         <div className="card grid h-[300px] place-items-center !rounded-list text-dim">
           <span className="text-center"><FileText size={36} strokeWidth={1.3} className="mx-auto mb-3" />{node.size}</span>
         </div>
@@ -35,7 +35,7 @@ function FolderView({ node, backLabel }: { node: Node; backLabel?: string }) {
     );
   }
   return (
-    <Page title={node.name} eyebrow={backLabel ? undefined : 'Drive'} backLabel={backLabel} onBack={pop} ambient="files">
+    <Page title={node.name} eyebrow={backLabel ? undefined : 'Drive'} backLabel={backLabel} onBack={pop} place="files">
       <List>
         {node.children!.map((c) => (
           <Row key={c.name} Icon={ICON[c.kind]} title={c.name} detail={c.kind === 'folder' ? `${c.children?.length ?? 0} items` : c.size}
@@ -74,7 +74,7 @@ function FolderView({ node, backLabel }) {
 }`}>
         {() => (
           <Side
-            desktop={<div className="h-[560px] overflow-hidden rounded-card border border-line [transform:translateZ(0)]"><Browser /></div>}
+            desktop={<div className="h-[560px] overflow-hidden rounded-card border-hair border-line-2 [transform:translateZ(0)]"><Browser /></div>}
             phone={<Phone maxHeight={640}><Browser /></Phone>}
           />
         )}

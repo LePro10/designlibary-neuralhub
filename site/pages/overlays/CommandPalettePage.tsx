@@ -44,7 +44,7 @@ function Palette({ channel, phone }: { channel: string; phone?: boolean }) {
   useCommandShortcut(() => { if (!phone) setOpen((o) => !o); });
   const recent = [groups[1].items[2], groups[3].items[0]];
   const trigger = phone
-    ? <button type="button" onClick={() => setOpen(true)} className="flex h-11 w-full items-center gap-2.5 rounded-field border border-line bg-fill-2 px-3.5 text-left text-input text-dim"><Search size={17} />Search</button>
+    ? <button type="button" onClick={() => setOpen(true)} className="flex h-9 w-full items-center gap-2 rounded-field bg-fill-3 px-2.5 text-left text-input text-dim"><Search size={15} strokeWidth={1.75} />Search</button>
     : <Button variant="ghost" Icon={Search} onClick={() => setOpen(true)}>Search or jump to… <Kbd className="ml-1">{MOD_KEY}K</Kbd></Button>;
   return (
     <>
@@ -52,7 +52,7 @@ function Palette({ channel, phone }: { channel: string; phone?: boolean }) {
       <CommandPalette open={open} onClose={() => setOpen(false)} groups={groups} recent={recent}
         empty={(q) => (
           <div className="space-y-3">
-            <p className="text-[13.5px] text-dim">Nothing for “{q}”.</p>
+            <p className="text-chip text-dim">Nothing for “{q}”.</p>
             <Button size="sm" variant="ghost" Icon={Sparkles} onClick={() => { setOpen(false); toast(`Asked Luna: ${q}`, { channel }); }}>Ask Luna instead</Button>
           </div>
         )} />

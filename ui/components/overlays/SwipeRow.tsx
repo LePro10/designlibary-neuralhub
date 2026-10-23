@@ -28,11 +28,11 @@ export interface SwipeAction {
 const TONES = {
   neutral: 'bg-card-3 text-bright',
   accent: 'bg-accent-deep text-white',
-  success: 'bg-[#1f8f68] text-white',
+  success: 'bg-mint text-bg',
   warning: 'bg-warning text-bg',
   danger: 'bg-danger text-white',
 } as const;
-const ACTION_W = 76;
+const ACTION_W = 68;
 const FULL = 0.6;
 const bus = new EventTarget();
 
@@ -61,7 +61,8 @@ export function SwipeRow({ children, leading, trailing = [], fullSwipe = true, c
   const trailVis = useTransform(x, (v) => (v < -0.5 ? 'visible' : 'hidden'));
   const leadVis = useTransform(x, (v) => (v > 0.5 ? 'visible' : 'hidden'));
   // At rest the row stays see-through, so the card's surface shows instead of a black slab.
-  const cover = useTransform(x, (v) => (Math.abs(v) > 0.5 ? 'var(--color-card)' : 'rgb(0 0 0 / 0)'));
+  // While moving, the row needs an opaque face; this is the list's own tone (fill-1 over the ground), so nothing shifts.
+  const cover = useTransform(x, (v) => (Math.abs(v) > 0.5 ? 'color-mix(in srgb, var(--color-bg), #fff 2.5%)' : 'rgb(0 0 0 / 0)'));
   const settle = (to: number) => animate(x, to, SPRING.sheet);
 
   useEffect(() => {
@@ -78,16 +79,16 @@ export function SwipeRow({ children, leading, trailing = [], fullSwipe = true, c
       {trailing.length > 0 && (
         <motion.div className="absolute inset-y-0 right-0 flex" style={{ width: openW, visibility: trailVis }}>
           {trailing.map((a) => (
-            <button key={a.label} type="button" onClick={() => run(a)} className={cn('flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium', TONES[a.tone ?? 'neutral'])}>
-              <a.Icon size={19} strokeWidth={1.8} />{a.label}
+            <button key={a.label} type="button" onClick={() => run(a)} className={cn('flex flex-1 flex-col items-center justify-center gap-1 text-tiny', TONES[a.tone ?? 'neutral'])}>
+              <a.Icon size={16} strokeWidth={1.75} />{a.label}
             </button>
           ))}
         </motion.div>
       )}
       {leading && (
-        <motion.button type="button" onClick={() => run(leading)} className={cn('absolute inset-y-0 left-0 flex flex-col items-center justify-center gap-1 text-[11px] font-medium', TONES[leading.tone ?? 'accent'])}
+        <motion.button type="button" onClick={() => run(leading)} className={cn('absolute inset-y-0 left-0 flex flex-col items-center justify-center gap-1 text-tiny', TONES[leading.tone ?? 'accent'])}
           style={{ width: leadW, visibility: leadVis }}>
-          <motion.span style={{ scale: leadScale }} className="flex flex-col items-center gap-1"><leading.Icon size={19} strokeWidth={1.8} />{leading.label}</motion.span>
+          <motion.span style={{ scale: leadScale }} className="flex flex-col items-center gap-1"><leading.Icon size={16} strokeWidth={1.75} />{leading.label}</motion.span>
         </motion.button>
       )}
       <motion.div

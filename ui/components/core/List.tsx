@@ -4,7 +4,7 @@
  * colour only for danger, selection or the place's signal.
  */
 import { ChevronRight, type LucideIcon } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 
 /** A card of rows; optional quiet `label` above and `footer` note below. */
@@ -53,7 +53,7 @@ export function Row({ Icon, leading, title, detail, value, trailing, onClick, hr
       type={Tag === 'button' ? 'button' : undefined}
       onClick={onClick}
       aria-current={selected || undefined}
-      style={{ ['--sep' as string]: lead ? '52px' : '14px' } as CSSProperties}
+      data-lead={lead ? '' : undefined}
       className={cn(
         'flex min-h-[46px] w-full items-center gap-3 px-3.5 py-2 text-left',
         interactive && 'transition-colors duration-150 hover:bg-fill-1 active:bg-fill-2 active:duration-0',

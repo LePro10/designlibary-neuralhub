@@ -9,7 +9,7 @@ export function PhoneScreen({ title, eyebrow, actions, children, channel = 'phon
 }) {
   return (
     <Phone maxHeight={maxHeight}>
-      <Page title={title} eyebrow={eyebrow} actions={actions} backLabel={backLabel} onBack={onBack} ambient="mail">{children}</Page>
+      <Page title={title} eyebrow={eyebrow} actions={actions} backLabel={backLabel} onBack={onBack} place="mail">{children}</Page>
       <Toaster channel={channel} />
     </Phone>
   );
@@ -18,15 +18,18 @@ export function PhoneScreen({ title, eyebrow, actions, children, channel = 'phon
 /** Two columns on wide screens: the inline (desktop) version and the phone. */
 export function Side({ desktop, phone }: { desktop: ReactNode; phone: ReactNode }) {
   return (
-    <div className="grid w-full items-start gap-8 @min-[860px]:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
+    // Its own container: the columns follow the space this demo really has, not the page's.
+    <div className="@container w-full">
+    <div className="grid w-full items-start gap-8 @min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,320px)]">
       <div className="min-w-0">
-        <div className="eyebrow mb-3">Inline · dialog &amp; popover when wide</div>
+        <div className="eyebrow mb-3">With a pointer</div>
         {desktop}
       </div>
       <div className="min-w-0">
         <div className="eyebrow mb-3">In a phone frame</div>
         {phone}
       </div>
+    </div>
     </div>
   );
 }

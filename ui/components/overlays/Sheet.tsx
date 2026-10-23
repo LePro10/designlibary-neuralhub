@@ -1,8 +1,15 @@
 /**
- * Bottom sheet on phones (drag handle, snap points, flick to dismiss),
- * centred dialog on desktop. Adapted from 21st.dev "Magnetic Drawer"
- * (animbits): same snap maths, plus back gesture, Escape, focus return,
- * keyboard awareness, and short content that drags the whole sheet.
+ * Panel for long tasks — writing a mail, editing a profile, picking files.
+ * Phones: a full-height panel that slides up (drag the handle or flick down
+ * to dismiss); desktop: a light centred dialog.
+ *
+ * Not for small choices: a choice is a pull-down `Menu`, a value is an
+ * `InlinePicker`, a confirmation is a `ConfirmButton`. Half-height snaps
+ * still work (`snaps={SNAPS.half}`), but the default is the full panel.
+ *
+ * Gestures adapted from 21st.dev "Magnetic Drawer" (animbits): snap maths,
+ * plus back gesture, Escape, focus return, keyboard awareness, and short
+ * content that drags the whole panel.
  *
  * Smoothness: opening and closing run on the compositor — the spring is
  * sampled once (springPoints) and handed over as Web Animations on the sheet
@@ -30,7 +37,7 @@ export interface SheetProps {
   onClose: () => void;
   title?: string;
   eyebrow?: string;
-  /** Fractions of the surface height; the first is where it opens. Presets in `SNAPS`. */
+  /** Fractions of the surface height; the first is where it opens. Default: full (0.94). Presets in `SNAPS`. */
   snaps?: readonly number[];
   children: ReactNode;
   /** Pinned under the content (primary action). Stays above the home indicator. */
@@ -75,13 +82,13 @@ function Header({ title, eyebrow, onClose, hideClose }: { title?: string; eyebro
   return (
     <div className="flex items-start justify-between gap-4 px-5 pb-3">
       <div className="min-w-0">
-        {eyebrow && <div className="eyebrow mb-1.5">{eyebrow}</div>}
+        {eyebrow && <div className="eyebrow mb-1">{eyebrow}</div>}
         {title && <h2 className="display truncate text-headline">{title}</h2>}
       </div>
       {!hideClose && (
         <button type="button" onClick={onClose} onPointerDown={(e) => e.stopPropagation()} aria-label="Close"
-          className="pressable hoverable grid h-9 w-9 shrink-0 place-items-center rounded-full bg-fill-3 text-ink">
-          <X size={17} />
+          className="pressable relative grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full bg-fill-3 text-ink hover:bg-fill-4 hover:text-bright after:absolute after:-inset-[7px] after:content-['']">
+          <X size={15} strokeWidth={1.75} />
         </button>
       )}
     </div>
@@ -92,7 +99,7 @@ const surfaceCls = (glass?: boolean) => glass
   ? 'glass !shadow-sheet'
   : 'border-line-2 bg-sheet shadow-sheet';
 
-function Drawer({ onClose, title, eyebrow, snaps = SNAPS.half, children, footer, boxRef, target, glass, hideClose, bodyClassName }: Inner) {
+function Drawer({ onClose, title, eyebrow, snaps = SNAPS.full, children, footer, boxRef, target, glass, hideClose, bodyClassName }: Inner) {
   const vh = surfaceHeight(target);
   const height = Math.round(vh * snaps[snaps.length - 1]);
   const yFor = (snap: number) => height - vh * snap;
@@ -245,17 +252,17 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.half, children, footer,
 
   return (
     <>
-      <motion.div ref={backRef} className="fixed inset-0 z-[var(--z-sheet)] bg-black/60 will-change-[opacity]" style={{ opacity: backdrop }} onClick={onClose} />
+      <motion.div ref={backRef} className="fixed inset-0 z-[var(--z-sheet)] bg-black/50 will-change-[opacity]" style={{ opacity: backdrop }} onClick={onClose} />
       <motion.div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={cn('fixed inset-x-0 bottom-0 z-[81] flex flex-col rounded-t-sheet border-t outline-none will-change-transform', surfaceCls(glass))}
+        className={cn('fixed inset-x-0 bottom-0 z-[81] flex flex-col rounded-t-sheet border-t-hair outline-none will-change-transform', surfaceCls(glass))}
         ref={(n: HTMLDivElement | null) => { sheetRef.current = n; boxRef.current = n; }}
         style={{ y, height: kb ? Math.min(height, kb.h - 8) : height, bottom: kb?.bottom ?? 0, paddingBottom: hidden }}
       >
-        <div className="shrink-0 cursor-grab touch-none pt-2.5 select-none active:cursor-grabbing" {...handlers}>
-          <div className="mx-auto mb-3 h-[5px] w-10 rounded-full bg-white/20" />
+        <div className="shrink-0 cursor-grab touch-none pt-2 select-none active:cursor-grabbing" {...handlers}>
+          <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-white/[.18]" />
           <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} />
         </div>
         <div
@@ -267,32 +274,32 @@ function Drawer({ onClose, title, eyebrow, snaps = SNAPS.half, children, footer,
         >
           {children}
         </div>
-        {footer && <div className="shrink-0 border-t border-line px-5 pt-3" style={{ paddingBottom: 'max(14px, var(--safe-bottom))' }}>{footer}</div>}
+        {footer && <div className="shrink-0 border-t-hair border-line px-5 pt-3" style={{ paddingBottom: 'max(14px, var(--safe-bottom))' }}>{footer}</div>}
       </motion.div>
     </>
   );
 }
 
-const DIALOG_W = { sm: 'max-w-[420px]', md: 'max-w-[540px]', lg: 'max-w-[1040px]' } as const;
+const DIALOG_W = { sm: 'max-w-[380px]', md: 'max-w-[500px]', lg: 'max-w-[1000px]' } as const;
 
 function Dialog({ onClose, title, eyebrow, children, footer, size = 'md', boxRef, glass, hideClose, bodyClassName }: Inner) {
   return (
     <div className="fixed inset-0 z-[var(--z-sheet)] flex items-center justify-center p-6">
-      <motion.div className="absolute inset-0 bg-black/60 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+      <motion.div className="absolute inset-0 bg-black/45" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.14 } }} onClick={onClose} />
       <motion.div
         ref={boxRef}
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={cn('relative flex max-h-[86%] w-full flex-col rounded-dialog border pt-5 outline-none', DIALOG_W[size], glass ? 'glass' : 'border-line-2 bg-sheet shadow-dialog')}
-        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        className={cn('relative flex max-h-[86%] w-full flex-col rounded-dialog border-hair pt-4 outline-none', DIALOG_W[size], glass ? 'glass' : 'border-line-2 bg-sheet shadow-dialog')}
+        initial={{ opacity: 0, scale: 0.97, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: 8, transition: { duration: 0.16 } }}
+        exit={{ opacity: 0, scale: 0.98, y: 4, transition: { duration: 0.14 } }}
         transition={OPEN}
       >
         <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} />
         <div className={cn('scroller min-h-0 flex-1 px-5 pb-6', bodyClassName)}>{children}</div>
-        {footer && <div className="shrink-0 border-t border-line px-5 py-3.5">{footer}</div>}
+        {footer && <div className="shrink-0 border-t-hair border-line px-5 py-3">{footer}</div>}
       </motion.div>
     </div>
   );

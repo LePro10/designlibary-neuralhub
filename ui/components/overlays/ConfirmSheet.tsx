@@ -1,10 +1,11 @@
 /**
- * Confirm before something that cannot be taken back. On phones a short
- * sheet with two thumb-sized buttons stacked (the safe one at the bottom,
- * nearest the thumb); on desktop a small dialog with the buttons in a row.
+ * Confirm before something that is irreversible AND external: sending to
+ * other people, paying, deleting an account. On phones a short panel with
+ * two buttons stacked (the safe one at the bottom, nearest the thumb); on
+ * desktop a small dialog with the buttons in a row.
  *
- * Prefer undo (a toast with "Undo") over asking: confirm only what is
- * external or irreversible — sending, deleting for good, paying.
+ * Everything else does not ask: reversible → do it and offer Undo (toast);
+ * local and small → `ConfirmButton` (tap twice, in place).
  */
 import type { LucideIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
@@ -35,9 +36,9 @@ export function ConfirmSheet({ open, onClose, onConfirm, title, message, confirm
   const ok = <Button block={phone} size={phone ? 'lg' : 'md'} variant={destructive ? 'danger' : 'primary'} Icon={Icon} busy={busy} onClick={confirm}>{confirmLabel}</Button>;
   const cancel = <Button block={phone} size={phone ? 'lg' : 'md'} variant="ghost" onClick={onClose}>{cancelLabel}</Button>;
   return (
-    <Sheet open={open} onClose={onClose} title={title} snaps={[0.42]} size="sm" hideClose>
-      {message && <div className="text-body leading-relaxed text-ink">{message}</div>}
-      <div className={phone ? 'mt-6 flex flex-col gap-2.5' : 'mt-6 flex justify-end gap-2'}>
+    <Sheet open={open} onClose={onClose} title={title} snaps={[0.36]} size="sm" hideClose>
+      {message && <div className="text-body leading-relaxed text-dim">{message}</div>}
+      <div className={phone ? 'mt-5 flex flex-col gap-2' : 'mt-5 flex justify-end gap-2'}>
         {phone ? <>{ok}{cancel}</> : <>{cancel}{ok}</>}
       </div>
     </Sheet>

@@ -16,6 +16,7 @@ import { SPRING } from '../../lib/motion';
 import { usePortalTarget } from '../../lib/surface';
 import { frameOf, pointToLocal, toLocal, type Box } from './geometry';
 import { menuKeys, type MenuEntry } from './Menu';
+import { MENU_SURFACE, MenuItems, menuHeight } from './MenuList';
 
 interface Props {
   items: MenuEntry[];
@@ -35,7 +36,7 @@ interface Props {
 
 const HOLD_MS = 420;
 
-export function ContextMenu({ items, children, onTap, className, preview, selectable, disabled, radius = 22 }: Props) {
+export function ContextMenu({ items, children, onTap, className, preview, selectable, disabled, radius = 16 }: Props) {
   const target = usePortalTarget();
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<null | { rect: Box; at?: { x: number; y: number } }>(null);
@@ -95,7 +96,7 @@ export function ContextMenu({ items, children, onTap, className, preview, select
 
 function Overlay({ state, items, onClose, children, target, radius }: { state: { rect: Box; at?: { x: number; y: number } }; items: MenuEntry[]; onClose: () => void; children: ReactNode; target: HTMLElement; radius: number }) {
   const { rect, at } = state;
-  const list = useRef<HTMLUListElement>(null);
+  const list = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
   useEffect(() => {
@@ -113,8 +114,8 @@ function Overlay({ state, items, onClose, children, target, radius }: { state: {
   }, []);
 
   const { w: vw, h: vh } = frameOf(target);
-  const menuH = items.length * (at ? 34 : 44) + items.filter((e) => e.divider).length * 9 + 12;
-  const menuW = at ? 210 : 240;
+  const menuH = menuHeight(items, !at);
+  const menuW = at ? 200 : 228;
   // Keep the lifted item on screen and leave room for the menu below (or above).
   const lift = Math.min(rect.height, vh * 0.4);
   let top = Math.max(60, Math.min(rect.top, vh - lift - menuH - 40));
@@ -126,10 +127,10 @@ function Overlay({ state, items, onClose, children, target, radius }: { state: {
   return (
     <div className="fixed inset-0 z-[var(--z-context)]" onContextMenu={(e) => e.preventDefault()}>
       <motion.div
-        className={at ? 'absolute inset-0' : 'absolute inset-0 bg-black/45 backdrop-blur-xl'}
+        className={at ? 'absolute inset-0' : 'absolute inset-0 bg-black/35 backdrop-blur-md'}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.2 } }}
+        exit={{ opacity: 0, transition: { duration: 0.14 } }}
         onClick={onClose}
       />
       {!at && (
@@ -138,44 +139,25 @@ function Overlay({ state, items, onClose, children, target, radius }: { state: {
           className="pointer-events-none absolute overflow-hidden"
           style={{ left: rect.left, width: rect.width, height: lift, borderRadius: radius }}
           initial={{ top: rect.top, scale: 1 }}
-          animate={{ top, scale: 1.03 }}
-          exit={{ top: rect.top, scale: 1, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 460, damping: 32 }}
+          animate={{ top, scale: 1.02 }}
+          exit={{ top: rect.top, scale: 1, opacity: 0, transition: { duration: 0.16 } }}
+          transition={SPRING.sheet}
         >
-          <div className="bg-card shadow-dialog" style={{ borderRadius: radius }}>{children}</div>
+          <div className="bg-card-2 shadow-float" style={{ borderRadius: radius }}>{children}</div>
         </motion.div>
       )}
-      <motion.ul
+      <motion.div
         ref={list}
         role="menu"
         onKeyDown={(e) => menuKeys(e, onClose)}
-        className={cn('absolute overflow-hidden border border-line-2 bg-[#1b1d1c]/95 shadow-dialog backdrop-blur-2xl', at ? 'rounded-field p-1' : 'rounded-stat p-1.5')}
+        className={cn('absolute overflow-hidden', MENU_SURFACE)}
         style={{ top: menuTop, left: menuLeft, width: menuW, transformOrigin: below || at ? 'top left' : 'bottom left' }}
-        initial={{ opacity: 0, scale: at ? 0.92 : 0.6 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.7, transition: { duration: 0.14 } }}
-        transition={{ ...SPRING.pop, stiffness: 520, damping: 34 }}
+        initial={{ opacity: 0, scale: at ? 0.9 : 0.7 }}
+        animate={{ opacity: 1, scale: 1, transition: { scale: { ...SPRING.snap, damping: 36 }, opacity: { duration: 0.14 } } }}
+        exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.14 } }}
       >
-        {items.map((e, i) => (
-          <li key={`${e.id ?? e.label}-${i}`} role="none">
-            {e.divider && <div className="mx-2 my-1 h-px bg-line" />}
-            <button
-              type="button"
-              role="menuitem"
-              disabled={e.disabled}
-              onClick={() => { onClose(); e.onSelect(); }}
-              className={cn(
-                'flex w-full items-center justify-between gap-3 outline-none transition-colors hover:bg-fill-2 focus-visible:bg-fill-2 active:bg-white/[.1] disabled:opacity-40',
-                at ? 'h-[34px] rounded-[10px] px-2.5 text-chip' : 'h-11 rounded-[12px] px-3 text-body',
-                e.destructive ? 'text-danger' : 'text-bright',
-              )}
-            >
-              <span className="truncate">{e.label}</span>
-              {e.Icon && <e.Icon size={at ? 15 : 17} strokeWidth={1.8} />}
-            </button>
-          </li>
-        ))}
-      </motion.ul>
+        <MenuItems items={items} touch={!at} onChoose={(e) => { onClose(); e.onSelect(); }} />
+      </motion.div>
     </div>
   );
 }

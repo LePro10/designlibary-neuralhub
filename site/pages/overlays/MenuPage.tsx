@@ -32,10 +32,10 @@ function Toolbar({ channel }: { channel: string }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Menu title="Account" width={260} align="start"
-        items={ACCOUNTS.map((x) => ({ id: x.id, label: x.name, detail: x.mail, glyph: <Avatar name={x.name} color={x.color} size={30} />, checked: x.id === acc, onSelect: () => setAcc(x.id) }))}
+        items={ACCOUNTS.map((x) => ({ id: x.id, label: x.name, detail: x.mail, glyph: <Avatar name={x.name} color={x.color} size={26} />, checked: x.id === acc, onSelect: () => setAcc(x.id) }))}
         trigger={(open, isOpen) => (
-          <button type="button" onClick={open} aria-expanded={isOpen} className="pressable flex h-10 items-center gap-2 rounded-full border border-line bg-fill-2 pr-3 pl-1 text-chip text-bright hover:bg-fill-3">
-            <Avatar name={a.name} color={a.color} size={30} />{a.name}<ChevronDown size={15} className="text-dim" />
+          <button type="button" onClick={open} aria-expanded={isOpen} className="pressable flex h-8 items-center gap-1.5 rounded-full bg-fill-3 pr-2.5 pl-1 text-chip text-bright hover:bg-fill-4">
+            <Avatar name={a.name} color={a.color} size={24} />{a.name}<ChevronDown size={13} strokeWidth={1.75} className={`text-dim transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
           </button>
         )} />
       <Menu title="Sort by" align="start"
@@ -46,15 +46,15 @@ function Toolbar({ channel }: { channel: string }) {
           label: l, kind: 'check' as const, checked: filters[k], keepOpen: true, onSelect: () => setFilters((f) => ({ ...f, [k]: !f[k] })),
         }))}
         trigger={(open) => <Button variant="ghost" size="sm" Icon={Filter} onClick={open}>Filter · {Object.values(filters).filter(Boolean).length}</Button>} />
-      <Menu title="Story" items={more} trigger={(open, isOpen) => <IconButton label="More" active={isOpen} onClick={open}><MoreHorizontal size={18} /></IconButton>} />
+      <Menu title="Story" items={more} trigger={(open, isOpen) => <IconButton label="More" size="sm" active={isOpen} onClick={open}><MoreHorizontal size={16} /></IconButton>} />
     </div>
   );
 }
 
 export default function MenuPage() {
   return (
-    <Doc eyebrow="Overlays" title="Menu" source="ui/components/overlays/Menu.tsx"
-      lead="The click menu for toolbars: sort, filter, more, switch account. A compact OS-style popover on desktop; the same items as a sheet with thumb-sized rows on a phone. It replaces every native <select>.">
+    <Doc eyebrow="Overlays" title="Pull-down menu" source="ui/components/overlays/Menu.tsx"
+      lead="Sort, filter, more, switch account — every choice that would otherwise be a <select>. On phones and desktop alike it grows out of the button you tapped: a small translucent card, no sheet, no dimmed screen. Tap outside and it is gone.">
       <Demo title="Four kinds of menu" center={false} description="Account switch (rich rows with avatars), sort (radio), filter (checkboxes that keep the menu open), and “more” (icons, shortcuts, a section, a disabled and a destructive entry). Try the keyboard: arrows, Home/End, first letters, Escape."
         code={`<Menu
   title="Sort by"
@@ -69,7 +69,7 @@ export default function MenuPage() {
 { label: 'School', detail: 'l.p@ksb.ch', glyph: <Avatar name="School" color="#eadcbc" />, checked, onSelect }`}>
         {() => (
           <Side
-            desktop={<div className="rounded-stat border border-line bg-raised p-4"><Toolbar channel="page" /></div>}
+            desktop={<div className="rounded-stat border-hair border-line-2 bg-raised p-4"><Toolbar channel="page" /></div>}
             phone={<PhoneScreen title="Mail" eyebrow="Inbox"><div className="pt-2"><Toolbar channel="phone" /></div></PhoneScreen>}
           />
         )}
@@ -82,7 +82,8 @@ export default function MenuPage() {
           { do: 'Disable what is impossible right now, keep it visible.', dont: 'Hide entries depending on state — the menu then changes shape under your hand.' },
         ]} />
         <Why>
-          <p>On a phone a popover is a target too small for a thumb and too close to the edges. The same entries as 56px rows in a sheet are faster to hit and dismiss with the same back gesture as every other layer.</p>
+          <p>A bottom sheet for five options moves half the screen to change one word. iOS apps open the menu where your thumb already is: the card grows from the trigger (spring 520/36 from 0.7), rows follow 18ms apart, and closing is quicker than opening (140ms) so it never lingers. Rows are 40px on phones, 32px with a pointer.</p>
+          <p>Nothing dims. A transparent catcher takes the next tap outside, closes the menu and does nothing else — the same as on iOS, so you never trigger something behind it by accident.</p>
           <p>A fixed popover would float away from its trigger when the page scrolls, so scrolling or resizing closes it — like an OS menu. Focus lands on the checked entry (or the first), so arrows work at once, and returns to the trigger on close.</p>
           <p>Positions are computed in the surface's own coordinates, so menus open in the right place inside scaled previews and transformed app shells too.</p>
         </Why>
@@ -92,13 +93,13 @@ export default function MenuPage() {
         <Props rows={[
           { name: 'trigger', type: '(open, isOpen) => ReactNode', description: 'Your button; call open() from it.' },
           { name: 'items', type: 'MenuEntry[]', description: 'label, Icon | glyph, detail, shortcut, checked + kind (radio | check), keepOpen, destructive, disabled, divider, section.' },
-          { name: 'title', type: 'string', description: 'Sheet title on phones.' },
-          { name: 'align', type: "'start' | 'end'", default: "'end'", description: 'Which popover edge lines up with the trigger.' },
-          { name: 'width', type: 'number', default: '232', description: 'Popover width.' },
+          { name: 'title', type: 'string', description: 'Accessible name of the menu.' },
+          { name: 'align', type: "'start' | 'end'", default: "'end'", description: 'Which edge of the trigger the menu lines up with. It flips above when there is no room below.' },
+          { name: 'width', type: 'number', default: '220', description: 'Preferred width, kept between 180px and the surface width − 24px.' },
           { name: 'block', type: 'boolean', description: 'Trigger fills its container and never outgrows it.' },
         ]} />
         <Usage code={`import { Menu } from '@/ui/components/overlays/Menu';
-// Also exported: menuKeys(e, close) — the OS-like keyboard handling for your own menu lists.`} />
+// Also exported: menuKeys(e, close) — OS-like keyboard handling; MenuItems + MENU_SURFACE — the look, for your own menus.`} />
       </DocSection>
       <Toaster channel="page" />
     </Doc>

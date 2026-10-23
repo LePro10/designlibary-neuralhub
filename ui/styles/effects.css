@@ -271,12 +271,14 @@
 @media (prefers-reduced-motion: reduce) { .ambient-breathe, .ambient-drift { animation: none; } }
 
 @layer components {
-  /* Grouped list rows: separators start where the text starts (iOS), set by --sep on the row. */
+  /* Grouped list rows: separators start where the text starts (iOS). A row with an icon
+     marks itself data-lead — also when it sits inside a wrapper (a menu trigger, a swipe row). */
   .list-rows > * { position: relative; }
   .list-rows > * + *::before {
-    content: ''; position: absolute; top: 0; right: 0; left: var(--sep, 14px); pointer-events: none; z-index: 1;
+    content: ''; position: absolute; top: 0; right: 0; left: 14px; pointer-events: none; z-index: 1;
     border-top: var(--hair) solid var(--color-line);
   }
+  .list-rows > * + *:is([data-lead], :has(> [data-lead], > * > [data-lead]))::before { left: 52px; }
 }
 
 /* LogoLoader: a light runs along the mark, the dot breathes. */
