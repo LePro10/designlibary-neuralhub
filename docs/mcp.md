@@ -43,19 +43,15 @@ deren MCP-Konfiguration.
 ### B) Remote per HTTP (kein Download, eine URL für alle)
 
 ```bash
-claude mcp add --transport http neuralhub-ui https://mcp.neuralhub.dev/mcp
+claude mcp add --transport http neuralhub-ui https://ui.neuralhub.dev/mcp
 ```
 
 ```json
-{ "mcpServers": { "neuralhub-ui": { "type": "http", "url": "https://mcp.neuralhub.dev/mcp" } } }
+{ "mcpServers": { "neuralhub-ui": { "type": "http", "url": "https://ui.neuralhub.dev/mcp" } } }
 ```
 
-Der Endpoint ist ein Cloudflare Worker (`mcp/server.mjs`, gleiche Datei wie bei A).
-Einmalig einrichten:
-
-1. `cd mcp && npx wrangler login && npx wrangler deploy` → ergibt `https://neuralhub-ui-mcp.<account>.workers.dev/mcp`
-2. Im Cloudflare-Dashboard unter *Workers → neuralhub-ui-mcp → Settings → Domains & Routes* die Custom Domain `mcp.neuralhub.dev` hinzufügen.
-3. Optional Auto-Deploy: Repo-Secrets `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ACCOUNT_ID` setzen, dann deployt `.github/workflows/mcp.yml` bei Änderungen in `mcp/`.
+Showcase und `/mcp` liefert ein einziger Cloudflare Worker (`wrangler.toml`,
+`mcp/server.mjs`). Setup: siehe `docs/cloudflare.md`.
 
 ## Testen
 

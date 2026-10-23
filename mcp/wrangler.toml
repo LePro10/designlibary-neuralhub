@@ -1,7 +1,0 @@
-# Remote MCP endpoint (free Cloudflare Workers plan, no key for callers).
-#   cd mcp && npx wrangler deploy
-# Then add a route/custom domain mcp.neuralhub.dev in the Cloudflare dashboard.
-name = "neuralhub-ui-mcp"
-main = "server.mjs"
-compatibility_date = "2025-01-01"
-workers_dev = true
