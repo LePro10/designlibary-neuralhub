@@ -8,18 +8,17 @@
  * (`--tabbar-space`) follow it. So the same shell works full-screen, in a
  * pane, or inside a device preview.
  */
+import { MotionConfig } from 'motion/react';
 import { useRef, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { Surface, useWidthMode, type LayoutMode } from '../../lib/surface';
 
-export function AppShell({ sidebar, tabbar, children, mode: forced, grain = true, className, style }: {
+export function AppShell({ sidebar, tabbar, children, mode: forced, className, style }: {
   sidebar?: ReactNode;
   tabbar?: ReactNode;
   children: ReactNode;
   /** Force a mode (previews); otherwise measured. */
   mode?: LayoutMode;
-  /** Film grain over everything (desktop pointer devices only). */
-  grain?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -34,12 +33,14 @@ export function AppShell({ sidebar, tabbar, children, mode: forced, grain = true
       className={cn('relative flex h-dvh w-full overflow-hidden bg-bg [transform:translateZ(0)]', className)}
       style={{ ['--tabbar-space' as string]: phone && tabbar ? 'calc(88px + var(--safe-bottom))' : '0px', ...style }}
     >
-      <Surface portal={ref} mode={mode}>
-        {!phone && sidebar}
-        <main className="relative min-w-0 flex-1">{children}</main>
-        {phone && tabbar}
-        {grain && !phone && <div className="grain !absolute" aria-hidden="true" />}
-      </Surface>
+      {/* Reduced motion reaches every motion component inside, not only CSS. */}
+      <MotionConfig reducedMotion="user">
+        <Surface portal={ref} mode={mode}>
+          {!phone && sidebar}
+          <main className="relative min-w-0 flex-1">{children}</main>
+          {phone && tabbar}
+        </Surface>
+      </MotionConfig>
     </div>
   );
 }

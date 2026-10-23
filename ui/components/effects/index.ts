@@ -1,4 +1,3 @@
-export * from './MeshGradient';
 export * from './Ambient';
 export * from './Shimmer';
 export * from './Logo';
@@ -11,3 +10,5 @@ export * from './Magnetic';
 export * from './NumberTicker';
 export * from './TextScramble';
 export * from './LogoIntro';
+export * from './LogoLoader';
+export * from './RevealText';

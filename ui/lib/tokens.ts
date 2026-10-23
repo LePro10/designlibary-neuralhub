@@ -41,6 +41,40 @@ export const AMBIENT = {
 } as const;
 export type AmbientName = keyof typeof AMBIENT;
 
+/**
+ * Where each of the five lights sits, in the shader's units (0 = centre,
+ * ±0.6 ≈ the short edge; y grows downwards). One fixed pose for every
+ * palette, chosen so the light gathers at the top and fades towards the
+ * content — the composition the dashboard showed, without its seed.
+ */
+export const AMBIENT_POSE: readonly (readonly [number, number])[] = [
+  [-0.028, 0.166], [0.478, 0.525], [-0.512, -0.228], [0.099, -0.498], [0.4, 0.287],
+];
+
+/** Signal colours: one per place. Names map to --color-signal-* and data-signal. */
+export const SIGNALS = ['silver', 'periwinkle', 'amber', 'teal', 'coral', 'sky', 'cyan', 'green', 'sage', 'sand', 'violet', 'rose'] as const;
+export type Signal = (typeof SIGNALS)[number];
+
+/**
+ * NeuralHub's places: their signal colour and their light. Use the same
+ * pairing in new products — or define your own places from SIGNALS + AMBIENT.
+ */
+export const PLACES = {
+  home: { signal: 'silver', ambient: 'home' },
+  luna: { signal: 'periwinkle', ambient: 'luna' },
+  plan: { signal: 'amber', ambient: 'plan' },
+  files: { signal: 'teal', ambient: 'files' },
+  screen: { signal: 'coral', ambient: 'screen' },
+  mail: { signal: 'sky', ambient: 'mail' },
+  calendar: { signal: 'cyan', ambient: 'calendar' },
+  progress: { signal: 'green', ambient: 'progress' },
+  account: { signal: 'sage', ambient: 'account' },
+  notes: { signal: 'sand', ambient: 'notes' },
+  tools: { signal: 'violet', ambient: 'tools' },
+  browser: { signal: 'rose', ambient: 'ember' },
+} as const satisfies Record<string, { signal: Signal; ambient: AmbientName }>;
+export type Place = keyof typeof PLACES;
+
 export const ACCENTS = ['ice', 'mint', 'ember', 'lilac', 'sand', 'graphite'] as const;
 export type Accent = (typeof ACCENTS)[number];
 export const GLASS_LEVELS = ['subtle', 'default', 'strong', 'clear'] as const;
@@ -60,4 +94,4 @@ export const SNAPS = {
   full: [0.94],
 } as const;
 
-export const Z = { header: 30, sidebar: 40, tabbar: 50, sheet: 80, context: 85, search: 88, grain: 90, toast: 95, popover: 120, intro: 200 } as const;
+export const Z = { header: 30, sidebar: 40, tabbar: 50, sheet: 80, context: 85, search: 88, toast: 95, popover: 120, intro: 200 } as const;

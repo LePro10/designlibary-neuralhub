@@ -10,8 +10,8 @@ export function Avatar({ name, src, size = 32, color, ring, className }: { name:
   const style = {
     width: size, height: size, fontSize: Math.round(size * 0.38),
     background: src ? undefined : color
-      ? `radial-gradient(120% 120% at 28% 18%, rgb(255 255 255 / .55), transparent 42%), ${color}`
-      : 'linear-gradient(180deg, #2a2e2c, #1a1c1b)',
+      ? `radial-gradient(120% 120% at 28% 18%, rgb(255 255 255 / .4), transparent 45%), ${color}`
+      : 'var(--color-card-3)',
   };
   return (
     <span
@@ -21,7 +21,7 @@ export function Avatar({ name, src, size = 32, color, ring, className }: { name:
       aria-label={name}
     >
       {src ? <img src={src} alt="" className="h-full w-full object-cover" /> : initials}
-      <i aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_0_0_1px_rgb(255_255_255/.1)]" />
+      <i aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-full border-hair border-white/10" />
     </span>
   );
 }

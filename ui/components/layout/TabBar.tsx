@@ -8,6 +8,10 @@
  * copy is counter-scaled against the lens' squash & stretch, and the icon
  * below fades while the lens covers it, so the two never read as a double image.
  *
+ * Each tab may carry its place's signal colour: the icon under the lens is
+ * drawn in that colour and the lens picks up a faint tint of it, so the bar
+ * says where you are without a single coloured surface.
+ *
  * Everything that moves is a motion value; dragging never re-renders React.
  * Pass `position` to drive the lens from a swipeable pager (float tab index).
  */
@@ -18,6 +22,7 @@ import { cn } from '../../lib/cn';
 import { haptic } from '../../lib/haptics';
 import { useKeyboardOpen } from '../../lib/hooks';
 import { SPRING } from '../../lib/motion';
+import type { Signal } from '../../lib/tokens';
 
 export interface TabItem<T extends string = string> {
   id: T;
@@ -27,6 +32,8 @@ export interface TabItem<T extends string = string> {
   badge?: boolean | string;
   /** A launcher (e.g. "More"): tapping calls `onLaunch` instead of switching. */
   launcher?: boolean;
+  /** The place's signal colour. */
+  signal?: Signal;
 }
 
 export function TabBar<T extends string>({ items, value, onChange, onLaunch, position, floating = true, className }: {
@@ -117,6 +124,7 @@ export function TabBar<T extends string>({ items, value, onChange, onLaunch, pos
   };
 
   const row = (bright: boolean) => items.map((t, i) => <Cell key={t.id} item={t} i={i} active={i === index} bright={bright} cell={cell} lens={lens} />);
+  const activeSignal = items[index]?.signal;
 
   return (
     <motion.nav
@@ -132,7 +140,8 @@ export function TabBar<T extends string>({ items, value, onChange, onLaunch, pos
       <div
         ref={barRef}
         role="tablist"
-        className="glass relative mx-auto h-[66px] max-w-[440px] touch-none select-none rounded-full px-1.5"
+        data-signal={activeSignal}
+        className="glass relative mx-auto h-[58px] max-w-[400px] touch-none select-none rounded-full px-1.5"
         onPointerDown={down}
         onPointerMove={move}
         onPointerUp={(e) => end(e)}
@@ -148,15 +157,17 @@ export function TabBar<T extends string>({ items, value, onChange, onLaunch, pos
       >
         <div className="flex h-full">{row(false)}</div>
         {cell > 0 && (
-          <motion.div aria-hidden="true" className="pointer-events-none absolute top-[5px] bottom-[5px] left-0 rounded-full" style={{ x, width: cell, scaleX, scaleY }}>
+          <motion.div aria-hidden="true" className="pointer-events-none absolute top-[4px] bottom-[4px] left-0 rounded-full" style={{ x, width: cell, scaleX, scaleY }}>
             <div className="glass-lens absolute inset-0 rounded-full" />
+            {/* A faint wash of the place's colour inside the glass. */}
+            <div className="absolute inset-0 rounded-full bg-[radial-gradient(90%_70%_at_50%_120%,color-mix(in_oklab,var(--color-tab)_22%,transparent),transparent_70%)] transition-[background] duration-500" />
             <motion.div className="absolute inset-0 rounded-full" style={{
               opacity: press,
-              background: 'radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / .28), transparent 55%), radial-gradient(80% 60% at 80% 110%, color-mix(in oklab, var(--color-accent) 35%, transparent), transparent 70%)',
+              background: 'radial-gradient(120% 90% at 30% 0%, rgb(255 255 255 / .24), transparent 55%), radial-gradient(80% 60% at 80% 110%, color-mix(in oklab, var(--color-tab) 30%, transparent), transparent 70%)',
             }} />
             {/* Refraction: the same row, bright and magnified, clipped to the lens. */}
             <div className="absolute inset-0 overflow-hidden rounded-full">
-              <motion.div className="absolute top-[-5px] bottom-[-5px] left-0 flex" style={{ x: innerX, scaleX: invX, scaleY: invY, transformOrigin: innerOrigin, width: cell * n + 12, paddingLeft: 6 }}>
+              <motion.div className="absolute top-[-4px] bottom-[-4px] left-0 flex" style={{ x: innerX, scaleX: invX, scaleY: invY, transformOrigin: innerOrigin, width: cell * n + 12, paddingLeft: 6 }}>
                 {row(true)}
               </motion.div>
             </div>
@@ -170,7 +181,9 @@ export function TabBar<T extends string>({ items, value, onChange, onLaunch, pos
 function Cell({ item, i, active, bright, cell, lens }: { item: TabItem; i: number; active: boolean; bright: boolean; cell: number; lens: MotionValue<number> }) {
   // Base row only: hidden right under the lens, back to full as the lens moves away.
   const opacity = useTransform(lens, (p) => (bright || !cell ? 1 : Math.min(1, Math.max(0, Math.abs(p - i) * 2.4 - 0.35))));
-  const { Icon, label, badge } = item;
+  const { Icon, label, badge, signal } = item;
+  // Under the lens the active icon wears its place's colour; the rest are bright white.
+  const brightColor = signal && active ? `var(--color-signal-${signal})` : '#fff';
   return (
     <motion.div
       role={bright ? undefined : 'tab'}
@@ -178,14 +191,14 @@ function Cell({ item, i, active, bright, cell, lens }: { item: TabItem; i: numbe
       aria-label={bright ? undefined : label}
       aria-description={bright || typeof badge !== 'string' ? undefined : badge}
       tabIndex={bright ? -1 : active ? 0 : -1}
-      className="flex h-full shrink-0 flex-col items-center justify-center gap-[3px] outline-offset-[-4px]"
-      style={{ width: cell || undefined, flex: cell ? undefined : 1, color: bright ? '#fff' : active ? 'var(--color-bright)' : 'var(--color-dim)', opacity }}
+      className="flex h-full shrink-0 flex-col items-center justify-center gap-[3px] outline-offset-[-4px] transition-colors duration-300"
+      style={{ width: cell || undefined, flex: cell ? undefined : 1, color: bright ? brightColor : active ? 'var(--color-bright)' : 'var(--color-dim)', opacity }}
     >
       <span className="relative">
-        <Icon size={21} strokeWidth={bright ? 2 : 1.8} style={bright ? { transform: 'scale(1.08)' } : undefined} />
-        {badge && <i aria-hidden="true" className="absolute -top-0.5 -right-1 h-[7px] w-[7px] rounded-full bg-ember ring-2 ring-popover" />}
+        <Icon size={20} strokeWidth={bright ? 1.9 : 1.6} style={bright ? { transform: 'scale(1.06)' } : undefined} />
+        {badge && <i aria-hidden="true" className="absolute -top-px -right-0.5 h-1.5 w-1.5 rounded-full bg-ember ring-[1.5px] ring-popover" />}
       </span>
-      <span className="text-[10px] leading-none font-medium tracking-[.01em]" style={bright ? { transform: 'scale(1.04)' } : undefined}>{label}</span>
+      <span className="text-[9.5px] leading-none tracking-[.01em]" style={bright ? { transform: 'scale(1.04)' } : undefined}>{label}</span>
     </motion.div>
   );
 }

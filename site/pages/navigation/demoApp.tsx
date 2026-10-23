@@ -11,17 +11,15 @@ import { Stat } from '@ui/components/core/Stat';
 import { Chips } from '@ui/components/core/Chips';
 import { Avatar } from '@ui/components/core/Avatar';
 import { LogoMark, Wordmark } from '@ui/components/effects/Logo';
-import type { AmbientName } from '@ui/lib/tokens';
 
 export type DemoTab = 'luna' | 'plan' | 'files' | 'screen' | 'home';
 export const TABS: TabItem<DemoTab>[] = [
-  { id: 'luna', label: 'Luna', Icon: Sparkles },
-  { id: 'plan', label: 'Plan', Icon: CalendarDays, badge: 'Two stories due today' },
-  { id: 'files', label: 'Files', Icon: FolderClosed },
-  { id: 'screen', label: 'Screen', Icon: Timer },
-  { id: 'home', label: 'Home', Icon: Home },
+  { id: 'luna', label: 'Luna', Icon: Sparkles, signal: 'periwinkle' },
+  { id: 'plan', label: 'Plan', Icon: CalendarDays, badge: 'Two stories due today', signal: 'amber' },
+  { id: 'files', label: 'Files', Icon: FolderClosed, signal: 'teal' },
+  { id: 'screen', label: 'Screen', Icon: Timer, signal: 'coral' },
+  { id: 'home', label: 'Home', Icon: Home, signal: 'silver' },
 ];
-const AMB: Record<DemoTab, AmbientName> = { luna: 'luna', plan: 'plan', files: 'files', screen: 'screen', home: 'home' };
 const TITLE: Record<DemoTab, string> = { luna: 'Luna', plan: 'Plan', files: 'Files', screen: 'Screen time', home: 'Friday 24' };
 
 export function DemoApp({ mode, ambient = true, badges = true }: { mode: 'phone' | 'desktop'; ambient?: boolean; badges?: boolean }) {
@@ -35,7 +33,7 @@ export function DemoApp({ mode, ambient = true, badges = true }: { mode: 'phone'
         brand={{ mark: <LogoMark size={24} />, word: <Wordmark /> }}
         footer={(open) => <div className="flex items-center gap-3 rounded-field px-[11px] py-2"><Avatar name="Leandro P" size={32} /><span className="text-[13px] text-bright transition-opacity" style={{ opacity: open ? 1 : 0 }}>Leandro</span></div>} />}
       tabbar={<TabBar items={items} value={tab} onChange={pick} />}>
-      <Page key={tab} title={TITLE[tab]} eyebrow={tab === 'home' ? 'October · Week 43' : undefined} ambient={ambient ? AMB[tab] : undefined} scrollTopSignal={retap}
+      <Page key={tab} title={TITLE[tab]} eyebrow={tab === 'home' ? 'October · Week 43' : undefined} place={tab} ambient={ambient ? undefined : false} scrollTopKey={retap}
         actions={<><IconButton label="Search"><Search size={18} /></IconButton><IconButton label="New"><Plus size={18} /></IconButton></>}>
         <DemoContent tab={tab} />
       </Page>

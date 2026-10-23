@@ -1,24 +1,31 @@
 /**
- * Inputs. 16px text on phones (iOS/Android never zoom in), 14.5px on desktop.
- * Fields are 48px tall on phones, 44px on desktop; radius `field` (14px).
+ * Inputs. Calm wells: a faint fill, a hairline that brightens on focus,
+ * 10px corners. 16px text on phones (no zoom), 13.5px on desktop.
+ * 44px tall on phones, 38px on desktop.
  */
 import { Search as SearchIcon, X as XIcon } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useLayoutEffect, useRef, type ReactNode, type Ref, type TextareaHTMLAttributes, type InputHTMLAttributes } from 'react';
 import { cn } from '../../lib/cn';
 
 /** The input recipe — use on any <input> that is not one of the components below. */
 export const inputClass =
-  'h-12 w-full rounded-field border border-line bg-fill-2 px-3.5 text-input text-bright outline-none transition-colors placeholder:text-dim ' +
-  'focus:border-line-2 focus:bg-fill-3 aria-invalid:border-danger/50 min-[900px]:h-11 min-[900px]:text-button';
+  'h-11 w-full rounded-field border-hair border-line-2 bg-fill-1 px-3 text-input text-bright outline-none transition-[border-color,background-color] duration-200 placeholder:text-faint ' +
+  'focus:border-white/25 focus:bg-fill-2 aria-invalid:border-danger/50 min-[900px]:h-[38px] min-[900px]:text-button';
 
-/** Labelled field: mono eyebrow label, the control, an optional hint or error. */
+/** Labelled field: a quiet label, the control, an optional hint or error. */
 export function Field({ label, hint, error, children, className }: { label: string; hint?: ReactNode; error?: string; children: ReactNode; className?: string }) {
   return (
     <label className={cn('block', className)}>
-      <span className="eyebrow mb-2 block px-1">{label}</span>
+      <span className="mb-1.5 block px-0.5 text-meta text-dim">{label}</span>
       {children}
-      {error ? <span role="alert" className="mt-1.5 block px-1 text-meta text-danger">{error}</span>
-        : hint && <span className="mt-1.5 block px-1 text-meta text-dim">{hint}</span>}
+      <AnimatePresence initial={false} mode="wait">
+        {error ? (
+          <motion.span key="e" role="alert" className="mt-1.5 block px-0.5 text-meta text-danger" initial={{ opacity: 0, y: -3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>{error}</motion.span>
+        ) : hint ? (
+          <motion.span key="h" className="mt-1.5 block px-0.5 text-meta text-faint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>{hint}</motion.span>
+        ) : null}
+      </AnimatePresence>
     </label>
   );
 }
@@ -35,11 +42,12 @@ export function TextArea({ className, maxRows = 8, value, ...props }: TextareaHT
     if (!el) return;
     el.style.height = 'auto';
     const line = parseFloat(getComputedStyle(el).lineHeight) || 22;
-    el.style.height = `${Math.min(el.scrollHeight, line * maxRows + 24)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, line * maxRows + 20)}px`;
   }, [value, maxRows]);
-  return <textarea ref={ref} value={value} rows={3} className={cn(inputClass, 'h-auto min-h-[96px] resize-none py-3 leading-relaxed', className)} {...props} />;
+  return <textarea ref={ref} value={value} rows={3} className={cn(inputClass, 'h-auto min-h-[88px] resize-none py-2.5 leading-relaxed', className)} {...props} />;
 }
 
+/** iOS-style search: filled, no border, 36px. */
 export function SearchField({ value, onChange, placeholder = 'Search', autoFocus, inputRef, hint, className }: {
   value: string; onChange: (v: string) => void; placeholder?: string; autoFocus?: boolean; inputRef?: Ref<HTMLInputElement>;
   /** Small hint at the right while empty (e.g. the shortcut), desktop only. */
@@ -47,8 +55,8 @@ export function SearchField({ value, onChange, placeholder = 'Search', autoFocus
   className?: string;
 }) {
   return (
-    <label className={cn('flex h-11 items-center gap-2.5 rounded-field border border-line bg-fill-2 px-3.5 transition-colors focus-within:border-line-2 focus-within:bg-fill-3', className)}>
-      <SearchIcon size={17} className="text-dim" />
+    <label className={cn('flex h-9 items-center gap-2 rounded-field bg-fill-3 px-2.5 transition-colors focus-within:bg-fill-4', className)}>
+      <SearchIcon size={15} strokeWidth={1.75} className="text-dim" />
       <input
         ref={inputRef}
         value={value}
@@ -59,8 +67,15 @@ export function SearchField({ value, onChange, placeholder = 'Search', autoFocus
         enterKeyHint="search"
         className="min-w-0 flex-1 bg-transparent text-input text-bright outline-none placeholder:text-dim min-[900px]:text-button"
       />
-      {!value && hint && <kbd className="hidden rounded-[6px] border border-line px-1.5 font-mono text-tiny text-faint min-[900px]:block">{hint}</kbd>}
-      {value && <button type="button" aria-label="Clear search" onClick={() => onChange('')} className="grid h-6 w-6 place-items-center rounded-full bg-white/10 text-ink"><XIcon size={13} /></button>}
+      {!value && hint && <kbd className="hidden rounded-[5px] border-hair border-line-2 px-1.5 font-mono text-tiny text-faint min-[900px]:block">{hint}</kbd>}
+      <AnimatePresence>
+        {value && (
+          <motion.button type="button" aria-label="Clear search" onClick={() => onChange('')} className="grid h-[18px] w-[18px] place-items-center rounded-full bg-white/25 text-bg"
+            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} transition={{ duration: 0.15 }}>
+            <XIcon size={11} strokeWidth={2.5} />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </label>
   );
 }

@@ -1,7 +1,7 @@
 /**
- * Slider. The track fills with a soft accent gradient, the thumb swells while
- * held, steps tick (haptic) as you pass them, and an optional bubble shows
- * the value above the thumb while dragging. Keyboard: arrows, PageUp/Down,
+ * Slider. A 4px track that fills in the place's colour, an 18px thumb that
+ * swells a little while held, a haptic tick at every step, and an optional
+ * glass bubble with the value while dragging. Keyboard: arrows, PageUp/Down,
  * Home/End. The whole 44px row is the target, not just the 6px track.
  */
 import { animate, motion, useMotionValue, useTransform } from 'motion/react';
@@ -66,25 +66,25 @@ export function Slider({ value, onChange, min = 0, max = 100, step = 1, label, f
           else if (e.key === 'End') { e.preventDefault(); set(max); }
         }}
       >
-        <div className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 overflow-hidden rounded-full bg-fill-4">
-          <motion.div className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,color-mix(in_oklab,var(--color-accent)_55%,transparent),var(--color-accent))]" style={{ width: left }} />
+        <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-fill-4">
+          <motion.div className="absolute inset-y-0 left-0 rounded-full bg-tab" style={{ width: left }} />
         </div>
         {steps > 0 && steps <= 20 && (
           <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2">
-            {Array.from({ length: steps + 1 }, (_, i) => <i key={i} className="absolute h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/25" style={{ left: `${(i / steps) * 100}%` }} />)}
+            {Array.from({ length: steps + 1 }, (_, i) => <i key={i} className="absolute h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/30" style={{ left: `${(i / steps) * 100}%` }} />)}
           </div>
         )}
         <motion.div className="absolute top-1/2" style={{ left }}>
           <motion.span
-            className="thumb absolute block h-[22px] w-[22px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_10px_rgb(0_0_0/.45),inset_0_-2px_3px_rgb(0_0_0/.12)]"
-            animate={{ scale: drag ? 1.25 : 1 }}
+            className="thumb absolute block h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_1px_4px_rgb(0_0_0/.4),0_0_0_.5px_rgb(0_0_0/.15)]"
+            animate={{ scale: drag ? 1.18 : 1 }}
             transition={SPRING.toggle}
           />
           {bubble && (
             <motion.span
-              className="glass absolute bottom-[18px] -translate-x-1/2 rounded-full px-2.5 py-1 font-mono text-tiny whitespace-nowrap text-bright"
+              className="glass absolute bottom-[16px] -translate-x-1/2 rounded-full px-2 py-0.5 text-meta tabular whitespace-nowrap text-bright"
               initial={false}
-              animate={{ opacity: drag ? 1 : 0, y: drag ? 0 : 6, scale: drag ? 1 : 0.9 }}
+              animate={{ opacity: drag ? 1 : 0, y: drag ? 0 : 4, scale: drag ? 1 : 0.92 }}
               transition={SPRING.pop}
             >
               {format(value)}

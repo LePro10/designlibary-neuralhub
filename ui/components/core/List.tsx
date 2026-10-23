@@ -1,23 +1,24 @@
 /**
- * Grouped list (iOS settings style) and its row. Icons are quiet monochrome
- * tiles, so a list reads as text first; colour only for danger or selection.
+ * Grouped list (iOS settings style) and its row. 46px rows, a quiet icon
+ * tile, separators that start where the text starts. Reads as text first;
+ * colour only for danger, selection or the place's signal.
  */
 import { ChevronRight, type LucideIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 
-/** A card of rows with hairlines between them; optional eyebrow `label` above and `footer` note below. */
+/** A card of rows; optional quiet `label` above and `footer` note below. */
 export function List({ children, label, action, footer, className }: { children: ReactNode; label?: string; action?: ReactNode; footer?: ReactNode; className?: string }) {
   return (
     <div className={className}>
       {(label || action) && (
-        <div className="mb-3 flex items-end justify-between px-1">
+        <div className="mb-2 flex items-end justify-between px-1">
           {label && <h3 className="eyebrow">{label}</h3>}
           {action}
         </div>
       )}
-      <div className="card divide-y divide-line overflow-hidden !rounded-list">{children}</div>
-      {footer && <p className="mt-2.5 px-4 text-detail text-dim">{footer}</p>}
+      <div className="list-rows overflow-hidden rounded-list border-hair border-line-2 bg-fill-1">{children}</div>
+      {footer && <p className="mt-2 px-1 text-detail text-faint">{footer}</p>}
     </div>
   );
 }
@@ -36,42 +37,46 @@ export interface RowProps {
   href?: string;
   danger?: boolean;
   selected?: boolean;
+  /** Icon tile in the place's signal colour. */
+  tint?: boolean;
   /** Two-line titles instead of truncation. */
   wrap?: boolean;
 }
 
-export function Row({ Icon, leading, title, detail, value, trailing, onClick, href, danger, selected, wrap }: RowProps) {
+export function Row({ Icon, leading, title, detail, value, trailing, onClick, href, danger, selected, tint, wrap }: RowProps) {
   const interactive = !!(onClick || href);
   const Tag = href ? 'a' : onClick ? 'button' : 'div';
+  const lead = Icon || leading;
   return (
     <Tag
       {...(href ? { href } : {})}
       type={Tag === 'button' ? 'button' : undefined}
       onClick={onClick}
       aria-current={selected || undefined}
+      style={{ ['--sep' as string]: lead ? '52px' : '14px' } as CSSProperties}
       className={cn(
-        'flex min-h-[54px] w-full items-center gap-3.5 px-4 py-2.5 text-left',
-        interactive && 'hoverable transition-colors active:bg-fill-2',
+        'flex min-h-[46px] w-full items-center gap-3 px-3.5 py-2 text-left',
+        interactive && 'transition-colors duration-150 hover:bg-fill-1 active:bg-fill-2 active:duration-0',
         selected && '!bg-fill-3',
       )}
     >
-      {(Icon || leading) && (
+      {lead && (
         leading ?? (
           <span className={cn(
-            'grid h-8 w-8 shrink-0 place-items-center rounded-tile border transition-colors',
-            danger ? 'border-danger/20 bg-danger/10 text-danger' : selected ? 'border-white/[.14] bg-white/[.1] text-bright' : 'border-white/[.06] bg-fill-2 text-ink',
+            'grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px]',
+            danger ? 'bg-danger/[.12] text-danger' : tint ? 'bg-tab/[.14] text-tab' : selected ? 'bg-fill-4 text-bright' : 'bg-fill-3 text-ink',
           )}>
-            {Icon && <Icon size={16} strokeWidth={1.7} />}
+            {Icon && <Icon size={14} strokeWidth={1.7} />}
           </span>
         )
       )}
       <span className="min-w-0 flex-1">
         <span className={cn('block text-body leading-snug', !wrap && 'truncate', danger ? 'text-danger' : 'text-bright')}>{title}</span>
-        {detail && <span className={cn('mt-0.5 block text-detail text-dim', !wrap && 'truncate')}>{detail}</span>}
+        {detail && <span className={cn('mt-px block text-detail text-dim', !wrap && 'truncate')}>{detail}</span>}
       </span>
-      {value !== undefined && <span className="shrink-0 text-[14px] text-dim">{value}</span>}
+      {value !== undefined && <span className="shrink-0 text-small text-dim">{value}</span>}
       {trailing}
-      {interactive && !trailing && <ChevronRight size={17} className="text-faint" />}
+      {interactive && !trailing && <ChevronRight size={15} strokeWidth={1.75} className="-mr-1 text-faint" />}
     </Tag>
   );
 }

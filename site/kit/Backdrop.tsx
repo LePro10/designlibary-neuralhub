@@ -10,7 +10,6 @@ export function Backdrop({ className, variant = 'scene' }: { className?: string;
       <div className="absolute -top-1/3 left-[-10%] h-[90%] w-[70%] rounded-full bg-[radial-gradient(circle,color-mix(in_oklab,var(--color-accent-deep)_55%,transparent),transparent_65%)] opacity-80" />
       <div className="absolute -top-1/4 right-[-15%] h-[80%] w-[60%] rounded-full bg-[radial-gradient(circle,rgb(168_152_255/.45),transparent_65%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgb(8_9_9/.7)_70%,var(--color-bg))]" />
-      <div className="grain-tile absolute inset-0 opacity-30" />
     </div>
   );
   return (

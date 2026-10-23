@@ -4,9 +4,10 @@
  * `--radius-*`, `--shadow-*` and `--ease-*` below into utilities
  * (`bg-card`, `text-body`, `rounded-field`, `shadow-float`, `ease-out-soft`).
  *
- * Rule of thumb: the UI is grey-green ink on near-black. Colour is light,
- * and light is content — it marks the one thing that matters on a screen
- * (Luna, the hero, "now", the accent), never a whole surface.
+ * Rule of thumb: the UI is grey-green ink on near-black, drawn with
+ * hairlines and light type. Colour is light, and light is content: each tab
+ * owns one signal colour (--color-tab) that appears in exactly three places —
+ * the light at the top, the one hero figure, the active tab. Never a surface.
  *
  * Accent and glass are themeable at runtime: set `data-accent` and
  * `data-glass` on <html> (or any subtree). See the blocks further down.
@@ -23,14 +24,14 @@
   --color-card-3: #202321;
 
   /* Translucent fills — the only allowed "white on dark" steps. */
-  --color-fill-1: rgb(255 255 255 / 0.03);  /* resting field, track */
-  --color-fill-2: rgb(255 255 255 / 0.05);  /* hover, quiet tile */
-  --color-fill-3: rgb(255 255 255 / 0.08);  /* icon button, bubble */
-  --color-fill-4: rgb(255 255 255 / 0.12);  /* switch off, strong chip */
+  --color-fill-1: rgb(255 255 255 / 0.025); /* resting field, track */
+  --color-fill-2: rgb(255 255 255 / 0.04);  /* hover, quiet tile */
+  --color-fill-3: rgb(255 255 255 / 0.065); /* icon button, bubble */
+  --color-fill-4: rgb(255 255 255 / 0.1);   /* switch off, strong chip */
 
-  /* Hairlines */
-  --color-line: rgb(255 255 255 / 0.07);
-  --color-line-2: rgb(255 255 255 / 0.12);
+  /* Hairlines — drawn at var(--hair) width: 1px, 0.5px on retina (see :root). */
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-2: rgb(255 255 255 / 0.13);
 
   /* Ink, brightest first */
   --color-bright: #eef1ee;    /* titles, primary text, solid primary button */
@@ -51,9 +52,26 @@
   --color-danger: #ff6b6b;
   --color-warning: #ffb454;
 
-  /* Accent (themed below). Default = ice. */
+  /* Accent (themed below). Default = ice. Focus rings, links, selection. */
   --color-accent: #b9d3ff;
   --color-accent-deep: #3b5bff;
+
+  /* Signal colours — one per place (tab). Similar lightness, so no tab shouts.
+     Set a place with data-signal="amber" (or Page/TabBar `signal`); inside it,
+     text-tab / bg-tab / border-tab use that colour. */
+  --color-signal-silver: #d6dad6;
+  --color-signal-periwinkle: #9aaeff;
+  --color-signal-amber: #f0b35e;
+  --color-signal-teal: #62c6bc;
+  --color-signal-coral: #ff8470;
+  --color-signal-sky: #74b2ff;
+  --color-signal-cyan: #62cfe6;
+  --color-signal-green: #84d391;
+  --color-signal-sage: #a9c7a6;
+  --color-signal-sand: #e2c792;
+  --color-signal-violet: #b7a2ff;
+  --color-signal-rose: #ff8fb0;
+  --color-tab: var(--color-accent);
 
   /* Data series — chosen for separation on dark, not for brand. */
   --color-series-1: #3987e5;
@@ -65,40 +83,46 @@
   --font-sans: "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
 
-  /* One scale. Every size in the UI is one of these. */
-  --text-micro: 9.5px;    --text-micro--line-height: 1.2;   /* .eyebrow */
-  --text-tiny: 10.5px;    --text-tiny--line-height: 1.2;    /* tab labels, kbd, axis */
-  --text-meta: 12px;      --text-meta--line-height: 1.4;    /* timestamps, counts */
-  --text-detail: 12.5px;  --text-detail--line-height: 1.45; /* row detail, footnotes */
-  --text-small: 13px;     --text-small--line-height: 1.45;  /* secondary copy */
-  --text-chip: 13.5px;    --text-chip--line-height: 1.3;    /* chips, menu items */
-  --text-button: 14.5px;  --text-button--line-height: 1.3;  /* buttons, desktop fields */
-  --text-body: 15px;      --text-body--line-height: 1.55;   /* row titles, copy */
+  /* One scale. Every size in the UI is one of these. Small and light on purpose:
+     hierarchy comes from brightness and space, not from size or weight. */
+  --text-micro: 9px;      --text-micro--line-height: 1.2;   /* .eyebrow */
+  --text-tiny: 10px;      --text-tiny--line-height: 1.2;    /* tab labels, kbd, axis */
+  --text-meta: 11.5px;    --text-meta--line-height: 1.4;    /* timestamps, counts */
+  --text-detail: 12px;    --text-detail--line-height: 1.45; /* row detail, footnotes */
+  --text-small: 12.5px;   --text-small--line-height: 1.45;  /* secondary copy */
+  --text-chip: 13px;      --text-chip--line-height: 1.3;    /* chips, menu items */
+  --text-button: 13.5px;  --text-button--line-height: 1.3;  /* buttons, desktop fields */
+  --text-body: 14.5px;    --text-body--line-height: 1.5;    /* row titles, copy */
   --text-input: 16px;     --text-input--line-height: 1.4;   /* phone fields (no zoom) */
-  --text-lead: 17px;      --text-lead--line-height: 1.5;
-  --text-title: 20px;     --text-title--line-height: 1.25;  /* stat values, card titles */
-  --text-headline: 26px;  --text-headline--line-height: 1.1; /* sheet titles */
-  --text-display: 32px;   --text-display--line-height: 1.02; /* page title, phone */
-  --text-display-lg: 52px; --text-display-lg--line-height: 1.02; /* page title, desktop */
-  --text-hero: 64px;      --text-hero--line-height: 1;      /* big numbers */
+  --text-lead: 16px;      --text-lead--line-height: 1.55;
+  --text-title: 18px;     --text-title--line-height: 1.25;  /* stat values, card titles */
+  --text-headline: 22px;  --text-headline--line-height: 1.15; /* panel titles */
+  --text-display: 28px;   --text-display--line-height: 1.05; /* page title, phone */
+  --text-display-lg: 42px; --text-display-lg--line-height: 1.04; /* page title, desktop */
+  --text-hero: 52px;      --text-hero--line-height: 1;      /* big numbers */
+
+  /* Lighter weights: "medium" is a touch above regular, never bold. */
+  --font-weight-medium: 460;
+  --font-weight-semibold: 540;
 
   /* ── Radius — named by what wears it ───────────────────────────────── */
-  --radius-chip: 8px;     /* tiny tiles, kbd, bubble tail */
-  --radius-tile: 10px;    /* icon tile in a row */
-  --radius-field: 14px;   /* inputs, search, sidebar items, code */
-  --radius-stat: 18px;    /* stat tiles, small cards */
-  --radius-list: 22px;    /* grouped lists, cards in lists, bubbles */
-  --radius-card: 24px;    /* .card */
-  --radius-dialog: 28px;  /* desktop dialog */
-  --radius-sheet: 30px;   /* phone bottom sheet */
+  --radius-chip: 6px;     /* tiny tiles, kbd, bubble tail */
+  --radius-tile: 8px;     /* icon tile in a row */
+  --radius-field: 10px;   /* inputs, search, sidebar items, code */
+  --radius-menu: 13px;    /* pull-down menus, popovers */
+  --radius-stat: 14px;    /* stat tiles, small cards */
+  --radius-list: 16px;    /* grouped lists, cards in lists, bubbles */
+  --radius-card: 18px;    /* .card */
+  --radius-dialog: 20px;  /* desktop dialog */
+  --radius-sheet: 22px;   /* full-height panel on phones */
 
   /* ── Elevation ──────────────────────────────────────────────────────── */
-  --shadow-rim: inset 0 1px 0 rgb(255 255 255 / 0.06);
-  --shadow-float: 0 24px 60px -18px rgb(0 0 0 / 0.75);
-  --shadow-sheet: 0 -30px 80px -20px rgb(0 0 0 / 0.8);
-  --shadow-dialog: 0 40px 120px -30px rgb(0 0 0 / 0.9);
-  --shadow-fab: 0 8px 24px -8px rgb(0 0 0 / 0.8);
-  --shadow-glow: 0 0 40px -8px color-mix(in oklab, var(--color-accent) 55%, transparent);
+  --shadow-rim: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --shadow-float: 0 16px 44px -16px rgb(0 0 0 / 0.7);
+  --shadow-menu: 0 12px 36px -10px rgb(0 0 0 / 0.65), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  --shadow-sheet: 0 -24px 64px -20px rgb(0 0 0 / 0.75);
+  --shadow-dialog: 0 32px 90px -28px rgb(0 0 0 / 0.85);
+  --shadow-fab: 0 6px 20px -8px rgb(0 0 0 / 0.75);
 
   /* ── Motion ─────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);  /* default for everything that arrives */
@@ -111,6 +135,9 @@
 
 :root {
   color-scheme: dark;
+
+  /* Hairline width: one device pixel on retina screens. */
+  --hair: 1px;
 
   /* Durations for CSS transitions. Springs live in ui/lib/motion.ts. */
   --dur-fast: 160ms;
@@ -133,8 +160,7 @@
   --z-sheet: 80;
   --z-context: 85;
   --z-search: 88;
-  --z-grain: 90;
-  --z-toast: 95;
+    --z-toast: 95;
   --z-popover: 120;
   --z-intro: 200;
 
@@ -149,15 +175,32 @@
   --ring-b: #96ffdc;   /* light-border sweep, tail */
 
   /* Glass recipe (see data-glass). */
-  --glass-bg: rgb(22 24 23 / 0.62);
-  --glass-blur: 24px;
-  --glass-sat: 170%;
-  --glass-rim: rgb(255 255 255 / 0.09);
-  --glass-hi: rgb(255 255 255 / 0.09);
+  --glass-bg: rgb(28 30 29 / 0.58);
+  --glass-blur: 22px;
+  --glass-sat: 160%;
+  --glass-rim: rgb(255 255 255 / 0.1);
+  --glass-hi: rgb(255 255 255 / 0.07);
 }
 @media (min-width: 900px) {
   :root { --tabbar-space: 0px; }
 }
+@media (min-resolution: 2dppx) {
+  :root { --hair: 0.5px; }
+}
+
+/* ── Signal per place ─────────────────────────────────────────────────── */
+[data-signal="silver"] { --color-tab: var(--color-signal-silver); }
+[data-signal="periwinkle"] { --color-tab: var(--color-signal-periwinkle); }
+[data-signal="amber"] { --color-tab: var(--color-signal-amber); }
+[data-signal="teal"] { --color-tab: var(--color-signal-teal); }
+[data-signal="coral"] { --color-tab: var(--color-signal-coral); }
+[data-signal="sky"] { --color-tab: var(--color-signal-sky); }
+[data-signal="cyan"] { --color-tab: var(--color-signal-cyan); }
+[data-signal="green"] { --color-tab: var(--color-signal-green); }
+[data-signal="sage"] { --color-tab: var(--color-signal-sage); }
+[data-signal="sand"] { --color-tab: var(--color-signal-sand); }
+[data-signal="violet"] { --color-tab: var(--color-signal-violet); }
+[data-signal="rose"] { --color-tab: var(--color-signal-rose); }
 
 /* ── Accent themes ─────────────────────────────────────────────────────
    Each theme recolours the accent, the deep accent (switch on, glow),

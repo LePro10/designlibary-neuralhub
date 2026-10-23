@@ -15,13 +15,13 @@ export function Stat({ value, label, unit, trend, children, className }: {
   className?: string;
 }) {
   return (
-    <div className={cn('card !rounded-stat px-4 py-3.5', className)}>
-      <div className="flex items-baseline gap-1.5">
+    <div className={cn('card !rounded-stat px-3.5 py-3', className)}>
+      <div className="flex items-baseline gap-1">
         <span className="tabular text-title font-light tracking-[-.02em] text-bright">{value}</span>
         {unit && <span className="text-meta text-dim">{unit}</span>}
         {trend !== undefined && <Trend value={trend} className="ml-auto" />}
       </div>
-      <div className="mt-1 truncate text-meta text-white/55">{label}</div>
+      <div className="mt-0.5 truncate text-meta text-dim">{label}</div>
       {children && <div className="mt-2.5">{children}</div>}
     </div>
   );
@@ -33,8 +33,8 @@ export function Trend({ value, inverse, className }: { value: number; inverse?: 
   const good = inverse ? !up : up;
   const I = up ? ArrowUpRight : ArrowDownRight;
   return (
-    <span className={cn('inline-flex items-center gap-0.5 rounded-full bg-white/10 px-2 py-0.5 text-meta tabular', good ? 'text-mint' : 'text-ember', className)}>
-      <I size={13} strokeWidth={2} />{Math.abs(value)}%
+    <span className={cn('inline-flex items-center gap-px text-meta tabular', good ? 'text-mint' : 'text-ember', className)}>
+      <I size={12} strokeWidth={2} />{Math.abs(value)}%
     </span>
   );
 }

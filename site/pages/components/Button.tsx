@@ -10,7 +10,7 @@ export default function ButtonPage() {
       <Demo
         title="Playground"
         controls={{
-          variant: select(['primary', 'solid', 'glass', 'ghost', 'quiet', 'danger'] as const),
+          variant: select(['primary', 'tint', 'glass', 'ghost', 'quiet', 'danger'] as const),
           size: select(['xs', 'sm', 'md', 'lg'] as const, 'md'),
           label: text('Continue'),
           icon: bool(false),
@@ -34,7 +34,7 @@ export default function ButtonPage() {
       <DocSection title="Variants" description="Pick by importance, not by colour. A screen has at most one primary.">
         <Grid cols={3}>
           <Tile label="primary — the one action"><Button>Save changes</Button></Tile>
-          <Tile label="solid — toolbar main action"><Button variant="solid" size="sm" Icon={Plus}>New</Button></Tile>
+          <Tile label="tint — the place's colour"><div data-signal="amber"><Button variant="tint" size="sm" Icon={Plus}>New story</Button></div></Tile>
           <Tile label="ghost — secondary"><Button variant="ghost">Cancel</Button></Tile>
           <Tile label="glass — over images and light" className="relative overflow-hidden"><BackdropLayer kind="scene" /><Button variant="glass" Icon={Share2}>Share</Button></Tile>
           <Tile label="quiet — inline, tertiary"><Button variant="quiet" size="sm">Show all</Button></Tile>

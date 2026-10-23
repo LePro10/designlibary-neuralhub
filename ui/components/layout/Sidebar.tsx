@@ -9,6 +9,7 @@ import { Fragment, useEffect, useId, useState, type ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { MOD_KEY } from '../../lib/hooks';
 import { SPRING } from '../../lib/motion';
+import type { Signal } from '../../lib/tokens';
 
 export interface SidebarItem<T extends string = string> {
   id: T;
@@ -18,6 +19,8 @@ export interface SidebarItem<T extends string = string> {
   badge?: boolean | string;
   /** Draws a hairline above this item (start of a group). */
   groupStart?: boolean;
+  /** The place's signal colour: the active icon wears it. */
+  signal?: Signal;
 }
 
 export function Sidebar<T extends string>({ items, value, onChange, brand, footer, search, shortcuts = true, className }: {
@@ -50,43 +53,43 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
 
   const fadeText = 'whitespace-nowrap transition-opacity duration-300';
   return (
-    <div className={cn('relative z-[var(--z-sidebar)] w-[76px] shrink-0', className)}>
+    <div className={cn('relative z-[var(--z-sidebar)] w-[64px] shrink-0', className)}>
       <motion.nav
         aria-label="Main"
         onHoverStart={() => setOpen(true)}
         onHoverEnd={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false); }}
-        className="absolute inset-y-0 left-0 flex flex-col overflow-hidden border-r border-line bg-chrome/[.97] px-3 pt-6 pb-5"
-        animate={{ width: open ? 232 : 76, boxShadow: open ? '30px 0 80px -20px rgb(0 0 0 / .8)' : '0 0 0 0 rgb(0 0 0 / 0)' }}
+        className="absolute inset-y-0 left-0 flex flex-col overflow-hidden border-r-hair border-line bg-chrome/[.97] px-2.5 pt-5 pb-4"
+        animate={{ width: open ? 220 : 64, boxShadow: open ? '24px 0 60px -20px rgb(0 0 0 / .7)' : '0 0 0 0 rgb(0 0 0 / 0)' }}
         transition={SPRING.sheet}
       >
         {brand && (
-          <button type="button" onClick={brand.onClick} className="group mb-6 flex h-10 items-center gap-3 px-[14px]" aria-label="Home">
+          <button type="button" onClick={brand.onClick} className="group mb-5 flex h-9 items-center gap-3 px-[12px]" aria-label="Home">
             <span className="block">{brand.mark}</span>
             {brand.word && <span className={fadeText} style={{ opacity: open ? 1 : 0 }}>{brand.word}</span>}
           </button>
         )}
         {search && (
           <button type="button" onClick={search} aria-keyshortcuts="Control+K Meta+K"
-            className="mb-3 flex h-11 w-full items-center gap-3.5 rounded-field border border-line px-[14px] text-[14px] text-dim transition-colors hover:border-line-2 hover:text-ink">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className="shrink-0"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+            className="mb-2.5 flex h-9 w-full items-center gap-3 rounded-field bg-fill-2 px-[12px] text-chip text-dim transition-colors hover:bg-fill-3 hover:text-ink">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className="shrink-0"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
             <span className={fadeText} style={{ opacity: open ? 1 : 0 }}>Search</span>
             <kbd className={cn('ml-auto font-mono text-[10px] text-faint', fadeText)} style={{ opacity: open ? 1 : 0 }}>{MOD_KEY}K</kbd>
           </button>
         )}
-        <ul className="flex flex-col gap-1">
+        <ul className="flex flex-col gap-0.5">
           {items.map((it, i) => {
             const active = it.id === value;
             return (
               <Fragment key={it.id}>
-                <li className={it.groupStart ? 'mt-3 border-t border-line pt-3' : ''}>
+                <li className={it.groupStart ? 'mt-2.5 border-t-hair border-line pt-2.5' : ''}>
                   <button type="button" onClick={() => onChange(it.id)} aria-current={active ? 'page' : undefined} aria-label={it.label}
                     aria-description={typeof it.badge === 'string' ? it.badge : undefined}
-                    className={cn('relative flex h-11 w-full items-center gap-3.5 rounded-field px-[15px] text-button transition-colors', active ? 'text-bright' : 'text-dim hover:text-ink')}>
-                    {active && <motion.span layoutId={`side-${id}`} className="absolute inset-0 rounded-field border border-line-2 bg-fill-2 shadow-[inset_0_1px_0_rgb(255_255_255/.06)]" transition={SPRING.snap} />}
-                    <span className="relative">
-                      <it.Icon size={20} strokeWidth={active ? 1.9 : 1.6} />
+                    className={cn('relative flex h-9 w-full items-center gap-3 rounded-field px-[12px] text-chip transition-colors', active ? 'text-bright' : 'text-dim hover:text-ink')}>
+                    {active && <motion.span layoutId={`side-${id}`} className="absolute inset-0 rounded-field bg-fill-3" transition={SPRING.snap} />}
+                    <span className="relative" style={active && it.signal ? { color: `var(--color-signal-${it.signal})` } : undefined}>
+                      <it.Icon size={18} strokeWidth={active ? 1.8 : 1.6} />
                       {it.badge && <i className="absolute -top-0.5 -right-1 h-[7px] w-[7px] rounded-full bg-ember ring-2 ring-chrome" />}
                     </span>
                     <span className={cn('relative', fadeText)} style={{ opacity: open ? 1 : 0 }}>{it.label}</span>

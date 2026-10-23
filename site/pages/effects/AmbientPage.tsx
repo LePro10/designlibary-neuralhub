@@ -1,5 +1,4 @@
 import { Ambient } from '@ui/components/effects/Ambient';
-import { MeshGradient } from '@ui/components/effects/MeshGradient';
 import { AMBIENT, type AmbientName } from '@ui/lib/tokens';
 import { bool, Demo, range, select } from '../../kit/Demo';
 import { Doc, DocSection, Grid, Props, Rules, Usage, Why } from '../../kit/Doc';
@@ -15,7 +14,7 @@ export default function AmbientPage() {
         code={(v) => `<Page title="Today" ambient="${v.palette}" ambientSeed={${v.seed}}>…</Page>\n// or standalone\n<Ambient name="${v.palette}" seed={${v.seed}} intensity={${v.intensity}}${v.grain ? '' : ' grain={false}'} />`}>
         {(v) => (
           <div className="relative h-[380px] w-full overflow-hidden bg-bg">
-            <Ambient name={v.palette} seed={v.seed} intensity={v.intensity} grain={v.grain} height="100%" />
+            <Ambient name={v.palette} intensity={v.intensity} height="100%" />
             <div className="relative p-6 @min-[700px]:p-10">
               <div className="eyebrow">Thursday, 23 October</div>
               <h3 className="display mt-2 text-display @min-[700px]:text-display-lg">Good evening</h3>
@@ -29,7 +28,7 @@ export default function AmbientPage() {
         <Grid cols={4}>
           {NAMES.map((n) => (
             <div key={n} className="overflow-hidden rounded-stat border border-line">
-              <div className="relative h-24"><MeshGradient colors={[...AMBIENT[n]]} intensity={0.6} falloff={0.32} warp={0.35} grain={0} seed={5} resolution={0.3} /></div>
+              <div className="relative h-24"><Ambient colors={AMBIENT[n]} height="100%" /></div>
               <div className="flex items-center justify-between border-t border-line px-3 py-2">
                 <span className="font-mono text-meta text-ink">{n}</span>
                 <span className="flex gap-0.5">{AMBIENT[n].slice(1, 4).map((c) => <i key={c} className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />)}</span>

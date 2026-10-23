@@ -77,7 +77,6 @@ export function App() {
         </div>
       </div>
       {!wide && <Drawer open={navOpen} onClose={() => setNavOpen(false)}>{index}</Drawer>}
-      <div className="grain" aria-hidden="true" />
     </div>
   );
 }
