@@ -45,7 +45,7 @@ export function Disclosure({ title, value, Icon, detail, open: controlled, onOpe
         onClick={() => set(!open)}
         className="flex min-h-[46px] w-full items-center gap-3 px-3.5 py-2 text-left transition-colors duration-150 hover:bg-fill-1 active:bg-fill-2 active:duration-0"
       >
-        {Icon && <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px] bg-fill-3 text-ink"><Icon size={14} strokeWidth={1.7} /></span>}
+        {Icon && <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-tile bg-fill-3 text-ink"><Icon size={14} strokeWidth={1.7} /></span>}
         <span className="min-w-0 flex-1">
           <span className="block truncate text-body leading-snug text-bright">{title}</span>
           {detail && <span className="mt-px block truncate text-detail text-dim">{detail}</span>}
@@ -128,7 +128,7 @@ export function InlinePicker<T extends string>({ title, value, options, onChange
                 animate={{ opacity: 1, scale: 1, transition: { duration: 0.2, delay: 0.05 + i * 0.022, ease: [0.22, 1, 0.36, 1] } }}
                 className={cn(
                   'pressable h-8 rounded-full px-3 text-chip tabular',
-                  on ? 'bg-bright text-bg' : 'border-hair border-line-2 text-ink hover:bg-fill-2 hover:text-bright',
+                  on ? 'bg-bright text-bg shadow-lit' : 'bg-fill-1 text-ink shadow-edge hover:bg-fill-2 hover:text-bright',
                 )}
               >
                 {o.label}
@@ -149,7 +149,7 @@ export function InlinePicker<T extends string>({ title, value, options, onChange
                 onClick={() => pick(o.value)}
                 initial={{ opacity: 0, y: -3 }}
                 animate={{ opacity: 1, y: 0, transition: { duration: 0.2, delay: 0.04 + i * 0.02 } }}
-                className="flex min-h-10 w-full items-center gap-2.5 rounded-[9px] px-1.5 text-left text-chip text-bright transition-colors hover:bg-fill-2 active:bg-fill-3"
+                className="flex min-h-10 w-full items-center gap-2.5 rounded-item px-1.5 text-left text-chip text-bright transition-colors hover:bg-fill-2 active:bg-fill-3"
               >
                 <span className="grid w-4 place-items-center text-tab">{on && <Check size={14} strokeWidth={2.3} />}</span>
                 <span className="min-w-0 flex-1 truncate">{o.label}</span>

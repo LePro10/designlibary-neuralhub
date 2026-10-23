@@ -17,7 +17,7 @@ function Inbox({ channel, leading, fullSwipe }: { channel: string; leading: bool
     toast(verb, { channel, undo: () => setList(before) });
   };
   return (
-    <div className="list-rows overflow-hidden rounded-list border-hair border-line-2 bg-fill-1">
+    <div className="list-rows overflow-hidden surface rounded-list">
       {list.map((m) => {
         const unread = m.unread && !read[m.id];
         return (

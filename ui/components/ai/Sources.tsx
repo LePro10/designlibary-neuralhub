@@ -29,7 +29,7 @@ export function SourceIcon({ source, size = 18 }: { source: Source; size?: numbe
   const c = source.color ?? hueOf(source.where);
   const Icon = source.kind && source.kind !== 'web' ? KIND_ICON[source.kind] : null;
   return (
-    <span className="grid shrink-0 place-items-center rounded-[5px] font-medium text-bg" style={{ width: size, height: size, fontSize: size * 0.56, background: `radial-gradient(120% 120% at 25% 15%, rgb(255 255 255 / .32), transparent 45%), ${c}` }}>
+    <span className="grid shrink-0 place-items-center rounded-xs font-medium text-bg" style={{ width: size, height: size, fontSize: size * 0.56, background: `radial-gradient(120% 120% at 25% 15%, rgb(255 255 255 / .32), transparent 45%), ${c}` }}>
       {Icon ? <Icon size={size * 0.58} strokeWidth={2} /> : source.where.replace(/^www\./, '')[0]?.toUpperCase()}
     </span>
   );
@@ -46,7 +46,7 @@ export function Citation({ n, source }: { n: number; source?: Source }) {
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         aria-label={source ? `Source ${n}: ${source.title}` : `Source ${n}`}
-        className="mx-px inline-grid h-[15px] min-w-[15px] -translate-y-px place-items-center rounded-[4px] bg-fill-3 px-[3px] align-middle font-mono text-[9.5px] leading-none text-dim no-underline transition-colors hover:bg-fill-4 hover:text-bright"
+        className="mx-px inline-grid h-[15px] min-w-[15px] -translate-y-px place-items-center rounded-xs bg-fill-3 px-[3px] align-middle font-mono text-[9.5px] leading-none text-dim no-underline transition-colors hover:bg-fill-4 hover:text-bright"
       >
         {n}
       </Tag>
@@ -80,7 +80,7 @@ export function SourceCards({ sources, className }: { sources: Source[]; classNa
         return (
           <motion.div key={s.title + i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING.soft, delay: Math.min(i, 6) * 0.03 }} className="shrink-0">
             <Tag {...(s.href ? { href: s.href, target: '_blank', rel: 'noreferrer' } : {})}
-              className="pressable group flex h-[76px] w-[184px] flex-col justify-between rounded-stat border-hair border-line-2 bg-fill-1 p-2.5 transition-colors hover:bg-fill-2">
+              className="pressable group flex h-[76px] w-[184px] flex-col justify-between surface rounded-stat p-2.5 transition-colors hover:bg-fill-2">
               <span className="line-clamp-2 text-meta leading-snug text-bright">{s.title}</span>
               <span className="flex items-center gap-1.5">
                 <SourceIcon source={s} size={14} />
@@ -99,8 +99,8 @@ export function SourceCards({ sources, className }: { sources: Source[]; classNa
 /** Compact "3 sources" pill with stacked icons — for collapsed answers and history. */
 export function SourceStack({ sources, onClick }: { sources: Source[]; onClick?: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="pressable relative inline-flex h-7 items-center gap-1.5 rounded-full border-hair border-line-2 pr-2.5 pl-1 text-meta text-ink after:absolute after:-inset-y-2 after:inset-x-0 after:content-[''] hover:bg-fill-2">
-      <span className="flex">{sources.slice(0, 3).map((s, i) => <span key={i} className={cn('rounded-[6px] ring-[1.5px] ring-bg', i && '-ml-1')}><SourceIcon source={s} size={16} /></span>)}</span>
+    <button type="button" onClick={onClick} className="pressable relative inline-flex h-7 items-center gap-1.5 rounded-full bg-fill-1 pr-2.5 pl-1 text-meta text-ink shadow-edge after:absolute after:-inset-y-2 after:inset-x-0 after:content-[''] hover:bg-fill-2">
+      <span className="flex">{sources.slice(0, 3).map((s, i) => <span key={i} className={cn('rounded-chip ring-[1.5px] ring-bg', i && '-ml-1')}><SourceIcon source={s} size={16} /></span>)}</span>
       {sources.length} source{sources.length === 1 ? '' : 's'}
     </button>
   );

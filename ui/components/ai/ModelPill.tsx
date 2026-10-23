@@ -55,12 +55,12 @@ export function ModelPill({ models, value, onChange, fallback, align = 'left', c
             // Translucent but readable: the glass is denser than a bar's, text behind must not compete.
             className={cn('glass absolute top-[calc(100%+6px)] z-[var(--z-popover)] w-[232px] rounded-menu !bg-popover/[.86] p-1 shadow-menu', align === 'right' ? 'right-0' : align === 'center' ? 'left-1/2' : 'left-0')}
             style={{ transformOrigin: align === 'right' ? 'calc(100% - 20px) 0' : align === 'center' ? '50% 0' : '20px 0', x: align === 'center' ? '-50%' : 0 }}>
-            {fallback && <p className="mx-1 mt-1 mb-1 rounded-[9px] bg-warning/10 px-2.5 py-1.5 text-meta leading-snug text-warning">{current?.label} is unavailable. {fallback} answers for now.</p>}
+            {fallback && <p className="mx-1 mt-1 mb-1 rounded-item bg-warning/10 px-2.5 py-1.5 text-meta leading-snug text-warning">{current?.label} is unavailable. {fallback} answers for now.</p>}
             {models.map((m, i) => (
               <motion.button key={m.id} type="button" role="option" aria-selected={m.id === value} disabled={m.disabled}
                 initial={{ opacity: 0, y: -3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.03 + i * 0.02 }}
                 onClick={() => { haptic('select'); onChange(m.id); setOpen(false); }}
-                className="flex min-h-10 w-full items-center gap-2 rounded-[9px] px-2 py-1.5 text-left outline-none hover:bg-fill-3 focus-visible:bg-fill-3 disabled:opacity-40">
+                className="flex min-h-10 w-full items-center gap-2 rounded-item px-2 py-1.5 text-left outline-none hover:bg-fill-3 focus-visible:bg-fill-3 disabled:opacity-40">
                 <span className="grid w-4 shrink-0 place-items-center">{m.id === value && <Check size={13} strokeWidth={2} className="text-bright" />}</span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5 text-chip text-bright">{m.label}{m.badge && <span className="rounded-full bg-tab/[.14] px-1.5 text-tiny leading-[15px] text-tab">{m.badge}</span>}</span>

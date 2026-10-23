@@ -38,7 +38,7 @@ export default function LogoPage() {
       </DocSection>
 
       <DocSection title="Start intro — “point of light”" description="≈ 2.3 s, once per session. A point breathes, draws the mark in one stroke, drops onto its place with a squash, and sends a wave that opens the product. Tap or press any key to skip; reduced motion gets a short cross-fade.">
-        <div className="relative isolate mt-5 h-[420px] overflow-hidden rounded-card border-hair border-line-2 bg-bg">
+        <div className="relative isolate mt-5 h-[420px] overflow-hidden surface rounded-card bg-bg">
           <div className="absolute inset-0 grid place-items-center p-8 text-center">
             <div>
               <div className="eyebrow">Behind the plate</div>

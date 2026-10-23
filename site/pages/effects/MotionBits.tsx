@@ -28,7 +28,7 @@ export default function MotionStudiesPage() {
         controls={{ place: select(['plan', 'progress', 'luna', 'screen'] as const) }} center={false}
         code={`<TaskCheck done={done} onChange={setDone} detail="Due tomorrow">Physics sheet 4</TaskCheck>`}>
         {(v) => (
-          <div data-signal={PLACES[v.place as Place].signal} className="mx-auto w-full max-w-[380px] list-rows overflow-hidden rounded-list border-hair border-line-2 bg-fill-1">
+          <div data-signal={PLACES[v.place as Place].signal} className="mx-auto w-full max-w-[380px] list-rows overflow-hidden surface rounded-list">
             {['Physics sheet 4', 'History essay outline', 'Gym — legs'].map((t, i) => (
               <TaskCheck key={t} done={tasks[i]} onChange={(d) => setTasks((x) => x.map((y, j) => (j === i ? d : y)))} detail={['Due tomorrow', 'Friday', 'Today · 17:30'][i]} className="!rounded-none">{t}</TaskCheck>
             ))}

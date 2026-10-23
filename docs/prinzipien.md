@@ -7,7 +7,8 @@ gegen diese Liste. Nicht, ob es „schön“ ist, sondern ob es *dazu gehört*.
 
 - Der Grund ist fast schwarz (`#080909`), nicht reines Schwarz. Auf OLED schmiert so nichts, und Schatten haben noch Platz nach unten.
 - Die Grautöne sind leicht grün (`ink #c6c9c6`, `dim #7d847f`). Man sieht es kaum, aber es fühlt sich nach Material an statt nach Default.
-- Kanten sind Haarlinien: 1px, auf Retina 0,5px (`border-hair`). Dicke Ränder machen alles schwer.
+- Tiefe kommt aus Licht, nicht aus Linien: Flächen haben eine oben beleuchtete Kante, Felder sind Mulden, der eine Hauptknopf ist eine helle Perle. Rahmen um Kästen sehen aus wie ein Drahtmodell.
+- Ecken sind kontinuierlich und konzentrisch. Haarlinien (0,5px auf Retina) gibt es nur zwischen zwei Dingen, etwa als Listentrenner.
 - Die Schrift ist klein und leicht: Fließtext 14,5px, „medium“ ist Gewicht 460, fett gibt es nicht. Hierarchie entsteht durch Helligkeit und Abstand.
 
 ## 2. Eine Farbe pro Ort

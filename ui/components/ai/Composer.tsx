@@ -174,7 +174,7 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, progress,
             {([...(!fine ? [['Take photo', Camera, 'camera']] as const : []), ['Photo', ImageIcon, 'image'], ['File', FileText, 'doc']] as const).map(([label, Icon, kind], i) => (
               <motion.button key={label} role="menuitem" type="button" onClick={() => pick(kind)}
                 initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.03 + i * 0.022 }}
-                className="flex h-9 w-full items-center gap-2.5 rounded-[9px] px-2.5 text-chip text-bright hover:bg-fill-3 active:bg-fill-4">
+                className="flex h-9 w-full items-center gap-2.5 rounded-item px-2.5 text-chip text-bright hover:bg-fill-3 active:bg-fill-4">
                 <Icon size={15} strokeWidth={1.6} className="text-dim" />{label}
               </motion.button>
             ))}
@@ -182,8 +182,8 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, progress,
         )}
       </AnimatePresence>
 
-      <div className={cn('relative rounded-[22px] border-hair transition-[border-color,box-shadow] duration-300 focus-within:border-white/20 min-[900px]:rounded-[20px]',
-        compact ? 'border-line-2 bg-fill-1' : 'glass !shadow-none', drag && '!border-accent/50 shadow-[0_0_0_3px_color-mix(in_oklab,var(--color-accent)_12%,transparent)]')}>
+      <div className={cn('relative rounded-sheet border-hair transition-[border-color,box-shadow] duration-300 focus-within:border-white/20 min-[900px]:rounded-dialog',
+        compact ? 'border-transparent well' : 'glass !shadow-none', drag && '!border-accent/50 shadow-[0_0_0_3px_color-mix(in_oklab,var(--color-accent)_12%,transparent)]')}>
         <AnimatePresence initial={false}>
           {files.length > 0 && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={SPRING.sheet} className="overflow-hidden">
@@ -303,8 +303,8 @@ function Tile({ a, onRemove }: { a: Attachment; onRemove: () => void }) {
       {a.kind === 'file' && a.url ? (
         <img src={a.url} alt={name} className="h-12 w-12 rounded-tile border-hair border-white/10 object-cover" />
       ) : (
-        <div className="flex h-12 w-[168px] items-center gap-2 rounded-field border-hair border-line-2 bg-fill-2 pr-2.5 pl-1.5">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[7px] bg-fill-3 text-dim">
+        <div className="flex h-12 w-[168px] items-center gap-2 surface rounded-field pr-2.5 pl-1.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-tile bg-fill-3 text-dim">
             {a.kind === 'text' ? <TextQuote size={14} strokeWidth={1.7} /> : <span className="font-mono text-[8.5px]">{ext(a.file.name)}</span>}
           </span>
           <div className="min-w-0">

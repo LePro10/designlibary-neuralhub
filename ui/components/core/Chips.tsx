@@ -1,5 +1,5 @@
 /**
- * Chips filter, Pills label. Chips are buttons (32px, hairline, scroll
+ * Chips filter, Pills label. Chips are buttons (32px, quiet surfaces, scroll
  * sideways on phones without triggering a pager); Pills are static status
  * labels in a soft tone.
  */
@@ -11,7 +11,7 @@ import { haptic } from '../../lib/haptics';
 const chipCls = (on: boolean) => cn(
   'pressable relative flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-chip',
   'after:absolute after:-inset-y-1.5 after:inset-x-0 after:content-[""]',
-  on ? 'bg-bright text-bg' : 'border-hair border-line-2 text-ink hover:bg-fill-2 hover:text-bright',
+  on ? 'bg-bright text-bg shadow-lit' : 'bg-fill-1 text-ink shadow-edge hover:bg-fill-2 hover:text-bright',
 );
 
 export interface ChipOption<T extends string> { value: T; label: string; count?: number; dot?: string; Icon?: LucideIcon; }

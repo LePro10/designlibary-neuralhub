@@ -74,7 +74,7 @@ function FolderView({ node, backLabel }) {
 }`}>
         {() => (
           <Side
-            desktop={<div className="h-[560px] overflow-hidden rounded-card border-hair border-line-2 [transform:translateZ(0)]"><Browser /></div>}
+            desktop={<div className="h-[560px] overflow-hidden surface rounded-card [transform:translateZ(0)]"><Browser /></div>}
             phone={<Phone maxHeight={640}><Browser /></Phone>}
           />
         )}

@@ -39,11 +39,11 @@ export function ToolCallCard({ name, Icon = Wrench, state, input, status, result
   const [open, setOpen] = useState(defaultOpen);
   const elapsed = useElapsed(state === 'running');
   const running = state === 'running';
-  const tint = state === 'error' ? 'border-danger/30' : running ? 'border-tab/30' : 'border-line-2';
+  const tint = state === 'error' ? 'shadow-[inset_0_0_0_var(--hair)_color-mix(in_oklab,var(--color-danger)_35%,transparent)]' : running ? 'shadow-[inset_0_0_0_var(--hair)_color-mix(in_oklab,var(--color-tab)_35%,transparent)]' : 'shadow-edge';
   const time = state === 'running' ? `${elapsed.toFixed(1)}s` : ms !== undefined ? (ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`) : '';
 
   return (
-    <motion.div layout="size" transition={SPRING.sheet} className={cn('relative overflow-hidden rounded-stat border-hair bg-fill-1 transition-colors duration-500', tint, className)}>
+    <motion.div layout="size" transition={SPRING.sheet} className={cn('surface relative overflow-hidden rounded-stat transition-shadow duration-500', tint, className)}>
       {running && <motion.i aria-hidden="true" className="deko pointer-events-none absolute inset-x-0 top-0 h-[var(--hair)] bg-[linear-gradient(90deg,transparent,var(--color-tab),transparent)]"
         initial={{ x: '-100%' }} animate={{ x: '100%' }} transition={{ duration: 1.6, repeat: Infinity, ease: 'linear' }} />}
       <button type="button" disabled={!result || state !== 'done'} onClick={() => setOpen(!open)} aria-expanded={result ? open : undefined}

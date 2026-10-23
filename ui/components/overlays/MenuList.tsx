@@ -51,7 +51,7 @@ export function MenuItems({ items, touch, onChoose, animate = true }: {
             aria-checked={e.checked}
             onClick={() => onChoose(e)}
             className={cn(
-              'flex w-full items-center gap-2 rounded-[9px] px-2.5 text-left text-chip outline-none transition-colors duration-100',
+              'flex w-full items-center gap-2 rounded-item px-2.5 text-left text-chip outline-none transition-colors duration-100',
               'hover:bg-white/[.08] focus-visible:bg-white/[.08] active:bg-white/[.12] disabled:opacity-35',
               rich ? (touch ? 'min-h-[52px] py-1.5' : 'min-h-11 py-1') : touch ? 'h-10' : 'h-8',
               e.destructive ? 'text-danger' : 'text-bright',

@@ -28,7 +28,7 @@ export function CopyButton({ text, label = 'Copy code', className }: { text: str
 export function CodeBlock({ code, lang = 'tsx', className, title }: { code: string; lang?: string; className?: string; title?: string }) {
   const html = useMemo(() => highlight(code.trim()), [code]);
   return (
-    <div className={cn('relative overflow-hidden rounded-stat border-hair border-line-2 bg-raised', className)}>
+    <div className={cn('relative overflow-hidden surface rounded-stat bg-raised', className)}>
       <div className="flex h-8 items-center justify-between border-b-hair border-line pr-0.5 pl-3">
         <span className="font-mono text-tiny text-faint">{title ?? lang}</span>
         <CopyButton text={code.trim()} />

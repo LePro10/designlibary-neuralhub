@@ -8,10 +8,10 @@ import { CodeBlock } from './Code';
 export function Doc({ eyebrow, title, lead, children, source }: { eyebrow: string; title: string; lead?: ReactNode; children: ReactNode; /** Path(s) of the component file(s) in the repo. */ source?: string | string[] }) {
   const files = source ? (Array.isArray(source) ? source : [source]) : [];
   return (
-    <article className="mx-auto w-full max-w-[1000px] px-4 pt-10 pb-28 @min-[900px]:px-10 @min-[900px]:pt-16">
+    <article className="mx-auto w-full max-w-[1000px] px-4 pt-8 pb-28 @min-[900px]:px-10 @min-[900px]:pt-16">
       <div className="eyebrow mb-3">{eyebrow}</div>
-      <RevealText as="h1" replayKey={title} className="display text-[34px] @min-[900px]:text-[48px]">{title}</RevealText>
-      {lead && <div className="doc-prose mt-3 max-w-[640px] [&_p]:text-lead [&_p]:text-dim">{typeof lead === 'string' ? <p>{lead}</p> : lead}</div>}
+      <RevealText as="h1" replayKey={title} className="display text-[32px] @min-[900px]:text-[46px]">{title}</RevealText>
+      {lead && <div className="doc-prose mt-3 max-w-[640px] [&_p]:text-body [&_p]:text-dim @min-[900px]:[&_p]:text-lead">{typeof lead === 'string' ? <p>{lead}</p> : lead}</div>}
       {files.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-1.5">
           {files.map((f) => <span key={f} className="rounded-full border-hair border-line-2 px-2.5 py-0.5 font-mono text-tiny text-faint">{f}</span>)}
@@ -49,7 +49,7 @@ export function Rules({ items }: { items: { do?: ReactNode; dont?: ReactNode }[]
 }
 function Rule({ ok, children }: { ok?: boolean; children: ReactNode }) {
   return (
-    <div className="flex gap-2.5 rounded-stat border-hair border-line-2 p-3.5 text-small leading-relaxed text-ink">
+    <div className="flex gap-2.5 surface rounded-stat p-3.5 text-small leading-relaxed text-ink">
       <span className={cn('mt-[3px] grid h-4 w-4 shrink-0 place-items-center rounded-full', ok ? 'bg-mint/15 text-mint' : 'bg-danger/15 text-danger')}>{ok ? <Check size={10} strokeWidth={2.6} /> : <X size={10} strokeWidth={2.6} />}</span>
       <div><div className={cn('mb-0.5 text-meta', ok ? 'text-mint' : 'text-danger')}>{ok ? 'Do' : "Don't"}</div>{children}</div>
     </div>
@@ -59,7 +59,7 @@ function Rule({ ok, children }: { ok?: boolean; children: ReactNode }) {
 export interface PropRow { name: string; type: string; default?: string; description: ReactNode }
 export function Props({ rows }: { rows: PropRow[] }) {
   return (
-    <div className="scroll-x mt-5 rounded-stat border-hair border-line-2">
+    <div className="scroll-x mt-5 surface rounded-stat">
       <table className="w-full min-w-[620px] text-left text-small">
         <thead><tr className="border-b-hair border-line">{['Prop', 'Type', 'Default', ''].map((h) => <th key={h} className="px-4 py-2 font-normal"><span className="text-meta text-faint">{h}</span></th>)}</tr></thead>
         <tbody>
@@ -97,7 +97,7 @@ export function Grid({ children, cols = 3, className }: { children: ReactNode; c
 }
 export function Tile({ label, children, className, bg }: { label?: ReactNode; children: ReactNode; className?: string; bg?: 'plain' | 'raised' }) {
   return (
-    <div className={cn('flex flex-col overflow-hidden rounded-stat border-hair border-line-2', bg === 'raised' ? 'bg-raised' : 'bg-fill-1', className)}>
+    <div className={cn('flex flex-col overflow-hidden surface rounded-stat', bg === 'raised' ? 'bg-raised' : 'bg-fill-1', className)}>
       <div className="grid flex-1 place-items-center p-6">{children}</div>
       {label && <div className="border-t-hair border-line px-3 py-2 text-meta text-dim">{label}</div>}
     </div>

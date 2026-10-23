@@ -1,6 +1,6 @@
 # NeuralHub Design
 
-**Quiet dark. Light as content.** · v2: leichter, eine Farbe pro Ort, Menüs statt Sheets auf dem Handy.
+**Quiet dark. Light as content.** · v3: Tiefe aus Licht statt Linien, kontinuierliche Ecken, Navigation aus einer Liste von Orten.
 
 Die Designsprache von NeuralHub als wiederverwendbare Bibliothek: Tokens,
 Effekte, Animationen, Mobile-Regeln und React-Komponenten. Aus dem Dashboard

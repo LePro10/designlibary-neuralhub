@@ -10,7 +10,7 @@ const TONES: Tone[] = ['neutral', 'tab', 'accent', 'success', 'warning', 'danger
 export default function ChipsPage() {
   return (
     <Doc eyebrow="Components" title="Chips & Pills" source="ui/components/core/Chips.tsx"
-      lead="Chips filter: 32px buttons with a hairline that scroll sideways on phones without stealing the swipe. Pills label: static status in a soft tone, including the place's own (tab).">
+      lead="Chips filter: 32px quiet surfaces with a lit edge that scroll sideways on phones without stealing the swipe. Pills label: static status in a soft tone, including the place's own (tab).">
       <Demo title="Filter chips" controls={{ counts: bool(true), dots: bool(false), lead: bool(true), nowrap: bool(false) }} padded center={false}
         code={(v) => `<Chips value={filter} onChange={setFilter}${v.nowrap ? ' nowrap' : ''}\n  ${v.lead ? 'lead={<ToggleChip on={starred} onChange={setStarred} label="Starred" Icon={Star} />}\n  ' : ''}options={[{ value: 'all', label: 'All'${v.counts ? ', count: 24' : ''} }, …]} />`}>
         {(v) => <ChipDemo {...v} />}

@@ -41,9 +41,9 @@ export default function LightBorderPage() {
         <Grid cols={2}>
           <Tile label="One running item in a list" bg="raised">
             <div className="w-full max-w-[320px] space-y-2">
-              <div className="rounded-list border-hair border-line-2 bg-fill-1 px-4 py-3 text-chip text-dim line-through">Read chapter 3</div>
+              <div className="surface rounded-list px-4 py-3 text-chip text-dim line-through">Read chapter 3</div>
               <LightBorder radius={22}><div className="px-4 py-3 text-chip text-bright">Write the summary</div></LightBorder>
-              <div className="rounded-list border-hair border-line-2 bg-fill-1 px-4 py-3 text-chip text-ink">Exercise sheet 5</div>
+              <div className="surface rounded-list px-4 py-3 text-chip text-ink">Exercise sheet 5</div>
             </div>
           </Tile>
           <Tile label="Pill-shaped: a live call" bg="raised">

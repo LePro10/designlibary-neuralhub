@@ -45,7 +45,7 @@ export default function GlassPage() {
       <DocSection title="Levels" description={<p>Set globally with <code>data-glass</code> on <code>&lt;html&gt;</code>, or per panel with <code>level</code>. Each level only changes four variables: fill, blur, saturation, rim.</p>}>
         <Grid cols={2}>
           {LEVELS.map((l) => (
-            <div key={l} className="relative h-44 overflow-hidden rounded-stat border-hair border-line-2">
+            <div key={l} className="relative h-44 overflow-hidden surface rounded-stat">
               <Backdrop variant="scene" />
               <GlassPanel level={l} className="absolute inset-x-5 bottom-5 flex items-center gap-3 !rounded-list p-3.5">
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-bright"><Bell size={17} /></span>
@@ -63,7 +63,7 @@ export default function GlassPage() {
             { cls: 'glass-lens', label: '.glass-lens — the tab-bar lens', round: 'rounded-full' },
             { cls: 'glass rim', label: '.glass + .rim — light from the top', round: 'rounded-list' },
           ].map((r) => (
-            <div key={r.cls} className="overflow-hidden rounded-stat border-hair border-line-2">
+            <div key={r.cls} className="overflow-hidden surface rounded-stat">
               <div className="relative grid h-40 place-items-center"><Backdrop variant="ambient" /><div className={`relative h-16 w-40 ${r.round} ${r.cls}`} /></div>
               <div className="border-t border-line px-3.5 py-2 font-mono text-meta text-dim">{r.label}</div>
             </div>

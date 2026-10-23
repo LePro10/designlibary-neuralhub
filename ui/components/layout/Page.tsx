@@ -16,6 +16,9 @@
  *   width   920px max (`wide` 1200px)
  *   bottom  var(--tabbar-space) + 24px, so the end is never under a tab bar
  *
+ *   left    var(--sidebar-space): the light runs under a floating sidebar,
+ *           the content stays clear of it
+ *
  * Phone/desktop is decided by the page's own width (container query), so a
  * page in a narrow pane or a device preview behaves like a phone.
  */
@@ -84,7 +87,7 @@ export function Page({ title, eyebrow, actions, backLabel, onBack, header, child
   return (
     <div data-signal={sig} className={cn('@container relative h-full', className)}>
       {/* Top bar: back button + phone actions. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20" style={{ paddingTop: 'var(--safe-top)' }}>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20" style={{ paddingTop: 'var(--safe-top)', paddingLeft: 'var(--sidebar-space, 0px)' }}>
         {/* Mounted only while scrolled: an invisible backdrop blur still costs every frame. */}
         {scrolled && <div className="top-fade fade-in @max-[899px]:hidden" />}
         <div className={cn('relative mx-auto flex h-[52px] w-full items-center justify-between gap-2 px-4 @min-[900px]:mt-3 @min-[900px]:px-8', width)}>
@@ -106,6 +109,7 @@ export function Page({ title, eyebrow, actions, backLabel, onBack, header, child
         {light && (typeof light === 'string'
           ? <Ambient name={light as AmbientName} scrollY={scrollY} motion={ambientMotion} />
           : <Ambient colors={light} scrollY={scrollY} motion={ambientMotion} />)}
+        <div className="relative transition-[padding] duration-300 ease-out-soft" style={{ paddingLeft: 'var(--sidebar-space, 0px)' }}>
         <div className={cn('relative mx-auto w-full px-4 @min-[900px]:px-8', width)}>
           <header className="z-[15] pt-2 pb-5 @max-[899px]:sticky @min-[900px]:pt-6 @min-[900px]:pb-7" style={{ top: -lift }}>
             {scrolled && (
@@ -131,6 +135,7 @@ export function Page({ title, eyebrow, actions, backLabel, onBack, header, child
             {header}
             {children}
           </div>
+        </div>
         </div>
       </div>
     </div>

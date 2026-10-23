@@ -64,7 +64,7 @@ function Question({ wizard, multiple }: { wizard: boolean; multiple: boolean }) 
       { short: 'Scope', question: 'Which tasks?', options: ['Task 2', 'Task 3', 'Tasks 4–5'], multiple: true },
       { short: 'Reminder', question: 'Remind you?', options: ['5 min before', 'At start', 'No reminder'] }]
     : [{ question: 'When should I block time for physics?', options: ['17:25 – 17:55', 'After gym, 19:00', 'Tomorrow before school'], multiple }];
-  if (answers) return <button type="button" onClick={() => setAnswers(null)} className="rounded-stat border-hair border-line-2 bg-fill-1 p-3.5 text-left text-small text-ink">{answers.map((a, i) => <div key={i}>{qs[i].short ?? 'Answer'}: <span className="text-bright">{[...a.picked, a.text].filter(Boolean).join(', ') || '—'}</span></div>)}<div className="mt-2 text-meta text-dim">Tap to ask again</div></button>;
+  if (answers) return <button type="button" onClick={() => setAnswers(null)} className="surface rounded-stat p-3.5 text-left text-small text-ink">{answers.map((a, i) => <div key={i}>{qs[i].short ?? 'Answer'}: <span className="text-bright">{[...a.picked, a.text].filter(Boolean).join(', ') || '—'}</span></div>)}<div className="mt-2 text-meta text-dim">Tap to ask again</div></button>;
   return <div className="w-full max-w-[460px]"><QuestionCard questions={qs} onSubmit={setAnswers} onSkip={() => setAnswers([])} /></div>;
 }
 

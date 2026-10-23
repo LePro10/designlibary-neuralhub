@@ -35,7 +35,7 @@ export default function AmbientPage() {
       <DocSection title="Every place" description="The same composition, each place in its own colours. The signal colour (the dot) is what the place uses for its one hero figure and its tab.">
         <div className="mt-5 grid grid-cols-2 gap-2 @min-[640px]:grid-cols-3 @min-[960px]:grid-cols-4">
           {PLACE_NAMES.map((p) => (
-            <div key={p} className="overflow-hidden rounded-stat border-hair border-line-2">
+            <div key={p} className="overflow-hidden surface rounded-stat">
               <div className="relative h-28 bg-bg"><Ambient name={PLACES[p].ambient} height="100%" /></div>
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-meta text-ink">{p}</span>
@@ -63,7 +63,7 @@ export default function AmbientPage() {
           <p>The dashboard drew this light with a WebGL mesh-gradient shader on every page, posed by a seed from the title, with film grain on top. It looked good but cost a GPU context per page, the pose changed with every rename, and the grain read as pixel noise on phones.</p>
           <p>Now it is five radial gradients and one fade in an inline SVG. The lights sit where the shader put them (<code>AMBIENT_POSE</code>, the shader's own centres for the pose that gathers light at the top) and fall off like its Gaussian (<code>exp(−4.2·d²)</code>, sampled into six stops). Side by side with the shader the colours and composition match. It weighs about 1 KB, renders sharp at any size and costs nothing at runtime.</p>
         </Why>
-        <div className="mt-4 scroll-x rounded-stat border-hair border-line-2 p-4">
+        <div className="mt-4 scroll-x surface rounded-stat p-4">
           <table className="w-full min-w-[420px] text-left font-mono text-tiny text-dim">
             <thead><tr>{['light', 'x', 'y', 'role'].map((h) => <th key={h} className="pb-2 font-normal text-faint">{h}</th>)}</tr></thead>
             <tbody>{AMBIENT_POSE.map(([x, y], i) => <tr key={i}><td className="py-0.5 text-ink">{i}</td><td>{x.toFixed(3)}</td><td>{y.toFixed(3)}</td><td>{i === 0 || i === 4 ? 'dark — shapes the falloff' : 'colour'}</td></tr>)}</tbody>

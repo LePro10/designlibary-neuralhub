@@ -163,9 +163,9 @@ function Panel({ box, phone, onClose, groups, recent, placeholder, empty }: {
               <button key={`${s.label}-${c.id}`} type="button" role="option" aria-selected={on} data-active={on}
                 onMouseEnter={() => { if (pointerMoved.current) setActive(i); }}
                 onClick={() => run(c)}
-                className={cn('relative flex w-full items-center gap-2.5 rounded-[10px] px-2.5 text-left transition-colors', phone ? 'min-h-[46px] py-1.5' : 'h-10', on ? 'text-bright' : 'text-ink')}>
-                {on && <motion.span layoutId="cmd-active" className="absolute inset-0 rounded-[10px] bg-fill-3" transition={SPRING.snap} />}
-                <span className="relative grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px] bg-fill-3 text-ink">
+                className={cn('relative flex w-full items-center gap-2.5 rounded-field px-2.5 text-left transition-colors', phone ? 'min-h-[46px] py-1.5' : 'h-10', on ? 'text-bright' : 'text-ink')}>
+                {on && <motion.span layoutId="cmd-active" className="absolute inset-0 rounded-field bg-fill-3" transition={SPRING.snap} />}
+                <span className="relative grid h-[26px] w-[26px] shrink-0 place-items-center rounded-tile bg-fill-3 text-ink">
                   {c.glyph ?? (c.Icon && <c.Icon size={14} strokeWidth={1.7} />)}
                 </span>
                 <span className="relative min-w-0 flex-1 truncate text-body"><Lit text={c.label} hits={hits} /></span>
@@ -188,7 +188,7 @@ function Panel({ box, phone, onClose, groups, recent, placeholder, empty }: {
         className="h-12 min-w-0 flex-1 bg-transparent text-input text-bright outline-none placeholder:text-faint min-[900px]:text-body" />
       {phone
         ? <button type="button" onClick={onClose} className="py-2 pl-1 text-body text-ink">Cancel</button>
-        : <kbd className="rounded-[5px] border-hair border-line-2 px-1.5 py-px font-mono text-tiny text-faint">esc</kbd>}
+        : <kbd className="rounded-xs bg-fill-2 px-1.5 py-px font-mono text-tiny text-faint shadow-key">esc</kbd>}
     </label>
   );
 

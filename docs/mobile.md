@@ -3,7 +3,7 @@
 ## Ein Umbruch: 900px
 
 - Darunter:
-  - Tab-Leiste (vier feste Ziele plus „More“)
+  - Tab-Leiste: vier Orte, der Rest wächst als Glas aus der letzten Zelle (antippen oder Leiste hochziehen). Bist du in einem dieser Orte, wird die letzte Zelle zu ihm.
   - Menüs klappen als kleines, durchscheinendes Pull-down direkt am Knopf auf
   - Auswahl öffnet sich inline unter der Zeile
   - Bestätigen im Knopf selbst
@@ -11,11 +11,13 @@
   - Aktionen oben rechts in Daumenreichweite
   - Long-Press für Kontextmenüs
 - Darüber:
-  - Rail-Sidebar, die über dem Inhalt aufklappt
+  - Seitenleiste als schwebende Glasinsel: öffnet sich bei Hover-Absicht (120 ms) über dem Inhalt, ⌘\ pinnt sie, dann macht die Seite Platz
   - Dialoge mittig
   - Popover-Menüs
   - Rechtsklick
   - ⌘K und ⌘1–9
+
+**Navigation aus einer Liste:** `<AppShell nav={{ items, value, onChange }}>` baut Tab-Leiste und Seitenleiste aus denselben Orten. Zwei getrennt gepflegte Listen gibt es nicht mehr.
 
 **Neu gegenüber dem Dashboard:** Der Modus kommt aus der Breite der `AppShell`
 selbst, nicht aus dem Viewport. Ein Handy-Layout in einem schmalen Bereich oder
@@ -26,8 +28,8 @@ gelten Container-Queries (`@min-[700px]:`).
 
 | Ebene | besitzt | besitzt nicht |
 |---|---|---|
-| `AppShell` | volle Höhe, Navigation, `--tabbar-space` | Inhaltsabstände |
-| `Page` | Safe-Area + 44px oben, 16/32px seitlich, Maximalbreite, unten Tab-Leiste + 24px | — |
+| `AppShell` | volle Höhe, Navigation, `--tabbar-space`, `--sidebar-space` | Inhaltsabstände |
+| `Page` | Safe-Area + 44px oben, 16/32px seitlich, Maximalbreite, links Seitenleiste, unten Tab-Leiste + 24px | — |
 | Inhalt | nur sich selbst | Abstand zum Rand, Höhe der Tab-Leiste |
 
 Verboten:

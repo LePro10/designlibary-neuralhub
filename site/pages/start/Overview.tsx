@@ -8,10 +8,10 @@ import { GROUPS } from '../../registry';
 import { go } from '../../router';
 
 const PRINCIPLES = [
-  ['Quiet dark', 'Near-black ground, grey-green ink, hairlines, light type.'],
+  ['Lit from above', 'Near-black ground, light type. Depth from light, not lines; continuous corners.'],
   ['One colour per place', 'Each tab owns a signal colour: in its light, its hero figure, its tab. Nowhere else.'],
   ['Physical motion', 'Springs you can interrupt, a haptic on every choice, nothing that wobbles.'],
-  ['Phone first, desktop equal', 'Menus open from the button you tapped. The pointer gets the same features.'],
+  ['One list of places', 'Tabs, the rest growing out of the bar, a glass sidebar island — all from one list.'],
   ['States are features', 'Loading, empty, error and live are designed, not patched.'],
   ['Fast at rest', 'Light is a 1 KB SVG. Loops run on the compositor and sleep when unseen.'],
 ] as const;
@@ -25,7 +25,7 @@ export default function Overview() {
         <Ambient name="luna" height="560px" className="-z-10" />
         <div className="mx-auto max-w-[1000px] px-4 pt-14 pb-12 @min-[900px]:px-10 @min-[900px]:pt-24">
           <motion.div {...rise(0)} className="group inline-flex"><LogoMark size={36} /></motion.div>
-          <motion.div {...rise(1)} className="eyebrow mt-7">NeuralHub · Design library · v2</motion.div>
+          <motion.div {...rise(1)} className="eyebrow mt-7">NeuralHub · Design library · v3</motion.div>
           <div className="mt-3 overflow-hidden pb-1">
             <motion.h1 initial={{ y: '105%' }} animate={{ y: 0 }} transition={{ duration: 0.7, ease: EASE.outSoft, delay: 0.1 }}
               className="display text-[40px] @min-[900px]:text-[68px]">Quiet dark.<br /><span className="text-dim">Light as content.</span></motion.h1>
@@ -39,7 +39,7 @@ export default function Overview() {
       </section>
 
       <div className="mx-auto max-w-[1000px] px-4 pb-28 @min-[900px]:px-10">
-        <section className="grid gap-px overflow-hidden rounded-card border-hair border-line-2 bg-line @min-[640px]:grid-cols-2 @min-[960px]:grid-cols-3">
+        <section className="grid gap-px overflow-hidden surface rounded-card bg-line @min-[640px]:grid-cols-2 @min-[960px]:grid-cols-3">
           {PRINCIPLES.map(([t, d]) => (
             <div key={t} className="bg-bg p-5">
               <h3 className="text-body text-bright">{t}</h3>
@@ -50,7 +50,7 @@ export default function Overview() {
 
         <section className="mt-14">
           <h2 className="eyebrow mb-3 px-1">Inside</h2>
-          <div className="list-rows overflow-hidden rounded-list border-hair border-line-2 bg-fill-1">
+          <div className="list-rows overflow-hidden surface rounded-list">
             {GROUPS.filter((g) => g.id !== 'start').map((g) => (
               <button key={g.id} type="button" onClick={() => go(`${g.id}/${g.pages[0].id}`)}
                 className="group flex w-full items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-fill-1">

@@ -64,7 +64,7 @@ function GlassCard({ level }: { level: GlassLevel }) {
   return (
     <div ref={ref} className="relative h-48 overflow-hidden rounded-card border-hair border-line">
       <Backdrop variant="scene" />
-      <div className="glass absolute inset-x-3 bottom-3 rounded-[20px] p-3.5">
+      <div className="glass absolute inset-x-3 bottom-3 rounded-dialog p-3.5">
         <div className="font-mono text-[12px] text-bright">{level}</div>
         <div className="text-meta text-ink">The world behind, softened.</div>
       </div>

@@ -125,7 +125,7 @@ export function Toaster({ channel = 'main', position = 'bottom' }: { channel?: s
               exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.14 } }}
               transition={{ ...SPRING.snap, damping: 38 }}
               // Long messages wrap instead of running off screen; one line stays a pill.
-              className="pointer-events-auto flex min-h-9 max-w-[min(100%,460px)] items-center gap-2 rounded-[18px] border-hair border-white/[.1] bg-[rgb(30_32_31/.74)] py-1.5 pr-1.5 pl-3.5 text-chip leading-snug text-bright shadow-menu backdrop-blur-[20px] backdrop-saturate-[160%]"
+              className="pointer-events-auto flex min-h-9 max-w-[min(100%,460px)] items-center gap-2 rounded-card border-hair border-white/[.1] bg-[rgb(30_32_31/.74)] py-1.5 pr-1.5 pl-3.5 text-chip leading-snug text-bright shadow-menu backdrop-blur-[20px] backdrop-saturate-[160%]"
             >
               {t.tone === 'loading'
                 ? <i className="spinner shrink-0" style={{ ['--size' as string]: '13px' }} />

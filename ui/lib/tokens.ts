@@ -81,9 +81,14 @@ export const GLASS_LEVELS = ['subtle', 'default', 'strong', 'clear'] as const;
 export type GlassLevel = (typeof GLASS_LEVELS)[number];
 
 /** Runtime theming: accent and glass level on <html> (or pass an element). */
-export function setTheme(t: { accent?: Accent; glass?: GlassLevel }, el: HTMLElement = document.documentElement) {
+export type Corners = 'continuous' | 'round';
+export const CORNERS: Corners[] = ['continuous', 'round'];
+
+/** Theme switches on <html> (or a subtree — except `corners`, which is read on <html>). */
+export function setTheme(t: { accent?: Accent; glass?: GlassLevel; corners?: Corners }, el: HTMLElement = document.documentElement) {
   if (t.accent) el.dataset.accent = t.accent;
   if (t.glass) el.dataset.glass = t.glass;
+  if (t.corners) { if (t.corners === 'round') el.dataset.corners = 'round'; else delete el.dataset.corners; }
 }
 
 /** Common bottom-sheet snap sets (fractions of the viewport). Was 27 ad-hoc arrays. */

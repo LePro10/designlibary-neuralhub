@@ -45,6 +45,15 @@ export function surfaceHeight(target: HTMLElement): number {
   return target === document.body ? window.innerHeight : target.clientHeight;
 }
 
+/**
+ * The shell's left inset on desktop: a floating sidebar reports how much of
+ * the page it covers (`--sidebar-space`), and Page keeps its content clear of
+ * it while its light still runs underneath the glass.
+ */
+const ShellCtx = createContext<{ setSidebarSpace: (px: number) => void } | null>(null);
+export const ShellProvider = ShellCtx.Provider;
+export function useShell() { return useContext(ShellCtx); }
+
 /** Mode from an element's own width (ResizeObserver). */
 export function useWidthMode(ref: RefObject<HTMLElement | null>, breakpoint = DESKTOP): LayoutMode | null {
   const [mode, setMode] = useState<LayoutMode | null>(null);

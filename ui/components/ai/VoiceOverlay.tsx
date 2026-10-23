@@ -83,7 +83,7 @@ export function VoiceOverlay({ state, transcript = '', spokenWords = 0, heard, m
               <p className="py-[1.2em]">
                 {list.map((p, i) => (
                   <span key={i} ref={i === current ? lit : undefined}
-                    className={cn('transition-colors duration-300', i < current ? 'text-ink/50' : i === current ? 'rounded-[6px] bg-tab/[.12] px-1 text-bright [box-decoration-break:clone] [-webkit-box-decoration-break:clone]' : 'text-faint')}>
+                    className={cn('transition-colors duration-300', i < current ? 'text-ink/50' : i === current ? 'rounded-chip bg-tab/[.12] px-1 text-bright [box-decoration-break:clone] [-webkit-box-decoration-break:clone]' : 'text-faint')}>
                     {p.text}
                   </span>
                 ))}

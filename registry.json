@@ -549,7 +549,7 @@
       ]
     },
     "ui/components/core/Chips.tsx": {
-      "summary": "Chips filter, Pills label. Chips are buttons (32px, hairline, scroll",
+      "summary": "Chips filter, Pills label. Chips are buttons (32px, quiet surfaces, scroll",
       "exports": [
         "ChipOption",
         "Chips",
@@ -604,7 +604,7 @@
       ]
     },
     "ui/components/core/Field.tsx": {
-      "summary": "Inputs. Calm wells: a faint fill, a hairline that brightens on focus,",
+      "summary": "Inputs. Wells sunk into the page: a faint fill, an inner shadow from the",
       "exports": [
         "inputClass",
         "Field",
@@ -629,7 +629,7 @@
       ]
     },
     "ui/components/core/List.tsx": {
-      "summary": "Grouped list (iOS settings style) and its row. 46px rows, a quiet icon",
+      "summary": "Grouped list (iOS settings style) and its row. A surface lit from above,",
       "exports": [
         "List",
         "RowProps",
@@ -650,7 +650,7 @@
       ]
     },
     "ui/components/core/Segmented.tsx": {
-      "summary": "Segmented control. The active segment is a slightly raised pill that slides",
+      "summary": "Segmented control. A sunk track (well) and a raised pill that slides on it",
       "exports": [
         "SegmentedOption",
         "Segmented"
@@ -1224,11 +1224,15 @@
       ]
     },
     "ui/components/layout/AppShell.tsx": {
-      "summary": "App frame: sidebar on desktop, floating tab bar on phones, the page in",
+      "summary": "App frame: a floating glass sidebar on desktop, a floating liquid-glass tab",
       "exports": [
+        "NavItem",
+        "Nav",
         "AppShell"
       ],
       "files": [
+        "ui/components/layout/Sidebar.tsx",
+        "ui/components/layout/TabBar.tsx",
         "ui/lib/cn.ts",
         "ui/lib/surface.tsx"
       ],
@@ -1237,12 +1241,21 @@
       ],
       "copy": [
         "ui/components/layout/AppShell.tsx",
+        "ui/components/layout/Sidebar.tsx",
+        "ui/components/layout/TabBar.tsx",
         "ui/lib/cn.ts",
+        "ui/lib/focus-trap.ts",
+        "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
-        "ui/lib/surface.tsx"
+        "ui/lib/layers.ts",
+        "ui/lib/motion.ts",
+        "ui/lib/surface.tsx",
+        "ui/lib/tokens.ts"
       ],
       "allPackages": [
-        "motion"
+        "lucide-react",
+        "motion",
+        "react-dom"
       ]
     },
     "ui/components/layout/Page.tsx": {
@@ -1275,15 +1288,17 @@
       ]
     },
     "ui/components/layout/Sidebar.tsx": {
-      "summary": "Desktop navigation: a slim 76px rail that opens to 232px over the content",
+      "summary": "Desktop navigation: a glass island that floats 8px off the window's edge,",
       "exports": [
         "SidebarItem",
         "Sidebar"
       ],
       "files": [
         "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
         "ui/lib/motion.ts",
+        "ui/lib/surface.tsx",
         "ui/lib/tokens.ts"
       ],
       "packages": [
@@ -1293,8 +1308,10 @@
       "copy": [
         "ui/components/layout/Sidebar.tsx",
         "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
         "ui/lib/motion.ts",
+        "ui/lib/surface.tsx",
         "ui/lib/tokens.ts"
       ],
       "allPackages": [
@@ -1303,33 +1320,42 @@
       ]
     },
     "ui/components/layout/TabBar.tsx": {
-      "summary": "Floating liquid-glass tab bar (phones).",
+      "summary": "Floating liquid-glass tab bar (phones), with the rest of the app inside it.",
       "exports": [
         "TabItem",
+        "signalOf",
         "TabBar"
       ],
       "files": [
         "ui/lib/cn.ts",
+        "ui/lib/focus-trap.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
+        "ui/lib/layers.ts",
         "ui/lib/motion.ts",
+        "ui/lib/surface.tsx",
         "ui/lib/tokens.ts"
       ],
       "packages": [
         "lucide-react",
-        "motion"
+        "motion",
+        "react-dom"
       ],
       "copy": [
         "ui/components/layout/TabBar.tsx",
         "ui/lib/cn.ts",
+        "ui/lib/focus-trap.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
+        "ui/lib/layers.ts",
         "ui/lib/motion.ts",
+        "ui/lib/surface.tsx",
         "ui/lib/tokens.ts"
       ],
       "allPackages": [
         "lucide-react",
-        "motion"
+        "motion",
+        "react-dom"
       ]
     },
     "ui/components/overlays/CommandPalette.tsx": {
@@ -1803,6 +1829,8 @@
         "useLayoutMode",
         "usePortalTarget",
         "surfaceHeight",
+        "ShellProvider",
+        "useShell",
         "useWidthMode"
       ],
       "files": [
@@ -1833,6 +1861,8 @@
         "Accent",
         "GLASS_LEVELS",
         "GlassLevel",
+        "Corners",
+        "CORNERS",
         "setTheme",
         "SNAPS",
         "Z"

@@ -2,10 +2,10 @@
  * Buttons. Pill-shaped, light type, no glow. One action per view is `primary`
  * (solid bright); everything else steps back.
  *
- *  primary  solid bright — the one action that matters
+ *  primary  solid bright, lit like a bead — the one action that matters
  *  tint     the place's signal colour, softly (inside a tab with data-signal)
  *  glass    translucent with a specular rim — over light, images, video
- *  ghost    hairline — secondary
+ *  ghost    a quiet surface with a lit edge — secondary
  *  quiet    text only — tertiary, inline
  *  danger   soft red — destructive
  *
@@ -21,13 +21,15 @@ import { cn } from '../../lib/cn';
 export type ButtonVariant = 'primary' | 'tint' | 'glass' | 'ghost' | 'quiet' | 'danger';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
+// Depth, not lines: primary is a lit bead, ghost a surface with a lit edge,
+// tint and danger catch light only on their top lip.
 const VARIANT: Record<ButtonVariant, string> = {
-  primary: 'bg-bright text-bg hover:bg-white',
-  tint: 'bg-tab/[.14] text-tab hover:bg-tab/[.2]',
+  primary: 'bg-bright text-bg shadow-lit hover:bg-white',
+  tint: 'bg-tab/[.14] text-tab shadow-lip hover:bg-tab/[.2]',
   glass: 'glass-lens text-bright hover:brightness-125',
-  ghost: 'border-hair border-line-2 text-bright hover:bg-fill-2',
+  ghost: 'bg-fill-2 text-bright shadow-edge hover:bg-fill-3',
   quiet: 'text-ink hover:bg-fill-2 hover:text-bright',
-  danger: 'bg-danger/[.12] text-danger hover:bg-danger/[.18]',
+  danger: 'bg-danger/[.12] text-danger shadow-lip hover:bg-danger/[.18]',
 };
 
 // Heights 28 / 32 / 38 / 44. xs and sm extend their hit area to 44px.
@@ -103,12 +105,12 @@ export function IconButton({ label, children, onClick, variant = 'fill', size = 
         size === 'sm' && 'h-[30px] w-[30px] after:absolute after:-inset-[7px] after:content-[""]',
         size === 'md' && 'h-9 w-9 after:absolute after:-inset-1 after:content-[""]',
         size === 'lg' && 'h-[52px] w-[52px]',
-        active ? 'bg-bright text-bg' : {
-          fill: 'bg-fill-3 text-bright hover:bg-fill-4',
+        active ? 'bg-bright text-bg shadow-lit' : {
+          fill: 'bg-fill-3 text-bright shadow-edge hover:bg-fill-4',
           glass: 'glass-lens text-bright hover:brightness-125',
           ghost: 'text-ink hover:bg-fill-2 hover:text-bright',
-          solid: 'bg-bright text-bg hover:bg-white',
-          tint: 'bg-tab/[.14] text-tab hover:bg-tab/[.2]',
+          solid: 'bg-bright text-bg shadow-lit hover:bg-white',
+          tint: 'bg-tab/[.14] text-tab shadow-lip hover:bg-tab/[.2]',
           danger: 'bg-danger text-white hover:brightness-110',
         }[variant],
         className,

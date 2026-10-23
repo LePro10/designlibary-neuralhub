@@ -64,7 +64,7 @@ export function Demo<C extends Record<string, Control> = Record<string, never>>(
   const set = (k: keyof C, val: unknown) => setV((o) => ({ ...o, [k]: val }));
 
   return (
-    <div className={cn('@container my-6 overflow-hidden rounded-card border-hair border-line-2', className)}>
+    <div className={cn('@container my-6 overflow-hidden surface rounded-card', className)}>
       {(title || src) && (
         <div className="flex items-center gap-2 border-b-hair border-line py-1.5 pr-1.5 pl-3.5">
           <div className="min-w-0 flex-1">
@@ -118,7 +118,7 @@ export function Demo<C extends Record<string, Control> = Record<string, never>>(
                   </label>
                 )}
                 {c.type === 'range' && <Slider label={c.label ?? k} value={v[k] as number} min={c.min} max={c.max} step={c.step} onChange={(x) => set(k, x)} format={(x) => `${x}${c.unit ?? ''}`} />}
-                {c.type === 'text' && <input value={v[k] as string} onChange={(e) => set(k, e.target.value)} className="h-8 w-full rounded-field border-hair border-line-2 bg-fill-1 px-2.5 text-small text-bright outline-none focus:border-white/25" />}
+                {c.type === 'text' && <input value={v[k] as string} onChange={(e) => set(k, e.target.value)} className="h-8 w-full well rounded-field px-2.5 text-small text-bright outline-none focus:border-white/25" />}
               </div>
             ))}
           </div>

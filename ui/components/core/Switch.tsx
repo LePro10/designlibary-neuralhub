@@ -23,9 +23,9 @@ export function Switch({ checked, onChange, label, size = 'md', disabled }: { ch
       // 44px tall hit area around a 25px track
       className="group relative shrink-0 py-2.5 disabled:opacity-40"
     >
-      <span className={cn('relative flex items-center rounded-full p-[2px] transition-colors duration-300 ease-out-soft', checked ? 'bg-accent-deep' : 'bg-fill-4')} style={{ width: w, height: h }}>
+      <span className={cn('relative flex items-center rounded-full p-[2px] transition-colors duration-300 ease-out-soft', checked ? 'bg-accent-deep shadow-[inset_0_1px_1.5px_rgb(0_0_0/.25)]' : 'bg-fill-4 shadow-well')} style={{ width: w, height: h }}>
         <motion.span
-          className="block rounded-full bg-white shadow-[0_1px_3px_rgb(0_0_0/.35)]"
+          className="block rounded-full bg-white shadow-[0_1px_3px_rgb(0_0_0/.35),0_0_0_var(--hair)_rgb(0_0_0/.12)]"
           style={{ height: t, originX: checked ? 1 : 0 }}
           initial={false}
           animate={{ x: checked ? w - t - 4 : 0, width: t }}
@@ -60,14 +60,14 @@ export function Check({ checked, onChange, label, color, square, indeterminate, 
       className={cn('grid shrink-0 place-items-center', display ? 'h-5 w-5' : '-m-2.5 h-10 w-10')}
     >
       <motion.span
-        className={cn('relative grid h-5 w-5 place-items-center', square ? 'rounded-[6px]' : 'rounded-full')}
+        className={cn('relative grid h-5 w-5 place-items-center', square ? 'rounded-xs' : 'rounded-full')}
         initial={false}
         animate={{ scale: on ? [0.86, 1] : 1 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       >
-        <span className={cn('absolute inset-0 border-[1.25px] transition-colors duration-200', square ? 'rounded-[6px]' : 'rounded-full', on ? 'border-transparent' : 'border-white/25')} />
+        <span className={cn('absolute inset-0 border-[1.25px] transition-colors duration-200', square ? 'rounded-xs' : 'rounded-full', on ? 'border-transparent' : 'border-white/25')} />
         <motion.span
-          className={cn('absolute inset-0', square ? 'rounded-[6px]' : 'rounded-full')}
+          className={cn('absolute inset-0', square ? 'rounded-xs' : 'rounded-full')}
           style={{ background: color ?? 'var(--color-bright)' }}
           initial={false}
           animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.5 }}

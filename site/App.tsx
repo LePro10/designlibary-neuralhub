@@ -5,7 +5,7 @@
  * off in the library.
  */
 import { AnimatePresence, motion } from 'motion/react';
-import { Menu as MenuIcon, X } from 'lucide-react';
+import { ChevronUp, Menu as MenuIcon, X } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
 import { LogoMark, Wordmark } from '@ui/components/effects/Logo';
 import { SearchField } from '@ui/components/core/Field';
@@ -17,7 +17,7 @@ import { useLayer } from '@ui/lib/layers';
 import { useFocusTrap } from '@ui/lib/focus-trap';
 import { useMediaQuery } from '@ui/lib/hooks';
 import { SPRING } from '@ui/lib/motion';
-import { ACCENTS, GLASS_LEVELS, SIGNALS, setTheme, type Accent, type GlassLevel, type Signal } from '@ui/lib/tokens';
+import { ACCENTS, GLASS_LEVELS, SIGNALS, setTheme, type Accent, type Corners, type GlassLevel, type Signal } from '@ui/lib/tokens';
 import { cn } from '@ui/lib/cn';
 import { ALL, GROUPS, findPage } from './registry';
 import { go, useRoute } from './router';
@@ -43,10 +43,11 @@ export function App() {
   const [accent, setAccent] = useState<Accent>(() => (store.get('accent') as Accent) ?? 'ice');
   const [glass, setGlass] = useState<GlassLevel>(() => (store.get('glass') as GlassLevel) ?? 'default');
   const [calm, setCalm] = useState(() => store.get('calm') === '1');
+  const [corners, setCorners] = useState<Corners>(() => (store.get('corners') as Corners) ?? 'continuous');
   const [signal, setSignal] = useState<Signal | ''>(() => (store.get('signal') as Signal) ?? '');
   const main = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setTheme({ accent, glass }); store.set('accent', accent); store.set('glass', glass); }, [accent, glass]);
+  useEffect(() => { setTheme({ accent, glass, corners }); store.set('accent', accent); store.set('glass', glass); store.set('corners', corners); }, [accent, glass, corners]);
   useEffect(() => { document.documentElement.classList.toggle('reduce-motion', calm); store.set('calm', calm ? '1' : '0'); }, [calm]);
   useEffect(() => { const r = document.documentElement; if (signal) r.dataset.signal = signal; else delete r.dataset.signal; store.set('signal', signal); }, [signal]);
 
@@ -57,20 +58,16 @@ export function App() {
   useEffect(() => { document.title = `${found.page.title} · NeuralHub Design`; }, [found.page.title]);
 
   const index = (
-    <Index route={route} accent={accent} setAccent={setAccent} glass={glass} setGlass={setGlass} calm={calm} setCalm={setCalm} signal={signal} setSignal={setSignal} />
+    <Index route={route} panel={!wide} accent={accent} setAccent={setAccent} glass={glass} setGlass={setGlass} corners={corners} setCorners={setCorners} calm={calm} setCalm={setCalm} signal={signal} setSignal={setSignal} />
   );
 
   return (
     <div className="flex h-dvh overflow-hidden bg-bg">
-      {wide && <aside className="h-full w-[264px] shrink-0 border-r-hair border-line bg-chrome">{index}</aside>}
+      {/* Desktop: the index is a lifted surface, 8px off the window's edge. */}
+      {wide && <div className="h-full w-[272px] shrink-0 p-2 pr-0"><aside className="surface h-full overflow-hidden rounded-dialog">{index}</aside></div>}
       <div className="relative min-w-0 flex-1">
-        {!wide && (
-          <header className="glass absolute inset-x-3 top-3 z-40 flex h-12 items-center justify-between !rounded-full pr-1 pl-4" style={{ top: 'max(10px, var(--safe-top))' }}>
-            <button type="button" onClick={() => go('start/overview')} className="group flex items-center gap-2.5"><LogoMark size={20} /><Wordmark /></button>
-            <button type="button" aria-label="Open index" onClick={() => setNavOpen(true)} className="pressable grid h-10 w-10 place-items-center rounded-full text-bright hover:bg-fill-3"><MenuIcon size={18} strokeWidth={1.75} /></button>
-          </header>
-        )}
-        <div ref={main} className={cn('scroller @container h-full', !wide && 'pt-[68px]')}>
+        {!wide && <PhoneHeader open={navOpen} setOpen={setNavOpen} group={found.group.title} title={found.page.title}>{index}</PhoneHeader>}
+        <div ref={main} className={cn('scroller @container h-full', !wide && 'pt-[60px]')}>
           <Suspense fallback={<div className="grid h-[60dvh] place-items-center"><Spinner size={22} /></div>}>
             <motion.div key={route} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}>
               <Page />
@@ -78,46 +75,73 @@ export function App() {
           </Suspense>
         </div>
       </div>
-      {!wide && <Drawer open={navOpen} onClose={() => setNavOpen(false)}>{index}</Drawer>}
     </div>
   );
 }
 
-function Drawer({ open, onClose, children }: { open: boolean; onClose: () => void; children: React.ReactNode }) {
-  useLayer(open, onClose);
+/**
+ * Phone: a slim glass bar that says where you are. Tap it and the same glass
+ * grows down into the index — no drawer from the side, nothing to find twice.
+ */
+function PhoneHeader({ open, setOpen, group, title, children }: { open: boolean; setOpen: (v: boolean) => void; group: string; title: string; children: React.ReactNode }) {
+  useLayer(open, () => setOpen(false));
   const box = useRef<HTMLDivElement>(null);
   useFocusTrap(open, box);
+  const [full, setFull] = useState(() => Math.min(window.innerHeight - 20, 780));
+  useEffect(() => {
+    const r = () => setFull(Math.min(window.innerHeight - 20, 780));
+    window.addEventListener('resize', r);
+    return () => window.removeEventListener('resize', r);
+  }, []);
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div key="b" className="fixed inset-0 z-[80] bg-black/60" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
-          <motion.div key="d" ref={box} role="dialog" aria-modal="true" aria-label="Index"
-            className="fixed inset-y-0 left-0 z-[81] w-[min(86vw,300px)] border-r-hair border-line-2 bg-sheet shadow-dialog"
-            initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={SPRING.sheet}>
-            <button type="button" aria-label="Close index" onClick={onClose} className="pressable absolute top-4 right-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-fill-3 text-ink"><X size={16} strokeWidth={1.75} /></button>
-            {children}
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+    <>
+      <AnimatePresence>
+        {open && <motion.div key="scrim" className="fixed inset-0 z-[39] bg-black/50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} onClick={() => setOpen(false)} />}
+      </AnimatePresence>
+      <motion.div ref={box} role={open ? 'dialog' : undefined} aria-modal={open || undefined} aria-label={open ? 'Index' : undefined}
+        className="glass absolute inset-x-2 z-40 overflow-hidden outline-none"
+        style={{ top: 'max(8px, var(--safe-top))' }}
+        initial={false}
+        animate={{ height: open ? full : 44, borderRadius: open ? 24 : 22 }}
+        transition={SPRING.sheet}>
+        <div className="relative flex h-11 items-center gap-2.5 pr-1 pl-3.5">
+          <button type="button" onClick={() => { setOpen(false); go('start/overview'); }} aria-label="Overview" className="group shrink-0"><LogoMark size={18} /></button>
+          <button type="button" onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-1.5 text-left" aria-expanded={open}>
+            <span className="shrink-0 text-meta text-faint">{group}</span>
+            <span className="truncate text-chip text-bright">{title}</span>
+          </button>
+          <button type="button" aria-label={open ? 'Close index' : 'Open index'} aria-expanded={open} onClick={() => setOpen(!open)}
+            className="pressable relative grid h-9 w-9 shrink-0 place-items-center rounded-full text-bright hover:bg-fill-3">
+            <motion.span className="absolute" initial={false} animate={{ opacity: open ? 0 : 1, rotate: open ? 45 : 0, scale: open ? 0.7 : 1 }} transition={SPRING.pop}><MenuIcon size={17} strokeWidth={1.75} /></motion.span>
+            <motion.span className="absolute" initial={false} animate={{ opacity: open ? 1 : 0, rotate: open ? 0 : -45, scale: open ? 1 : 0.7 }} transition={SPRING.pop}><X size={17} strokeWidth={1.75} /></motion.span>
+          </button>
+        </div>
+        {/* The index keeps its full height and is only revealed — nothing reflows while the glass grows. */}
+        <motion.div className="absolute inset-x-0 top-11 bg-[rgb(14_16_15/.5)]" style={{ height: full - 44 }}
+          initial={false} animate={{ opacity: open ? 1 : 0, y: open ? 0 : -8 }} transition={{ duration: open ? 0.35 : 0.15, delay: open ? 0.06 : 0, ease: [0.22, 1, 0.36, 1] }}
+          inert={!open}>
+          {children}
+        </motion.div>
+      </motion.div>
+    </>
   );
 }
 
-function Index({ route, accent, setAccent, glass, setGlass, calm, setCalm, signal, setSignal }: {
-  route: string; accent: Accent; setAccent: (a: Accent) => void; glass: GlassLevel; setGlass: (g: GlassLevel) => void; calm: boolean; setCalm: (v: boolean) => void;
+function Index({ route, panel, accent, setAccent, glass, setGlass, corners, setCorners, calm, setCalm, signal, setSignal }: {
+  route: string; panel: boolean; corners: Corners; setCorners: (c: Corners) => void; accent: Accent; setAccent: (a: Accent) => void; glass: GlassLevel; setGlass: (g: GlassLevel) => void; calm: boolean; setCalm: (v: boolean) => void;
   signal: Signal | ''; setSignal: (s: Signal | '') => void;
 }) {
   const [q, setQ] = useState('');
+  const [tune, setTune] = useState(false);
   const hits = useMemo(() => {
     const s = q.trim().toLowerCase();
     return s ? ALL.filter((p) => `${p.title} ${p.summary} ${p.group.title}`.toLowerCase().includes(s)) : null;
   }, [q]);
   return (
     <div className="flex h-full flex-col">
-      <div className="px-4 pt-6 pb-3" style={{ paddingTop: 'max(24px, var(--safe-top))' }}>
-        <button type="button" onClick={() => go('start/overview')} className="group flex items-center gap-2.5 px-1"><LogoMark size={22} /><span className="text-left"><Wordmark /><span className="mt-0.5 block text-meta text-faint">Design library</span></span></button>
-        <SearchField className="mt-5" value={q} onChange={setQ} placeholder="Find a component" />
+      <div className={cn('px-3', panel ? 'pt-1 pb-2' : 'pt-5 pb-3')}>
+        {!panel && <button type="button" onClick={() => go('start/overview')} className="group mb-5 flex items-center gap-2.5 px-1.5"><LogoMark size={20} /><span className="text-left"><Wordmark /><span className="mt-0.5 block text-meta text-faint">Design library</span></span></button>}
+        <SearchField value={q} onChange={setQ} placeholder="Find a component" />
       </div>
       <nav aria-label="Index" className="scroller scroller-subtle flex-1 px-2.5 pb-6">
         {hits ? (
@@ -130,7 +154,12 @@ function Index({ route, accent, setAccent, glass, setGlass, calm, setCalm, signa
           </div>
         ))}
       </nav>
-      <div className="space-y-3 border-t-hair border-line px-4 pt-3.5" style={{ paddingBottom: 'max(16px, var(--safe-bottom))' }}>
+      {/* Theme knobs fold away into one row, so the index keeps the height. */}
+      <div className="border-t-hair border-line px-2.5 pt-1.5" style={{ paddingBottom: 'max(8px, var(--safe-bottom))' }}>
+        <AnimatePresence initial={false}>
+          {tune && (
+            <motion.div key="tune" className="overflow-hidden" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0, transition: { duration: 0.16 } }} transition={SPRING.sheet}>
+        <div className="space-y-3 px-1.5 pt-2.5 pb-3">
         <div>
           <span className="mb-1.5 block text-meta text-dim">Place</span>
           <div className="flex flex-wrap gap-[5px]">
@@ -156,10 +185,28 @@ function Index({ route, accent, setAccent, glass, setGlass, calm, setCalm, signa
           <span className="mb-1.5 block text-meta text-dim">Glass</span>
           <Segmented size="sm" className="w-full" value={glass} onChange={setGlass} label="Glass level" options={GLASS_LEVELS.map((g) => ({ value: g, label: g === 'default' ? 'std' : g }))} />
         </div>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-meta text-dim">Corners</span>
+          <Segmented size="sm" value={corners} onChange={setCorners} label="Corner shape" options={[{ value: 'continuous', label: 'continuous' }, { value: 'round', label: 'round' }]} />
+        </div>
         <label className="flex items-center justify-between">
           <span className="text-meta text-dim">Reduce motion</span>
           <Switch size="sm" checked={calm} onChange={setCalm} label="Reduce motion" />
         </label>
+        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <button type="button" onClick={() => setTune(!tune)} aria-expanded={tune}
+          className="flex h-9 w-full items-center gap-2.5 rounded-field px-2.5 text-chip text-dim transition-colors hover:bg-fill-1 hover:text-ink">
+          <span className="flex -space-x-1">
+            <i className="h-3 w-3 rounded-full ring-[1.5px] ring-chrome" style={{ background: ACCENT_HEX[accent] }} />
+            {signal && <i className="h-3 w-3 rounded-full ring-[1.5px] ring-chrome" style={{ background: `var(--color-signal-${signal})` }} />}
+          </span>
+          Theme
+          <span className="ml-auto text-meta text-faint">{glass === 'default' ? '' : glass}</span>
+          <motion.span animate={{ rotate: tune ? 180 : 0 }} transition={SPRING.snap}><ChevronUp size={14} strokeWidth={1.75} /></motion.span>
+        </button>
       </div>
     </div>
   );

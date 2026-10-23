@@ -29,7 +29,7 @@ const grid = 'mt-5 grid grid-cols-2 gap-3 @min-[700px]:grid-cols-4';
 export default function ColorPage() {
   return (
     <Doc eyebrow="Foundations" title="Color" source="ui/styles/tokens.css"
-      lead="Grey-green ink on near-black, hairline edges. Colour belongs to places: each tab owns one signal colour, shown in its light, its hero figure and its tab, never on a surface.">
+      lead="Grey-green ink on near-black, depth from light rather than lines. Colour belongs to places: each tab owns one signal colour, shown in its light, its hero figure and its tab, never on a surface.">
       <DocSection title="Surfaces" description="Stepped from the ground up. Solid surfaces for things that sit; translucent fills for things inside them.">
         <div className={grid}>{SURFACES.map(([n, v, d]) => <Swatch key={n} name={n} value={v} note={d} />)}</div>
       </DocSection>
@@ -53,7 +53,7 @@ export default function ColorPage() {
       <DocSection title="One colour per place" description={<p>Every place (tab) owns one signal colour. It shows up in exactly three spots: the light at the top of the page, the one hero figure, and the active tab. Set it with <code>place</code> on Page or <code>data-signal</code> on any element; inside, use <code>text-tab</code>, <code>bg-tab</code>, Button <code>tint</code>. All twelve share a similar lightness, so no place shouts.</p>}>
         <div className="mt-5 grid grid-cols-2 gap-2 @min-[640px]:grid-cols-3 @min-[900px]:grid-cols-4">
           {Object.entries(PLACES).map(([place, { signal }]) => (
-            <div key={place} data-signal={signal} className="flex items-center gap-3 rounded-stat border-hair border-line-2 p-3">
+            <div key={place} data-signal={signal} className="flex items-center gap-3 surface rounded-stat p-3">
               <span className="h-7 w-7 shrink-0 rounded-full bg-tab" />
               <span className="min-w-0"><span className="block text-body text-bright capitalize">{place}</span><span className="block font-mono text-tiny text-dim">{signal}</span></span>
               <span className="ml-auto display tabular text-title text-tab">2:41</span>

@@ -41,13 +41,24 @@ Alles, was „der Akzent der App“ meint, nimmt `accent`.
 
 ## Form
 
-- Radien sind nach Rolle benannt: `chip 6` · `tile 8` · `field 10` · `menu 13` · `stat 14` · `list 16` · `card 18` · `dialog 20` · `sheet 22` · `full`.
-- Verschachtelte Ecken: innerer Radius = äußerer Radius − Abstand.
-- Schatten haben nur schwebende Dinge: `menu` · `float` · `fab` · `sheet` · `dialog`.
-- Drei Flächen-Rezepte:
-  - `.card` (liegt)
-  - `.glass` (schwebt)
-  - `.rim` (ungleichmäßige Glaskante, oben hell)
+- Radien sind nach Rolle benannt: `xs 5` · `chip 6` · `tile 8` · `item 9` · `field 10` · `menu 13` · `stat 14` · `list 16` · `card 18` · `dialog 20` · `sheet 24` · `full`.
+- Ecken sind kontinuierlich (Superellipse wie bei iOS), wo der Browser `corner-shape` kann. Die Radien wachsen dann automatisch um den Faktor 1,3, damit die Kurve gleich groß wirkt. Abschalten mit `data-corners="round"` auf `<html>`.
+- Verschachtelte Ecken sind konzentrisch: innerer Radius = äußerer Radius − Abstand. Darum gibt es `item`: ein Menü (13) mit 4px Innenabstand hält Einträge mit 9.
+
+## Tiefe: fünf Ebenen, Licht von oben
+
+Ebenen unterscheiden sich durch Licht, nicht durch Rahmen:
+
+| Ebene | Klasse | Wofür |
+|---|---|---|
+| −1 Mulde | `.well` | Felder, Spuren: Innenschatten von oben, Kante hellt beim Fokus auf |
+| 0 Grund | `bg` | die Seite, trägt das Licht des Orts |
+| +1 Fläche | `.surface` / `.card` | Listen, Karten, Kacheln: oben einen Hauch heller, Kante oben beleuchtet |
+| +2 erhaben | `.raised` | liegt auf einer Fläche: Schieberegler-Daumen, Schalter, aktives Segment |
+| +3 schwebend | `.glass` + Schatten | Menüs, Tab-Leiste, Seitenleiste, Toasts |
+
+- Schatten-Tokens: `shadow-edge`, `shadow-raise`, `shadow-well`, `shadow-lit` (die eine helle Perle, der Hauptknopf), `shadow-lip` (getönte Flächen), `shadow-key` (Tasten).
+- Haarlinien nur dort, wo zwei Dinge aneinanderstoßen: Listentrenner, Tabellenlinien.
 
 ## Themes
 

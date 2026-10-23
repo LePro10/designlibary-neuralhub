@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { CalendarDays, CheckSquare, ChevronLeft, FolderOpen, Hourglass, LayoutGrid, ListChecks, MessageCircle, PenSquare } from 'lucide-react';
+import { CalendarDays, CheckSquare, ChevronLeft, FolderOpen, Hourglass, ListChecks, Mail, MessageCircle, PenSquare, StickyNote, TrendingUp } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AgentTrace } from '@ui/components/ai/AgentTrace';
 import { ChangePills, type Change } from '@ui/components/ai/ChangePill';
@@ -31,7 +31,7 @@ export default function ChatScreenPage() {
       <DocSection title="Desktop" description="Same screen in a wide pane: the column caps at 720px, the composer centres under it, no tab bar.">
         <Demo minHeight={720} padded={false} controls={{ width: select(['pane', 'full'] as const, 'full') }} background="plain">
           {(v) => (
-            <div className={cn('mx-auto my-6 h-[680px] w-full overflow-hidden rounded-card border-hair border-line-2 bg-bg [transform:translateZ(0)]', v.width === 'pane' ? 'max-w-[560px]' : 'max-w-[1000px]')}
+            <div className={cn('mx-auto my-6 h-[680px] w-full overflow-hidden surface rounded-card bg-bg [transform:translateZ(0)]', v.width === 'pane' ? 'max-w-[560px]' : 'max-w-[1000px]')}
               style={{ ['--tabbar-space' as string]: '0px', ['--safe-top' as string]: '0px', ['--safe-bottom' as string]: '0px' } as CSSProperties}>
               <Surface mode={v.width === 'pane' ? 'phone' : 'desktop'}><ChatScreen tabbar={false} /></Surface>
             </div>
@@ -71,7 +71,11 @@ const TABS: TabItem[] = [
   { id: 'plan', label: 'Plan', Icon: ListChecks, badge: true, signal: 'amber' },
   { id: 'files', label: 'Files', Icon: FolderOpen, signal: 'teal' },
   { id: 'screen', label: 'Screen', Icon: Hourglass, signal: 'coral' },
-  { id: 'more', label: 'More', Icon: LayoutGrid, launcher: true },
+];
+const MORE_TABS: TabItem[] = [
+  { id: 'mail', label: 'Mail', Icon: Mail, place: 'mail' },
+  { id: 'notes', label: 'Notes', Icon: StickyNote, place: 'notes' },
+  { id: 'progress', label: 'Progress', Icon: TrendingUp, place: 'progress' },
 ];
 
 interface Turn { q: string; key: number }
@@ -127,7 +131,7 @@ function ChatScreen({ tabbar }: { tabbar: boolean }) {
         <Composer placeholder="Ask Luna" onVoice={() => {}} busy={busy} onStop={() => stopRef.current()}
           onSend={(text) => { if (!text) return false; setTurns((ts) => [...ts, { q: text, key: ts.length }]); }} />
       </ComposerDock>
-      {tabbar && <TabBar items={TABS} value={tab} onChange={setTab} />}
+      {tabbar && <TabBar items={TABS} more={MORE_TABS} value={tab} onChange={setTab} />}
     </div>
   );
 }

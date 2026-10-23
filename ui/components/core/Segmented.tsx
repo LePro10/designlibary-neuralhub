@@ -1,5 +1,5 @@
 /**
- * Segmented control. The active segment is a slightly raised pill that slides
+ * Segmented control. A sunk track (well) and a raised pill that slides on it
  * (spring `snap`) — like iOS, not a white blob. `sm` is the quiet secondary
  * switch inside cards. `scroll` lets many options run sideways on phones.
  */
@@ -18,7 +18,7 @@ export function Segmented<T extends string>({ value, options, onChange, size = '
   const id = useId();
   const sm = size === 'sm';
   const track = (
-    <div role="tablist" aria-label={label} className={cn('relative flex rounded-full bg-fill-2 p-[3px]', scroll && 'w-max min-w-full', !scroll && className)}>
+    <div role="tablist" aria-label={label} className={cn('well relative flex rounded-full p-[3px]', scroll && 'w-max min-w-full', !scroll && className)}>
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -37,7 +37,7 @@ export function Segmented<T extends string>({ value, options, onChange, size = '
             {active && (
               <motion.span
                 layoutId={`seg-${id}`}
-                className="absolute inset-0 -z-10 rounded-full bg-white/[.13] shadow-[0_1px_2px_rgb(0_0_0/.3),inset_0_.5px_0_rgb(255_255_255/.1)]"
+                className="absolute inset-0 -z-10 rounded-full bg-white/[.12] shadow-raise"
                 transition={SPRING.snap}
               />
             )}

@@ -1,6 +1,6 @@
 /**
- * Inputs. Calm wells: a faint fill, a hairline that brightens on focus,
- * 10px corners. 16px text on phones (no zoom), 13.5px on desktop.
+ * Inputs. Wells sunk into the page: a faint fill, an inner shadow from the
+ * top and a rim that brightens on focus, 10px corners. 16px text on phones (no zoom), 13.5px on desktop.
  * 44px tall on phones, 38px on desktop.
  */
 import { Search as SearchIcon, X as XIcon } from 'lucide-react';
@@ -10,8 +10,8 @@ import { cn } from '../../lib/cn';
 
 /** The input recipe — use on any <input> that is not one of the components below. */
 export const inputClass =
-  'h-11 w-full rounded-field border-hair border-line-2 bg-fill-1 px-3 text-input text-bright outline-none transition-[border-color,background-color] duration-200 placeholder:text-faint ' +
-  'focus:border-white/25 focus:bg-fill-2 aria-invalid:border-danger/50 min-[900px]:h-[38px] min-[900px]:text-button';
+  'well h-11 w-full rounded-field px-3 text-input text-bright outline-none placeholder:text-faint ' +
+  'min-[900px]:h-[38px] min-[900px]:text-button';
 
 /** Labelled field: a quiet label, the control, an optional hint or error. */
 export function Field({ label, hint, error, children, className }: { label: string; hint?: ReactNode; error?: string; children: ReactNode; className?: string }) {
@@ -67,7 +67,7 @@ export function SearchField({ value, onChange, placeholder = 'Search', autoFocus
         enterKeyHint="search"
         className="min-w-0 flex-1 bg-transparent text-input text-bright outline-none placeholder:text-dim min-[900px]:text-button"
       />
-      {!value && hint && <kbd className="hidden rounded-[5px] border-hair border-line-2 px-1.5 font-mono text-tiny text-faint min-[900px]:block">{hint}</kbd>}
+      {!value && hint && <kbd className="hidden rounded-xs bg-fill-2 px-1.5 font-mono text-tiny text-faint shadow-key min-[900px]:block">{hint}</kbd>}
       <AnimatePresence>
         {value && (
           <motion.button type="button" aria-label="Clear search" onClick={() => onChange('')} className="grid h-[18px] w-[18px] place-items-center rounded-full bg-white/25 text-bg"

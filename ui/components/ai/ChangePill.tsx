@@ -19,7 +19,7 @@ export function ChangePills({ changes, onUndo, onRedo, onOpen, className }: {
       <AnimatePresence initial={false}>
         {changes.map((c, i) => (
           <motion.div key={c.id} layout initial={{ opacity: 0, scale: 0.92, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.12 } }} transition={{ ...SPRING.pop, delay: i * 0.03 }}
-            className={cn('flex h-7 items-center rounded-full border-hair text-meta transition-colors duration-300', c.undone ? 'border-line bg-transparent' : 'border-line-2 bg-fill-1')}>
+            className={cn('flex h-7 items-center rounded-full text-meta transition-[background-color,box-shadow] duration-300', c.undone ? 'shadow-[inset_0_0_0_var(--hair)_var(--color-line)]' : 'bg-fill-2 shadow-edge')}>
             <button type="button" onClick={() => onOpen?.(c.id)} disabled={!onOpen} className={cn('flex h-full items-center gap-1.5 pl-2.5', onUndo || onRedo ? 'pr-1' : 'pr-2.5')}>
               {c.Icon && <c.Icon size={12} strokeWidth={1.7} className={cn('transition-colors', c.undone ? 'text-faint' : 'text-tab')} />}
               <span className={cn('max-w-[220px] truncate transition-colors', c.undone ? 'text-faint line-through decoration-faint' : 'text-ink')}>{c.label}</span>

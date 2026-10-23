@@ -70,9 +70,9 @@ export function QuestionCard({ questions, onSubmit, onSkip, title = 'Needs your 
               const on = picked[step].includes(o);
               return (
                 <button key={o} type="button" onClick={() => toggle(o)} aria-pressed={on}
-                  className={cn('pressable flex min-h-11 w-full items-center gap-2.5 rounded-field border-hair px-3 py-2 text-left text-small transition-colors min-[900px]:min-h-10',
-                    on ? 'border-tab/50 bg-tab/[.1] text-bright' : 'border-line-2 bg-fill-1 text-ink hover:bg-fill-2')}>
-                  <span className={cn('grid h-[18px] w-[18px] shrink-0 place-items-center border-[1.25px] transition-colors duration-200', q.multiple ? 'rounded-[5px]' : 'rounded-full', on ? 'border-transparent bg-tab text-bg' : 'border-white/25')}>
+                  className={cn('pressable flex min-h-11 w-full items-center gap-2.5 rounded-field px-3 py-2 text-left text-small transition-[background-color,box-shadow] min-[900px]:min-h-10',
+                    on ? 'bg-tab/[.1] text-bright shadow-[inset_0_0_0_var(--hair)_color-mix(in_oklab,var(--color-tab)_45%,transparent)]' : 'bg-fill-1 text-ink shadow-edge hover:bg-fill-2')}>
+                  <span className={cn('grid h-[18px] w-[18px] shrink-0 place-items-center border-[1.25px] transition-colors duration-200', q.multiple ? 'rounded-xs' : 'rounded-full', on ? 'border-transparent bg-tab text-bg' : 'border-white/25')}>
                     <AnimatePresence>{on && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0, transition: { duration: 0.1 } }} transition={SPRING.toggle}><Check size={11} strokeWidth={3} /></motion.span>}</AnimatePresence>
                   </span>
                   <span className="min-w-0 flex-1">{o}</span>
@@ -83,7 +83,7 @@ export function QuestionCard({ questions, onSubmit, onSkip, title = 'Needs your 
               <textarea autoFocus rows={2} value={free[step]} placeholder="Your own answer"
                 onChange={(e) => setFree((x) => x.map((v, i) => (i === step ? e.target.value : v)))}
                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing && fine) { e.preventDefault(); if (lastStep) submit(); else go(step + 1); } }}
-                className="w-full resize-none rounded-field border-hair border-line-2 bg-fill-1 px-3 py-2 text-input text-bright outline-none placeholder:text-faint focus:border-white/25 min-[900px]:text-small" />
+                className="well w-full resize-none rounded-field px-3 py-2 text-input text-bright outline-none placeholder:text-faint min-[900px]:text-small" />
             ) : (
               <button type="button" onClick={() => setFreeOpen((x) => x.map((v, i) => (i === step ? true : v)))} className="flex min-h-10 items-center gap-2 rounded-field px-3 text-small text-dim hover:bg-fill-1 hover:text-ink">
                 <PenLine size={13} strokeWidth={1.7} />Something else…

@@ -11,7 +11,7 @@ import { TONE, type Tone } from './Chips';
 export function Empty({ Icon, title, detail, action, bare, className }: { Icon?: LucideIcon; title: string; detail?: ReactNode; action?: ReactNode; bare?: boolean; className?: string }) {
   return (
     <div className={cn('grid place-items-center px-6 py-10 text-center', !bare && 'card', className)}>
-      {Icon && <span className="grid h-9 w-9 place-items-center rounded-full bg-fill-3 text-dim"><Icon size={16} strokeWidth={1.6} /></span>}
+      {Icon && <span className="grid h-9 w-9 place-items-center rounded-full bg-fill-3 text-dim shadow-edge"><Icon size={16} strokeWidth={1.6} /></span>}
       <p className="mt-3 text-body text-bright">{title}</p>
       {detail && <p className="mt-1 max-w-[300px] text-small text-dim">{detail}</p>}
       {action && <div className="mt-4">{action}</div>}
@@ -67,12 +67,12 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 export function SkeletonRow() {
   return (
     <div className="flex items-center gap-3 px-3.5 py-2.5" aria-hidden="true">
-      <Skeleton className="h-[26px] w-[26px] !rounded-[7px]" />
+      <Skeleton className="h-[26px] w-[26px] !rounded-tile" />
       <div className="flex-1 space-y-2"><Skeleton className="h-3 w-2/3" /><Skeleton className="h-2.5 w-1/3" /></div>
     </div>
   );
 }
 
 export function Kbd({ children, className }: { children: ReactNode; className?: string }) {
-  return <kbd className={cn('inline-grid h-[18px] min-w-[18px] place-items-center rounded-[5px] border-hair border-line-2 px-1 font-mono text-tiny text-dim', className)}>{children}</kbd>;
+  return <kbd className={cn('inline-grid h-[18px] min-w-[18px] place-items-center rounded-xs bg-fill-2 px-1 font-mono text-tiny text-dim shadow-key', className)}>{children}</kbd>;
 }

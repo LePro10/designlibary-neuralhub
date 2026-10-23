@@ -4,7 +4,7 @@ import { Doc, DocSection, Prose } from '../../kit/Doc';
 const ROWS: [string, string, string][] = [
   ['Springs', '14 hand-typed stiffness/damping pairs; the shared presets went unused', '7 named springs (snap, toggle, sheet, pop, soft, grow, bouncy) chosen by what moves'],
   ['Type sizes', '754 arbitrary text-[Npx], 16 different values', '15-step scale as tokens: text-body, text-meta, text-display …'],
-  ['Radii', '198 overrides, 19 arbitrary values; .card fought with !rounded-[18px]', 'Radii named by role: rounded-field, -list, -card, -sheet …'],
+  ['Radii', '198 overrides, 19 arbitrary values; .card fought with !rounded-card', 'Radii named by role: rounded-field, -list, -card, -sheet …'],
   ['Fills', '437 bg-/border-white/[…] steps in pages', 'fill-1…4 and line / line-2'],
   ['Raw colours', '100 hex + 64 rgba in pages; ice typed 18×; glow palette copied 5×', 'Tokens + var(--color-…); TAG_COLORS, GLOW, AMBIENT as one list each'],
   ['Warning token', 'text-warn / bg-warn used but not defined', '--color-warning, used by Pill, Callout, StatusDot'],
@@ -33,10 +33,17 @@ const V2: [string, string][] = [
   ['Motion', 'Shorter, no wobble, faster exits; titles rise out of a mask; numbers roll; the logo works instead of a glowing orb.'],
 ];
 
+const V3: [string, string][] = [
+  ['Depth', 'Five levels lit from above — well, ground, surface, raised, float — instead of outlined boxes. Lists, cards, chips and the ghost button lost their borders; fields became wells; the primary button is a lit bead.'],
+  ['Corners', 'Continuous (superellipse) where the browser can draw it, radii ×1.3 to match; concentric nesting with the new item radius; every arbitrary radius in the library replaced by a token.'],
+  ['Navigation', 'One list of places for the whole app (AppShell nav). Phones: four tabs, the rest grow out of the bar as glass (tap or pull); the last cell becomes the place you are in. Desktop: a floating glass island with hover intent, pin (⌘\\) and groups; the page’s light runs under it.'],
+  ['Showcase', 'The phone header grows into the index instead of a side drawer; theme knobs fold into one row; corner shape is a theme switch.'],
+];
+
 export default function Refinements() {
   return (
     <Doc eyebrow="Start" title="What changed" lead="The dashboard's look was kept; its drift was not. A scan of every tab produced this list — each line is a place where the same intent had been typed many different ways.">
-      <div className="scroll-x rounded-stat border-hair border-line">
+      <div className="scroll-x surface rounded-stat">
         <table className="w-full min-w-[720px] text-left text-[13px]">
           <thead><tr className="border-b-hair border-line">{['Area', 'In the dashboard', 'In the library'].map((h) => <th key={h} className="px-4 py-3 font-normal"><span className="eyebrow">{h}</span></th>)}</tr></thead>
           <tbody>
@@ -50,8 +57,22 @@ export default function Refinements() {
           </tbody>
         </table>
       </div>
+      <DocSection title="Round 3: light, not lines" description="Shape, depth and navigation rebuilt from the ground.">
+        <div className="scroll-x mt-5 surface rounded-stat">
+          <table className="w-full min-w-[640px] text-left text-small">
+            <tbody>
+              {V3.map(([a, b]) => (
+                <tr key={a} className="border-b-hair border-line align-top last:border-0">
+                  <td className="w-48 px-4 py-2.5 text-bright">{a}</td>
+                  <td className="px-4 py-2.5 text-ink">{b}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </DocSection>
       <DocSection title="Round 2: lighter" description="After the first version: less weight everywhere, one colour per place, lighter overlays on phones.">
-        <div className="scroll-x mt-5 rounded-stat border-hair border-line-2">
+        <div className="scroll-x mt-5 surface rounded-stat">
           <table className="w-full min-w-[640px] text-left text-small">
             <tbody>
               {V2.map(([a, b]) => (

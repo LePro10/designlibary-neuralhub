@@ -24,7 +24,7 @@ export function SuggestionGrid({ items, onPick, layout = 'grid', delay = 0.15, c
       <div data-no-swipe className={cn('rail -mx-4 gap-1.5 px-4', className)}>
         {items.map((s, i) => (
           <motion.button key={s.title} type="button" onClick={() => { haptic('select'); onPick(s); }} {...enter(i, 'x')}
-            className="pressable relative flex h-8 shrink-0 items-center gap-1.5 rounded-full border-hair border-line-2 px-3 text-chip whitespace-nowrap text-ink after:absolute after:-inset-y-1.5 after:inset-x-0 after:content-[''] hover:bg-fill-2 hover:text-bright">
+            className="pressable relative flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-fill-1 px-3 text-chip whitespace-nowrap text-ink shadow-edge after:absolute after:-inset-y-1.5 after:inset-x-0 after:content-[''] hover:bg-fill-2 hover:text-bright">
             {s.Icon && <s.Icon size={13} strokeWidth={1.7} className="text-dim" />}
             {s.title}
           </motion.button>
@@ -36,8 +36,8 @@ export function SuggestionGrid({ items, onPick, layout = 'grid', delay = 0.15, c
     <div className={cn('grid grid-cols-1 gap-1.5 @min-[480px]:grid-cols-2', className)}>
       {items.map((s, i) => (
         <motion.button key={s.title} type="button" onClick={() => { haptic('select'); onPick(s); }} {...enter(i, 'y')}
-          className="pressable group relative flex min-h-[56px] items-center gap-2.5 rounded-stat border-hair border-line-2 bg-fill-1 px-3 py-2.5 text-left transition-colors hover:bg-fill-2">
-          {s.Icon && <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px] bg-fill-3 text-dim transition-colors duration-300 group-hover:text-tab"><s.Icon size={13} strokeWidth={1.7} /></span>}
+          className="pressable group relative flex min-h-[56px] items-center gap-2.5 surface rounded-stat px-3 py-2.5 text-left transition-colors hover:bg-fill-2">
+          {s.Icon && <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-tile bg-fill-3 text-dim transition-colors duration-300 group-hover:text-tab"><s.Icon size={13} strokeWidth={1.7} /></span>}
           <span className="min-w-0 flex-1">
             <span className="block truncate text-small text-bright">{s.title}</span>
             {s.detail && <span className="block truncate text-meta text-dim">{s.detail}</span>}

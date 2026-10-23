@@ -56,7 +56,7 @@ export default function ComposerPage() {
 }
 
 function State({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div className="rounded-stat border-hair border-line-2 bg-fill-1 p-3"><div className="mb-2.5 text-meta text-dim">{label}</div>{children}</div>;
+  return <div className="surface rounded-stat p-3"><div className="mb-2.5 text-meta text-dim">{label}</div>{children}</div>;
 }
 
 function Playground({ busy, progress, voice, attachments, compact, placeholder, width }: { busy: boolean; progress: boolean; voice: boolean; attachments: boolean; compact: boolean; placeholder: string; width: string }) {

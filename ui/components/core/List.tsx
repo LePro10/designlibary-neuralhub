@@ -1,6 +1,6 @@
 /**
- * Grouped list (iOS settings style) and its row. 46px rows, a quiet icon
- * tile, separators that start where the text starts. Reads as text first;
+ * Grouped list (iOS settings style) and its row. A surface lit from above,
+ * 46px rows, a quiet icon tile, separators that start where the text starts. Reads as text first;
  * colour only for danger, selection or the place's signal.
  */
 import { ChevronRight, type LucideIcon } from 'lucide-react';
@@ -17,7 +17,7 @@ export function List({ children, label, action, footer, className }: { children:
           {action}
         </div>
       )}
-      <div className="list-rows overflow-hidden rounded-list border-hair border-line-2 bg-fill-1">{children}</div>
+      <div className="surface list-rows overflow-hidden rounded-list">{children}</div>
       {footer && <p className="mt-2 px-1 text-detail text-faint">{footer}</p>}
     </div>
   );
@@ -63,7 +63,7 @@ export function Row({ Icon, leading, title, detail, value, trailing, onClick, hr
       {lead && (
         leading ?? (
           <span className={cn(
-            'grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px]',
+            'grid h-[26px] w-[26px] shrink-0 place-items-center rounded-tile shadow-lip',
             danger ? 'bg-danger/[.12] text-danger' : tint ? 'bg-tab/[.14] text-tab' : selected ? 'bg-fill-4 text-bright' : 'bg-fill-3 text-ink',
           )}>
             {Icon && <Icon size={14} strokeWidth={1.7} />}

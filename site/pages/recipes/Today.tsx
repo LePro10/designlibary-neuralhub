@@ -42,7 +42,7 @@ function TodayApp({ mode }: { mode: 'phone' | 'desktop' }) {
   return (
     <AppShell mode={mode} className="!h-full" tabbar={<TabBar items={TABS} value={tab} onChange={setTab} />}>
       <Page title="Friday 24" place="home" heading={<h1 className="display text-[34px] @min-[900px]:text-[48px]">24 <span className="text-dim">Friday</span></h1>} eyebrow="October · week 43">
-        <motion.div {...rise(0)} className="grid grid-cols-7 rounded-list border-hair border-line-2 p-[3px]">
+        <motion.div {...rise(0)} className="grid grid-cols-7 surface rounded-list p-[3px]">
           {DAYS.map((d, i) => (
             <button key={i} type="button" onClick={() => setDay(i)} className={cn('relative flex h-12 flex-col items-center justify-center gap-0.5 rounded-[13px] text-tiny transition-colors duration-200', i === day ? 'text-bright' : 'text-dim')}>
               {i === day && <motion.span layoutId="today-day" className="absolute inset-0 rounded-[13px] bg-fill-4" transition={SPRING.snap} />}
@@ -54,7 +54,7 @@ function TodayApp({ mode }: { mode: 'phone' | 'desktop' }) {
         <motion.p {...rise(1)} className="mt-6 text-[20px] leading-[1.4] font-light tracking-[-.02em] text-ink @min-[900px]:text-[26px]">
           Your <Phrase Icon={BookOpen}>biology test</Phrase> is tomorrow at eight. You have <span className="text-bright">40 minutes</span> before <Phrase Icon={Dumbbell}>training</Phrase> — and <Phrase Icon={Mail}>two mails</Phrase> can wait.
         </motion.p>
-        <motion.div {...rise(2)} className="relative mt-6 overflow-hidden rounded-card border-hair border-line-2 bg-fill-1 p-4">
+        <motion.div {...rise(2)} className="relative mt-6 overflow-hidden surface rounded-card p-4">
           <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_100%_0%,rgb(255_138_92/.1),transparent_70%)]" />
           <div className="relative flex items-end justify-between">
             <div><div className="flex items-center gap-1.5 text-meta text-ember"><i className="h-1.5 w-1.5 rounded-full bg-ember" />Exam</div><div className="mt-1.5 text-body text-bright">Biology — cells</div><div className="text-detail text-dim">Sat · 08:00 · Room 204</div></div>

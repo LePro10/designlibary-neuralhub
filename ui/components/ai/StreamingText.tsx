@@ -57,7 +57,7 @@ export function StreamingText({ text, live = false, smooth = true, caret = true,
 function inline(src: string, live: boolean, counter: { i: number }, sources?: Source[]): ReactNode[] {
   return src.split(/(\*\*[^*]+\*\*|`[^`]+`|\[\d+\])/).filter(Boolean).map((seg, k) => {
     if (seg.startsWith('**')) return <strong key={k}>{words(seg.slice(2, -2), live, counter)}</strong>;
-    if (seg.startsWith('`')) return <code key={k} className="rounded-[5px] bg-fill-3 px-1 py-px font-mono text-[.84em] text-bright">{seg.slice(1, -1)}</code>;
+    if (seg.startsWith('`')) return <code key={k} className="rounded-xs bg-fill-3 px-1 py-px font-mono text-[.84em] text-bright">{seg.slice(1, -1)}</code>;
     const m = seg.match(/^\[(\d+)\]$/);
     if (m) {
       const n = Number(m[1]);

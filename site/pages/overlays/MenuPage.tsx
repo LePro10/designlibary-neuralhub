@@ -69,7 +69,7 @@ export default function MenuPage() {
 { label: 'School', detail: 'l.p@ksb.ch', glyph: <Avatar name="School" color="#eadcbc" />, checked, onSelect }`}>
         {() => (
           <Side
-            desktop={<div className="rounded-stat border-hair border-line-2 bg-raised p-4"><Toolbar channel="page" /></div>}
+            desktop={<div className="surface rounded-stat bg-raised p-4"><Toolbar channel="page" /></div>}
             phone={<PhoneScreen title="Mail" eyebrow="Inbox"><div className="pt-2"><Toolbar channel="phone" /></div></PhoneScreen>}
           />
         )}

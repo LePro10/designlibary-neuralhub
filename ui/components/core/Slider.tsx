@@ -66,7 +66,7 @@ export function Slider({ value, onChange, min = 0, max = 100, step = 1, label, f
           else if (e.key === 'End') { e.preventDefault(); set(max); }
         }}
       >
-        <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-fill-4">
+        <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-fill-3 shadow-well">
           <motion.div className="absolute inset-y-0 left-0 rounded-full bg-tab" style={{ width: left }} />
         </div>
         {steps > 0 && steps <= 20 && (

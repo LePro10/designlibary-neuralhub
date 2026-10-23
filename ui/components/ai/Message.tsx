@@ -29,7 +29,7 @@ export function UserBubble({ children, attachments, time, clip = 176, animate = 
       className={cn('ml-auto flex max-w-[min(82%,520px)] flex-col items-end gap-1', className)}
     >
       {attachments && <div className="flex flex-wrap justify-end gap-1.5">{attachments}</div>}
-      <div className="selectable relative rounded-[18px] rounded-br-[6px] bg-fill-3 px-3.5 py-2 text-body leading-[1.5] text-bright">
+      <div className="selectable relative rounded-card rounded-br-chip bg-fill-3 px-3.5 py-2 text-body leading-[1.5] text-bright">
         <div ref={ref} className={cn('overflow-hidden whitespace-pre-wrap break-words transition-[max-height] duration-500 ease-out-soft', long && !open && '[mask-image:linear-gradient(180deg,#000_55%,transparent)]')}
           style={{ maxHeight: long ? (open ? full : clip) : undefined }}>
           {children}

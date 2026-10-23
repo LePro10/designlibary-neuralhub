@@ -145,7 +145,7 @@ function StepRow({ step: s, active }: { step: TraceStep; active: boolean }) {
   const Icon = s.state === 'error' ? CircleAlert : s.state === 'waiting' ? ShieldCheck : s.Icon ?? Wrench;
   return (
     <motion.li {...enter} className="flex min-h-7 items-center gap-2 py-0.5">
-      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[6px] bg-fill-3">
+      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-chip bg-fill-3">
         {active ? <i className="spinner" style={{ ['--size' as string]: '10px' }} />
           : <Icon size={11} strokeWidth={1.8} className={s.state === 'error' ? 'text-danger' : s.state === 'waiting' ? 'text-tab' : 'text-ink'} />}
       </span>

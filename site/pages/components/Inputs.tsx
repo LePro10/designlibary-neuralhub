@@ -7,7 +7,7 @@ import { Doc, DocSection, Rules, Usage, Why } from '../../kit/Doc';
 export default function InputsPage() {
   return (
     <Doc eyebrow="Components" title="Inputs" source="ui/components/core/Field.tsx"
-      lead="Fields are calm wells: a faint fill, a hairline that brightens on focus, 10px corners, a quiet label above. 44px tall on phones with 16px text (the browser never zooms in), 38px on desktop.">
+      lead="Fields are wells sunk into the page: a faint fill, an inner shadow from the top, a rim that brightens on focus, 10px corners, a quiet label above. 44px tall on phones with 16px text (the browser never zooms in), 38px on desktop.">
       <Demo title="Form" controls={{ hints: bool(true), error: bool(false) }} center={false}
         code={`<Field label="Email" hint="We never share it.">\n  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />\n</Field>`}>
         {(v) => <FormDemo {...v} />}
