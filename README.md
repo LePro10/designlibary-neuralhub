@@ -1,6 +1,6 @@
 # NeuralHub Design
 
-**Quiet dark. Light as content.**
+**Quiet dark. Light as content.** · v2: leichter, eine Farbe pro Ort, Menüs statt Sheets auf dem Handy.
 
 Die Designsprache von NeuralHub als wiederverwendbare Bibliothek: Tokens,
 Effekte, Animationen, Mobile-Regeln und React-Komponenten. Aus dem Dashboard
@@ -35,12 +35,12 @@ Lies zuerst ihre AGENTS.md und halte dich daran. Bau: <dein Screen / deine App>.
 
 | Ordner | Inhalt |
 |---|---|
-| `ui/styles/` | `tokens.css` (Farben, Schrift, Radien, Schatten, Easing, Themes) · `base.css` · `effects.css` (card, glass, rim, grain, shimmer, orb, light border …) |
+| `ui/styles/` | `tokens.css` (Farben, Signalfarben pro Ort, Schrift, Radien, Haarlinien, Schatten, Easing, Themes) · `base.css` · `effects.css` (card, glass, rim, shimmer, orb, light border, Logo-Loader …) |
 | `ui/lib/` | Motion-Vokabular (`SPRING`), Haptik, Overlay-Stapel (`useLayer`), Fokusfalle, `Surface` (Handy/Desktop nach eigener Breite), Hooks, JS-Tokens |
 | `ui/components/core/` | Button, IconButton, Segmented, Switch, Check, Slider, Chips, Pill, Field, List/Row, States, Stat, Avatar |
 | `ui/components/layout/` | AppShell, Page, Liquid-Glass-TabBar, Sidebar |
 | `ui/components/overlays/` | Sheet, Menu, ContextMenu, Toast, SwipeRow, Stack, CommandPalette |
-| `ui/components/effects/` | Mesh-/Ambient-Licht, Shimmer, Logo, Light Border, Spotlight, Orbs, Glass, Magnetic, Ticker … |
+| `ui/components/effects/` | Ambient-Licht als SVG, RevealText, LogoLoader, Shimmer, Logo, Light Border, Spotlight, Orbs, Glass, Magnetic, Odometer … |
 | `ui/components/data/` | Ring, Meter, BarChart, Sparkline/LineChart, Heatmap, Donut |
 | `ui/components/ai/` | Composer, Nachrichten, Streaming, Agent-Trace, Tool-Karten, Quellen, Voice … |
 | `site/` | Showcase (nutzt die Library selbst) |
