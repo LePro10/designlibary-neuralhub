@@ -10,6 +10,8 @@ erweitert.
 **Showcase:** https://ui.neuralhub.dev/. Jede Komponente
 ist dort live, mit Reglern, Handy- und Desktop-Vorschau und kopierbarem Code.
 
+**MCP für Claude Code & Co.:** `claude mcp add neuralhub-ui -- node ~/neuralhub-mcp.mjs` — Suche, Quellcode und Screenshots ohne API-Key. Anleitung: [docs/mcp.md](docs/mcp.md).
+
 ---
 
 ## Wofür

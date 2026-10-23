@@ -23,6 +23,17 @@ export default function UseWithAI() {
       <DocSection title="2 · Existing project">
         <CodeBlock className="mt-4" code={PROMPT_EXISTING} lang="prompt" title="Prompt" />
       </DocSection>
+      <DocSection title="MCP: search, source and screenshots">
+        <Prose><p>Add the library as an MCP server and Claude can search components, fetch source with its dependencies and look at screenshots — no key, no clone. Needs Node 18+.</p></Prose>
+        <CodeBlock className="mt-4" lang="bash" title="Claude Code" code={`curl -o ~/neuralhub-mcp.mjs https://ui.neuralhub.dev/mcp.mjs
+claude mcp add neuralhub-ui -- node ~/neuralhub-mcp.mjs`} />
+        <CodeBlock className="mt-3" lang="json" title="Cursor, Claude Desktop, .mcp.json" code={`{
+  "mcpServers": {
+    "neuralhub-ui": { "command": "node", "args": ["/path/to/neuralhub-mcp.mjs"] }
+  }
+}`} />
+        <Prose><p>Tools: <code>get_guidelines</code> (call first), <code>search</code>, <code>list_components</code>, <code>get_component</code>, <code>get_file</code>, <code>get_screenshot</code>.</p></Prose>
+      </DocSection>
       <DocSection title="What the AI reads">
         <div className="mt-5 grid gap-3 @min-[700px]:grid-cols-2">
           {[
