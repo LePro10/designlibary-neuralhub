@@ -41,16 +41,16 @@ export function diffLines(before: string, after: string, context = 2): DiffLine[
   return folded;
 }
 
-const TONE = { del: 'bg-danger/[.11] text-[#ffb3b3]', add: 'bg-mint/[.10] text-[#c9f5e2]', same: 'text-dim' } as const;
+const TONE = { del: 'bg-danger/[.09] text-[color-mix(in_oklab,var(--color-danger)_55%,white)]', add: 'bg-mint/[.08] text-[color-mix(in_oklab,var(--color-mint)_60%,white)]', same: 'text-dim' } as const;
 
 function Line({ l, side }: { l?: DiffLine; side?: 'a' | 'b' }) {
   if (!l) return <div className="min-h-[20px] bg-fill-1" />;
-  if (l.kind === 'gap') return <div className="my-0.5 bg-fill-1 py-1 pl-14 text-[11px] text-faint">⋯ {l.count} unchanged {l.count === 1 ? 'line' : 'lines'}</div>;
+  if (l.kind === 'gap') return <div className="my-0.5 py-1 pl-12 font-sans text-tiny text-faint">⋯ {l.count} unchanged {l.count === 1 ? 'line' : 'lines'}</div>;
   const nr = l.kind === 'same' ? (side === 'b' ? l.b : l.a) : l.kind === 'del' ? l.a : l.b;
   return (
     <div className={cn('flex min-h-[20px]', TONE[l.kind])}>
-      <span className="w-9 shrink-0 pr-2 text-right text-faint select-none">{nr}</span>
-      <span className="w-4 shrink-0 opacity-70 select-none">{l.kind === 'del' ? '−' : l.kind === 'add' ? '+' : ' '}</span>
+      <span className="w-8 shrink-0 pr-2 text-right text-faint select-none">{nr}</span>
+      <span className="w-3.5 shrink-0 opacity-60 select-none">{l.kind === 'del' ? '−' : l.kind === 'add' ? '+' : ' '}</span>
       <span className="min-w-0 flex-1 pr-2 break-words whitespace-pre-wrap">{l.text || ' '}</span>
     </div>
   );
@@ -79,16 +79,16 @@ export function DiffCard({ title, before, after, mode: initialMode = 'inline', c
   const removed = lines.filter((l) => l.kind === 'del').length;
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={SPRING.pop} className={cn('card @container overflow-hidden !rounded-list', className)}>
-      <div className="flex items-center gap-3 px-4 pt-3.5 pb-3">
+      <div className="flex items-center gap-2.5 px-3.5 pt-3 pb-2.5">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-button text-bright">{title}</p>
-          <p className="mt-0.5 font-mono text-[11.5px]"><span className="text-mint">+{added}</span> <span className="text-danger">−{removed}</span></p>
+          <p className="truncate text-small text-bright">{title}</p>
+          <p className="mt-px font-mono text-tiny"><span className="text-mint">+{added}</span> <span className="text-danger">−{removed}</span></p>
         </div>
         <Segmented size="sm" value={mode} onChange={setMode} label="Diff view" className="hidden @min-[560px]:flex"
           options={[{ value: 'inline', label: 'Inline', Icon: Rows3 }, { value: 'split', label: 'Split', Icon: Columns2 }]} />
-        {onUndo && <button type="button" onClick={onUndo} className="pressable flex h-8 items-center gap-1.5 rounded-full bg-fill-3 px-3 text-meta text-bright hover:bg-fill-4"><Undo2 size={13} />Undo</button>}
+        {onUndo && <button type="button" onClick={onUndo} className="pressable relative flex h-7 items-center gap-1.5 rounded-full bg-fill-3 px-2.5 text-meta text-bright after:absolute after:-inset-y-2 after:inset-x-0 after:content-[''] hover:bg-fill-4"><Undo2 size={12} strokeWidth={1.7} />Undo</button>}
       </div>
-      <div className="scroll-x mx-3 mb-3 rounded-field bg-black/25 py-2 font-mono text-meta leading-5">
+      <div className="scroll-x mx-2.5 mb-2.5 rounded-field bg-black/30 py-1.5 font-mono text-[11.5px] leading-5">
         {mode === 'split'
           ? <div className="hidden min-w-[560px] @min-[560px]:block">{pairs(lines).map(([a, b], k) => <div key={k} className="grid grid-cols-2 gap-px">{a?.kind === 'gap' ? <div className="col-span-2"><Line l={a} /></div> : <><Line l={a?.kind === 'add' ? undefined : a} side="a" /><Line l={b?.kind === 'del' ? undefined : b} side="b" /></>}</div>)}</div>
           : null}

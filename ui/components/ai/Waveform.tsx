@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react';
 import { cn } from '../../lib/cn';
 import { prefersReducedMotion } from '../../lib/motion';
 
-export function Waveform({ stream, active = true, bars = 32, height = 24, color = 'var(--color-accent)', shape = 'center', level, className, label = 'Listening' }: {
+export function Waveform({ stream, active = true, bars = 32, height = 22, color = 'var(--color-tab)', shape = 'center', level, className, label = 'Listening' }: {
   stream?: MediaStream | null;
   active?: boolean;
   bars?: number;
@@ -78,9 +78,9 @@ export function Waveform({ stream, active = true, bars = 32, height = 24, color 
   }, [stream, active, bars, level]);
 
   return (
-    <div ref={box} role="img" aria-label={label} className={cn('flex min-w-0 items-center gap-[3px] overflow-hidden', shape === 'bottom' && 'items-end', className)} style={{ height }}>
+    <div ref={box} role="img" aria-label={label} className={cn('flex min-w-0 items-center gap-[2.5px] overflow-hidden', shape === 'bottom' && 'items-end', className)} style={{ height }}>
       {Array.from({ length: bars }, (_, i) => (
-        <span key={i} className="w-[3px] shrink-0 rounded-full will-change-transform" style={{ height: '100%', background: color, transform: 'scaleY(.12)', transformOrigin: shape === 'bottom' ? '50% 100%' : '50% 50%' }} />
+        <span key={i} className="w-[2px] shrink-0 rounded-full will-change-transform" style={{ height: '100%', background: color, transform: 'scaleY(.12)', transformOrigin: shape === 'bottom' ? '50% 100%' : '50% 50%' }} />
       ))}
     </div>
   );

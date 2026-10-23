@@ -29,7 +29,7 @@ const grid = 'mt-5 grid grid-cols-2 gap-3 @min-[700px]:grid-cols-4';
 export default function ColorPage() {
   return (
     <Doc eyebrow="Foundations" title="Color" source="ui/styles/tokens.css"
-      lead="Grey-green ink on near-black. Colour is light, and light is content: it marks the one thing that matters on a screen — Luna, the hero, “now”, the accent — never a whole surface.">
+      lead="Grey-green ink on near-black, hairline edges. Colour belongs to places: each tab owns one signal colour, shown in its light, its hero figure and its tab, never on a surface.">
       <DocSection title="Surfaces" description="Stepped from the ground up. Solid surfaces for things that sit; translucent fills for things inside them.">
         <div className={grid}>{SURFACES.map(([n, v, d]) => <Swatch key={n} name={n} value={v} note={d} />)}</div>
       </DocSection>

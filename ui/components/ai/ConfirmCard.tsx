@@ -10,6 +10,7 @@ import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { haptic } from '../../lib/haptics';
 import { EASE, SPRING } from '../../lib/motion';
+import { Button } from '../core/Button';
 
 export type Decision = 'approved' | 'denied' | null;
 
@@ -30,27 +31,26 @@ export function ConfirmCard({ title, detail, children, decision, onDecide, appro
     <AnimatePresence mode="wait" initial={false}>
       {decision ? (
         <motion.div key="done" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: EASE.outSoft }}
-          className={cn('flex items-center gap-2 overflow-hidden py-1 text-detail', className)}>
-          <span className={cn('grid h-5 w-5 place-items-center rounded-full', decision === 'approved' ? 'bg-accent/15 text-accent' : 'bg-fill-3 text-dim')}>
-            {decision === 'approved' ? <Check size={11} strokeWidth={2.6} /> : <X size={11} strokeWidth={2.6} />}
-          </span>
+          className={cn('flex items-center gap-2 overflow-hidden py-1 text-small', className)}>
+          <motion.span initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={SPRING.pop} className={cn('grid h-[18px] w-[18px] place-items-center rounded-full', decision === 'approved' ? 'bg-mint/15 text-mint' : 'bg-fill-3 text-dim')}>
+            {decision === 'approved' ? <Check size={10} strokeWidth={2.8} /> : <X size={10} strokeWidth={2.8} />}
+          </motion.span>
           <span className="truncate text-dim"><span className="text-ink">{decision === 'approved' ? 'Allowed' : 'Denied'}:</span> {title}</span>
         </motion.div>
       ) : (
-        <motion.div key="ask" initial={{ opacity: 0, y: 8, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.16 } }} transition={SPRING.pop}
+        <motion.div key="ask" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.14 } }} transition={SPRING.pop}
           className={cn('card overflow-hidden !rounded-list', className)}>
-          <div className="flex gap-3 px-4 pt-4">
-            <span className={cn('grid h-9 w-9 shrink-0 place-items-center rounded-full', danger ? 'bg-danger/10 text-danger' : 'bg-accent/10 text-accent')}><ShieldCheck size={18} strokeWidth={1.8} /></span>
-            <div className="min-w-0 flex-1">
+          <div className="flex gap-2.5 px-3.5 pt-3.5">
+            <span className={cn('grid h-7 w-7 shrink-0 place-items-center rounded-full', danger ? 'bg-danger/[.12] text-danger' : 'bg-tab/[.12] text-tab')}><ShieldCheck size={14} strokeWidth={1.7} /></span>
+            <div className="min-w-0 flex-1 pt-0.5">
               <p className="text-body leading-snug text-bright">{title}</p>
-              {detail && <p className="mt-1 text-small leading-relaxed text-dim">{detail}</p>}
+              {detail && <p className="mt-0.5 text-small leading-relaxed text-dim">{detail}</p>}
             </div>
           </div>
-          {children && <div className="mx-4 mt-3 rounded-field border border-line bg-raised p-3 text-small text-ink">{children}</div>}
-          <div className="flex justify-end gap-2 px-4 pt-3.5 pb-4">
-            <button type="button" onClick={() => { haptic('select'); onDecide('denied'); }} className="pressable h-10 rounded-full border border-white/[.14] bg-fill-3 px-4 text-[14px] text-bright hover:bg-white/[.11]">{denyLabel}</button>
-            <button type="button" onClick={() => { haptic('heavy'); onDecide('approved'); }}
-              className={cn('pressable h-10 rounded-full px-4 text-[14px] font-medium', danger ? 'bg-danger text-white' : 'bg-bright text-bg shadow-glow')}>{approveLabel}</button>
+          {children && <div className="mx-3.5 mt-2.5 rounded-field bg-fill-2 px-3 py-2.5 text-small text-ink">{children}</div>}
+          <div className="flex justify-end gap-1.5 px-3.5 pt-3 pb-3.5">
+            <Button size="sm" variant="ghost" onClick={() => { haptic('select'); onDecide('denied'); }}>{denyLabel}</Button>
+            <Button size="sm" variant={danger ? 'danger' : 'primary'} onClick={() => { haptic('heavy'); onDecide('approved'); }}>{approveLabel}</Button>
           </div>
         </motion.div>
       )}

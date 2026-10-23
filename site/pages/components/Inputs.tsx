@@ -7,7 +7,7 @@ import { Doc, DocSection, Rules, Usage, Why } from '../../kit/Doc';
 export default function InputsPage() {
   return (
     <Doc eyebrow="Components" title="Inputs" source="ui/components/core/Field.tsx"
-      lead="Fields are calm wells: a 4% fill, a hairline that brightens on focus, 14px corners. Labels speak in the mono index voice above them. On phones text is 16px so the browser never zooms in.">
+      lead="Fields are calm wells: a faint fill, a hairline that brightens on focus, 10px corners, a quiet label above. 44px tall on phones with 16px text (the browser never zooms in), 38px on desktop.">
       <Demo title="Form" controls={{ hints: bool(true), error: bool(false) }} center={false}
         code={`<Field label="Email" hint="We never share it.">\n  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />\n</Field>`}>
         {(v) => <FormDemo {...v} />}
@@ -24,7 +24,7 @@ export default function InputsPage() {
           { do: '16px text in fields on phones (text-input). iOS zooms into anything smaller.', dont: 'Placeholder as the label. It disappears exactly when you need it.' },
           { do: 'Keep typed text through errors, navigation and reloads (drafts).', dont: 'Replace the local value with the server value after a failed save.' },
         ]} />
-        <Why><p>Fields are 48px on phones and 44px on desktop — finger vs. pointer. Invalid fields set <code>aria-invalid</code>, which the recipe turns into a red hairline; the message below has <code>role="alert"</code>.</p></Why>
+        <Why><p>Fields are 44px on phones and 38px on desktop — finger vs. pointer. Invalid fields set <code>aria-invalid</code>, which the recipe turns into a red hairline; the message below has <code>role="alert"</code>.</p></Why>
       </DocSection>
     </Doc>
   );

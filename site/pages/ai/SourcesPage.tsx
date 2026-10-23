@@ -16,7 +16,7 @@ export default function SourcesPage() {
         <Demo minHeight={160} code={`<SourceCards sources={sources} />`}>{() => <div className="w-full max-w-[660px]"><SourceCards sources={[...SOURCES, { title: 'Wave equation — derivation', where: 'en.wikipedia.org', href: 'https://en.wikipedia.org/wiki/Wave_equation' }]} /></div>}</Demo>
       </DocSection>
       <DocSection title="Compact" description="For collapsed answers and chat history.">
-        <Demo minHeight={120} code={`<SourceStack sources={sources} onClick={open} />`}>{() => <><SourceStack sources={SOURCES} /><span className="text-[14px] text-ink">Due tomorrow<Citation n={1} source={SOURCES[0]} /></span></>}</Demo>
+        <Demo minHeight={120} code={`<SourceStack sources={sources} onClick={open} />`}>{() => <><SourceStack sources={SOURCES} /><span className="text-body text-ink">Due tomorrow<Citation n={1} source={SOURCES[0]} /></span></>}</Demo>
       </DocSection>
       <DocSection title="Rules">
         <Rules items={[

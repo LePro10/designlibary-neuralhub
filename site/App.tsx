@@ -131,9 +131,9 @@ function Index({ route, accent, setAccent, glass, setGlass, calm, setCalm, signa
         ))}
       </nav>
       <div className="space-y-3 border-t-hair border-line px-4 pt-3.5" style={{ paddingBottom: 'max(16px, var(--safe-bottom))' }}>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-meta text-dim">Place</span>
-          <div className="flex flex-wrap justify-end gap-1">
+        <div>
+          <span className="mb-1.5 block text-meta text-dim">Place</span>
+          <div className="flex flex-wrap gap-[5px]">
             <button type="button" aria-label="No place" aria-pressed={!signal} title="none" onClick={() => setSignal('')}
               className={cn('h-3.5 w-3.5 rounded-full border-hair border-white/40 ring-offset-2 ring-offset-chrome', !signal && 'ring-1 ring-bright')} />
             {SIGNALS.map((s) => (

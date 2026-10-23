@@ -7,7 +7,7 @@ import { bool, Demo } from '../../kit/Demo';
 export default function AppShellPage() {
   return (
     <Doc eyebrow="Navigation & Layout" title="App shell" source={['ui/components/layout/AppShell.tsx', 'ui/lib/surface.tsx']}
-      lead="One frame, two bodies. Below 900px of its own width the app wears a floating liquid-glass tab bar; above, a slim sidebar that opens over the content. Everything inside learns which one through <Surface>.">
+      lead="One frame, two bodies. Below 900px of its own width the app wears a floating liquid-glass tab bar; above, a slim sidebar that opens over the content. Everything inside learns which one through <Surface>, and each tab brings its place's light and colour.">
       <Demo title="Phone" controls={{ ambient: bool(true), badges: bool(true) }} padded={false} minHeight={760}
         description="Tap or drag the lens across the tabs. Scroll: the title lifts off and stays, content sinks into a frosted fade. Tap the active tab again to scroll to the top.">
         {(v) => <div className="w-full py-6"><Phone><DemoApp mode="phone" ambient={v.ambient} badges={v.badges} /></Phone></div>}

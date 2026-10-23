@@ -24,12 +24,13 @@ export default function TracePage() {
         <Demo minHeight={140}>{() => <StatusDemo />}</Demo>
       </DocSection>
 
-      <DocSection title="Thinking indicators" description="Pick by what you know. A label when you know what is happening; dots when you only know that something is; the orb when it is the assistant itself.">
-        <Grid cols={4}>
-          <Tile label="shimmer — a known step"><ThinkingIndicator label="Reading your calendar" /></Tile>
+      <DocSection title="Thinking indicators" description="Pick by what you know. The mark at work for the assistant itself (default); a label when you know what is happening; dots when you only know that something is; pulse while waiting for a signal from elsewhere.">
+        <Grid cols={3}>
+          <Tile label="mark — the assistant works (default)"><ThinkingIndicator label="Working" /></Tile>
+          <Tile label="shimmer — a known step"><ThinkingIndicator variant="shimmer" label="Reading your calendar" /></Tile>
           <Tile label="dots — something is happening"><ThinkingIndicator variant="dots" /></Tile>
-          <Tile label="orb — the assistant works"><ThinkingIndicator variant="orb" label="Working" /></Tile>
-          <Tile label="pulse — waiting for a signal"><ThinkingIndicator variant="pulse" label="Waiting for phone" /></Tile>
+          <Tile label="pulse — waiting for a signal"><div data-signal="periwinkle"><ThinkingIndicator variant="pulse" label="Waiting for phone" /></div></Tile>
+          <Tile label="orb — only where the orb is the face"><ThinkingIndicator variant="orb" label="Listening" /></Tile>
         </Grid>
       </DocSection>
 
@@ -50,7 +51,7 @@ export default function TracePage() {
         ]} />
         <Why>
           <p>Status lines change as fast as the model calls tools — on quick models every 100 ms. <code>useStable</code> holds each label for at least 650 ms while working and shows the final state at once. Thoughts linger 900 ms after the last thinking delta, so the window doesn’t snap shut between two tool calls.</p>
-          <p>Label swaps use a 2px blur on a single short text: cheap. Everything that changes height animates height, so the answer below never jumps.</p>
+          <p>Label swaps use a 2px blur on a single short text: cheap. Everything that changes height animates height, so the answer below never jumps. The mark at work replaces the glowing orb in the trace: it says “Luna” without adding a second source of light to the screen.</p>
         </Why>
       </DocSection>
 
@@ -58,7 +59,7 @@ export default function TracePage() {
         <Usage code={`// steps come from your event stream\nconst steps: TraceStep[] = [\n  { id: 's1', kind: 'status', label: 'Checking what is due', state: 'done' },\n  { id: 'cal', label: 'Calendar', detail: 'today 17:00–19:00', Icon: CalendarDays, state: 'running' },\n];\n\n<AgentTrace steps={steps} working thinking={thoughts} isThinking={lastDeltaWasThinking} seconds={elapsed} />`} />
         <Props rows={[
           { name: 'steps', type: 'TraceStep[]', description: '{ id, kind?: "tool" | "status", label, detail?, Icon?, state: "running" | "done" | "error" | "waiting", ms? }' },
-          { name: 'working', type: 'boolean', description: 'The run is active (orb + shimmer). Off: summary “Used 3 tools · 4.2s”.' },
+          { name: 'working', type: 'boolean', description: 'The run is active (mark at work + shimmer). Off: summary “Used 3 tools · 4.2s”.' },
           { name: 'thinking / isThinking', type: 'string / boolean', description: 'Reasoning text, and whether the latest delta was reasoning (shows the live window).' },
           { name: 'stopped', type: 'boolean', description: 'Ended by the user — header says “Stopped”.' },
           { name: 'traceLabel()', type: 'fn', description: 'The header logic, exported for status bars elsewhere.' },
@@ -76,7 +77,7 @@ function Run({ speed, thoughts, expanded }: { speed: number; thoughts: boolean; 
         {r.working ? <Button size="xs" variant="ghost" Icon={Square} onClick={r.stop}>Stop</Button> : <Button size="xs" variant="ghost" Icon={RotateCcw} onClick={r.play}>Replay</Button>}
       </div>
       <AgentTrace steps={r.steps} working={r.working} thinking={thoughts ? r.thinking : undefined} isThinking={r.isThinking} seconds={r.seconds} stopped={!r.working && !r.answer} defaultOpen={expanded} />
-      {r.answer && <p className="fade-in text-[15.5px] leading-relaxed text-ink">You have <strong className="font-medium text-bright">34 minutes</strong> until gym — enough for one focused block…</p>}
+      {r.answer && <p className="fade-in text-body leading-relaxed text-ink">You have <strong className="font-medium text-bright">34 minutes</strong> until gym — enough for one focused block…</p>}
     </div>
   );
 }

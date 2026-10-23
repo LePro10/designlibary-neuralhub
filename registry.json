@@ -24,8 +24,8 @@
         "StatusLine"
       ],
       "files": [
-        "ui/components/ai/AssistantOrb.tsx",
         "ui/components/ai/stream.ts",
+        "ui/components/effects/LogoLoader.tsx",
         "ui/components/effects/Shimmer.tsx",
         "ui/lib/cn.ts",
         "ui/lib/motion.ts"
@@ -36,10 +36,10 @@
       ],
       "copy": [
         "ui/components/ai/AgentTrace.tsx",
-        "ui/components/ai/AssistantOrb.tsx",
         "ui/components/ai/stream.ts",
+        "ui/components/effects/Logo.tsx",
+        "ui/components/effects/LogoLoader.tsx",
         "ui/components/effects/Shimmer.tsx",
-        "ui/components/effects/VoiceOrb.tsx",
         "ui/lib/cn.ts",
         "ui/lib/motion.ts"
       ],
@@ -95,12 +95,13 @@
       ]
     },
     "ui/components/ai/Composer.tsx": {
-      "summary": "The assistant's input: a glass pill that grows to five lines.",
+      "summary": "The assistant's input: a slim glass pill (44px on phones, 40 on desktop)",
       "exports": [
         "Attachment",
         "ComposerHandle",
         "ComposerProps",
         "Composer",
+        "SendButton",
         "ComposerDock"
       ],
       "files": [
@@ -137,6 +138,7 @@
         "ConfirmCard"
       ],
       "files": [
+        "ui/components/core/Button.tsx",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/motion.ts"
@@ -147,6 +149,7 @@
       ],
       "copy": [
         "ui/components/ai/ConfirmCard.tsx",
+        "ui/components/core/Button.tsx",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/motion.ts"
@@ -185,12 +188,14 @@
       ]
     },
     "ui/components/ai/EmptyChatHero.tsx": {
-      "summary": "The first screen of a chat: the orb, a greeting with the name in dim, and",
+      "summary": "The first screen of a chat: the mark (or a small orb), a greeting that",
       "exports": [
         "EmptyChatHero"
       ],
       "files": [
         "ui/components/ai/AssistantOrb.tsx",
+        "ui/components/effects/LogoLoader.tsx",
+        "ui/components/effects/RevealText.tsx",
         "ui/lib/cn.ts",
         "ui/lib/motion.ts"
       ],
@@ -200,6 +205,9 @@
       "copy": [
         "ui/components/ai/EmptyChatHero.tsx",
         "ui/components/ai/AssistantOrb.tsx",
+        "ui/components/effects/Logo.tsx",
+        "ui/components/effects/LogoLoader.tsx",
+        "ui/components/effects/RevealText.tsx",
         "ui/components/effects/VoiceOrb.tsx",
         "ui/lib/cn.ts",
         "ui/lib/motion.ts"
@@ -238,7 +246,7 @@
       ]
     },
     "ui/components/ai/ModelPill.tsx": {
-      "summary": "Which model answers this chat. A quiet pill in the chat header; opens a",
+      "summary": "Which model answers this chat. A quiet pill in the chat header that opens a",
       "exports": [
         "ModelOption",
         "ModelPill"
@@ -273,6 +281,7 @@
         "QuestionCard"
       ],
       "files": [
+        "ui/components/core/Button.tsx",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
@@ -284,6 +293,7 @@
       ],
       "copy": [
         "ui/components/ai/QuestionCard.tsx",
+        "ui/components/core/Button.tsx",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
@@ -378,6 +388,7 @@
       ],
       "files": [
         "ui/components/ai/AssistantOrb.tsx",
+        "ui/components/effects/LogoLoader.tsx",
         "ui/components/effects/Shimmer.tsx",
         "ui/lib/cn.ts"
       ],
@@ -387,9 +398,12 @@
       "copy": [
         "ui/components/ai/Thinking.tsx",
         "ui/components/ai/AssistantOrb.tsx",
+        "ui/components/effects/Logo.tsx",
+        "ui/components/effects/LogoLoader.tsx",
         "ui/components/effects/Shimmer.tsx",
         "ui/components/effects/VoiceOrb.tsx",
-        "ui/lib/cn.ts"
+        "ui/lib/cn.ts",
+        "ui/lib/motion.ts"
       ],
       "allPackages": [
         "motion"
@@ -509,7 +523,7 @@
       "allPackages": []
     },
     "ui/components/core/Button.tsx": {
-      "summary": "Buttons. Always pill-shaped; one main action per view gets `primary`",
+      "summary": "Buttons. Pill-shaped, light type, no glow. One action per view is `primary`",
       "exports": [
         "ButtonVariant",
         "ButtonSize",
@@ -522,18 +536,20 @@
         "ui/lib/cn.ts"
       ],
       "packages": [
-        "lucide-react"
+        "lucide-react",
+        "motion"
       ],
       "copy": [
         "ui/components/core/Button.tsx",
         "ui/lib/cn.ts"
       ],
       "allPackages": [
-        "lucide-react"
+        "lucide-react",
+        "motion"
       ]
     },
     "ui/components/core/Chips.tsx": {
-      "summary": "Chips filter, Pills label. Chips are buttons (h-9, scroll sideways on",
+      "summary": "Chips filter, Pills label. Chips are buttons (32px, hairline, scroll",
       "exports": [
         "ChipOption",
         "Chips",
@@ -588,7 +604,7 @@
       ]
     },
     "ui/components/core/Field.tsx": {
-      "summary": "Inputs. 16px text on phones (iOS/Android never zoom in), 14.5px on desktop.",
+      "summary": "Inputs. Calm wells: a faint fill, a hairline that brightens on focus,",
       "exports": [
         "inputClass",
         "Field",
@@ -600,18 +616,20 @@
         "ui/lib/cn.ts"
       ],
       "packages": [
-        "lucide-react"
+        "lucide-react",
+        "motion"
       ],
       "copy": [
         "ui/components/core/Field.tsx",
         "ui/lib/cn.ts"
       ],
       "allPackages": [
-        "lucide-react"
+        "lucide-react",
+        "motion"
       ]
     },
     "ui/components/core/List.tsx": {
-      "summary": "Grouped list (iOS settings style) and its row. Icons are quiet monochrome",
+      "summary": "Grouped list (iOS settings style) and its row. 46px rows, a quiet icon",
       "exports": [
         "List",
         "RowProps",
@@ -632,7 +650,7 @@
       ]
     },
     "ui/components/core/Segmented.tsx": {
-      "summary": "Segmented control with a sliding pill. `md` is a page's main switcher",
+      "summary": "Segmented control. The active segment is a slightly raised pill that slides",
       "exports": [
         "SegmentedOption",
         "Segmented"
@@ -658,7 +676,7 @@
       ]
     },
     "ui/components/core/Slider.tsx": {
-      "summary": "Slider. The track fills with a soft accent gradient, the thumb swells while",
+      "summary": "Slider. A 4px track that fills in the place's colour, an 18px thumb that",
       "exports": [
         "Slider"
       ],
@@ -701,7 +719,7 @@
       ]
     },
     "ui/components/core/Switch.tsx": {
-      "summary": "Switch (spring thumb that stretches while pressed) and Check (round check",
+      "summary": "Switch and Check.",
       "exports": [
         "Switch",
         "Check"
@@ -725,7 +743,7 @@
       ]
     },
     "ui/components/data/BarChart.tsx": {
-      "summary": "Bar chart you can scrub. Thin bars with round ends, a quiet dashed",
+      "summary": "Bar chart you can scrub. Thin bars (max 14px) with round ends, a quiet",
       "exports": [
         "BarChart"
       ],
@@ -877,6 +895,27 @@
         "motion"
       ]
     },
+    "ui/components/data/TickRing.tsx": {
+      "summary": "Tick ring: a dial of 60 hairline ticks that light up one after another,",
+      "exports": [
+        "TickRing"
+      ],
+      "files": [
+        "ui/lib/cn.ts",
+        "ui/lib/motion.ts"
+      ],
+      "packages": [
+        "motion"
+      ],
+      "copy": [
+        "ui/components/data/TickRing.tsx",
+        "ui/lib/cn.ts",
+        "ui/lib/motion.ts"
+      ],
+      "allPackages": [
+        "motion"
+      ]
+    },
     "ui/components/data/scrub.ts": {
       "summary": "Scrubbing a chart with mouse or finger.",
       "exports": [
@@ -894,12 +933,12 @@
       "allPackages": []
     },
     "ui/components/effects/Ambient.tsx": {
-      "summary": "Full-bleed ambient light at the top of a page: a soft mesh gradient that",
+      "summary": "Ambient light at the top of a page: soft, two- or three-coloured light that",
       "exports": [
+        "AmbientMotion",
         "Ambient"
       ],
       "files": [
-        "ui/components/effects/MeshGradient.tsx",
         "ui/lib/cn.ts",
         "ui/lib/tokens.ts"
       ],
@@ -908,7 +947,6 @@
       ],
       "copy": [
         "ui/components/effects/Ambient.tsx",
-        "ui/components/effects/MeshGradient.tsx",
         "ui/lib/cn.ts",
         "ui/lib/tokens.ts"
       ],
@@ -941,7 +979,7 @@
       ]
     },
     "ui/components/effects/LightBorder.tsx": {
-      "summary": "Light border — the \"Now\" frame: a light runs around the edge and a glow",
+      "summary": "Light border — the \"Now\" frame: a thin light runs around the edge and a",
       "exports": [
         "LightBorderProps",
         "LightBorder"
@@ -994,6 +1032,24 @@
       ],
       "allPackages": []
     },
+    "ui/components/effects/LogoLoader.tsx": {
+      "summary": "The mark at work: a short light runs along the \"n\" while the dot breathes.",
+      "exports": [
+        "LogoLoader"
+      ],
+      "files": [
+        "ui/components/effects/Logo.tsx",
+        "ui/lib/cn.ts"
+      ],
+      "packages": [],
+      "copy": [
+        "ui/components/effects/LogoLoader.tsx",
+        "ui/components/effects/Logo.tsx",
+        "ui/lib/cn.ts",
+        "ui/lib/motion.ts"
+      ],
+      "allPackages": []
+    },
     "ui/components/effects/Magnetic.tsx": {
       "summary": "Magnetic: the child leans towards the pointer while it is near, and springs",
       "exports": [
@@ -1015,23 +1071,10 @@
         "motion"
       ]
     },
-    "ui/components/effects/MeshGradient.tsx": {
-      "summary": "Mesh-gradient light, rendered once: a still image, not an animation.",
+    "ui/components/effects/Odometer.tsx": {
+      "summary": "Odometer: every digit is a reel 0–9 that rolls to its place on a spring",
       "exports": [
-        "MeshGradientProps",
-        "MeshGradient",
-        "PALETTES"
-      ],
-      "files": [],
-      "packages": [],
-      "copy": [
-        "ui/components/effects/MeshGradient.tsx"
-      ],
-      "allPackages": []
-    },
-    "ui/components/effects/NumberTicker.tsx": {
-      "summary": "Number ticker: each digit is a column 0–9 that rolls to its place on a",
-      "exports": [
+        "Odometer",
         "NumberTicker"
       ],
       "files": [
@@ -1042,7 +1085,7 @@
         "motion"
       ],
       "copy": [
-        "ui/components/effects/NumberTicker.tsx",
+        "ui/components/effects/Odometer.tsx",
         "ui/lib/cn.ts",
         "ui/lib/motion.ts"
       ],
@@ -1068,6 +1111,27 @@
         "ui/lib/motion.ts"
       ],
       "allPackages": []
+    },
+    "ui/components/effects/RevealText.tsx": {
+      "summary": "Lines that rise out of a mask, as if set: for page titles and the one",
+      "exports": [
+        "RevealText"
+      ],
+      "files": [
+        "ui/lib/cn.ts",
+        "ui/lib/motion.ts"
+      ],
+      "packages": [
+        "motion"
+      ],
+      "copy": [
+        "ui/components/effects/RevealText.tsx",
+        "ui/lib/cn.ts",
+        "ui/lib/motion.ts"
+      ],
+      "allPackages": [
+        "motion"
+      ]
     },
     "ui/components/effects/Shimmer.tsx": {
       "summary": "\"Working…\" label with a light sweeping across it, compositor only (see",
@@ -1098,6 +1162,29 @@
         "ui/lib/cn.ts"
       ],
       "allPackages": []
+    },
+    "ui/components/effects/TaskCheck.tsx": {
+      "summary": "Task check: done in three precise steps, 520 ms in all — the circle fills",
+      "exports": [
+        "TaskCheck"
+      ],
+      "files": [
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/motion.ts"
+      ],
+      "packages": [
+        "motion"
+      ],
+      "copy": [
+        "ui/components/effects/TaskCheck.tsx",
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/motion.ts"
+      ],
+      "allPackages": [
+        "motion"
+      ]
     },
     "ui/components/effects/TextScramble.tsx": {
       "summary": "Decode: characters cycle through glyphs and settle left to right into the",
@@ -1145,17 +1232,21 @@
         "ui/lib/cn.ts",
         "ui/lib/surface.tsx"
       ],
-      "packages": [],
+      "packages": [
+        "motion"
+      ],
       "copy": [
         "ui/components/layout/AppShell.tsx",
         "ui/lib/cn.ts",
         "ui/lib/hooks.ts",
         "ui/lib/surface.tsx"
       ],
-      "allPackages": []
+      "allPackages": [
+        "motion"
+      ]
     },
     "ui/components/layout/Page.tsx": {
-      "summary": "A scrollable screen with a large title — and the one owner of page spacing.",
+      "summary": "A scrollable screen with a large, light title — and the one owner of page spacing.",
       "exports": [
         "PageProps",
         "Page",
@@ -1164,6 +1255,7 @@
       "files": [
         "ui/components/effects/Ambient.tsx",
         "ui/lib/cn.ts",
+        "ui/lib/motion.ts",
         "ui/lib/tokens.ts"
       ],
       "packages": [
@@ -1173,8 +1265,8 @@
       "copy": [
         "ui/components/layout/Page.tsx",
         "ui/components/effects/Ambient.tsx",
-        "ui/components/effects/MeshGradient.tsx",
         "ui/lib/cn.ts",
+        "ui/lib/motion.ts",
         "ui/lib/tokens.ts"
       ],
       "allPackages": [
@@ -1191,7 +1283,8 @@
       "files": [
         "ui/lib/cn.ts",
         "ui/lib/hooks.ts",
-        "ui/lib/motion.ts"
+        "ui/lib/motion.ts",
+        "ui/lib/tokens.ts"
       ],
       "packages": [
         "lucide-react",
@@ -1201,7 +1294,8 @@
         "ui/components/layout/Sidebar.tsx",
         "ui/lib/cn.ts",
         "ui/lib/hooks.ts",
-        "ui/lib/motion.ts"
+        "ui/lib/motion.ts",
+        "ui/lib/tokens.ts"
       ],
       "allPackages": [
         "lucide-react",
@@ -1218,7 +1312,8 @@
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
-        "ui/lib/motion.ts"
+        "ui/lib/motion.ts",
+        "ui/lib/tokens.ts"
       ],
       "packages": [
         "lucide-react",
@@ -1229,7 +1324,8 @@
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
-        "ui/lib/motion.ts"
+        "ui/lib/motion.ts",
+        "ui/lib/tokens.ts"
       ],
       "allPackages": [
         "lucide-react",
@@ -1275,8 +1371,33 @@
         "react-dom"
       ]
     },
+    "ui/components/overlays/ConfirmButton.tsx": {
+      "summary": "Confirm inside the button itself — no dialog. The first tap arms it: the",
+      "exports": [
+        "ConfirmButton"
+      ],
+      "files": [
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/motion.ts"
+      ],
+      "packages": [
+        "lucide-react",
+        "motion"
+      ],
+      "copy": [
+        "ui/components/overlays/ConfirmButton.tsx",
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/motion.ts"
+      ],
+      "allPackages": [
+        "lucide-react",
+        "motion"
+      ]
+    },
     "ui/components/overlays/ConfirmSheet.tsx": {
-      "summary": "Confirm before something that cannot be taken back. On phones a short",
+      "summary": "Confirm before something that is irreversible AND external: sending to",
       "exports": [
         "ConfirmSheet"
       ],
@@ -1315,6 +1436,7 @@
       ],
       "files": [
         "ui/components/overlays/Menu.tsx",
+        "ui/components/overlays/MenuList.tsx",
         "ui/components/overlays/geometry.ts",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
@@ -1329,16 +1451,14 @@
       "copy": [
         "ui/components/overlays/ContextMenu.tsx",
         "ui/components/overlays/Menu.tsx",
-        "ui/components/overlays/Sheet.tsx",
+        "ui/components/overlays/MenuList.tsx",
         "ui/components/overlays/geometry.ts",
         "ui/lib/cn.ts",
-        "ui/lib/focus-trap.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
         "ui/lib/layers.ts",
         "ui/lib/motion.ts",
-        "ui/lib/surface.tsx",
-        "ui/lib/tokens.ts"
+        "ui/lib/surface.tsx"
       ],
       "allPackages": [
         "lucide-react",
@@ -1346,21 +1466,47 @@
         "react-dom"
       ]
     },
+    "ui/components/overlays/Disclosure.tsx": {
+      "summary": "Inline editing instead of a sheet. A row that opens its content right",
+      "exports": [
+        "Disclosure",
+        "PickerOption",
+        "InlinePicker"
+      ],
+      "files": [
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/motion.ts"
+      ],
+      "packages": [
+        "lucide-react",
+        "motion"
+      ],
+      "copy": [
+        "ui/components/overlays/Disclosure.tsx",
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/motion.ts"
+      ],
+      "allPackages": [
+        "lucide-react",
+        "motion"
+      ]
+    },
     "ui/components/overlays/Menu.tsx": {
-      "summary": "Click menu for toolbars (sort, filter, \"more\", account switch).",
+      "summary": "Pull-down menu for toolbars and rows (sort, filter, \"more\", account switch,",
       "exports": [
         "MenuEntry",
         "menuKeys",
         "Menu"
       ],
       "files": [
-        "ui/components/overlays/Sheet.tsx",
+        "ui/components/overlays/MenuList.tsx",
         "ui/components/overlays/geometry.ts",
-        "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/layers.ts",
-        "ui/lib/surface.tsx",
-        "ui/lib/tokens.ts"
+        "ui/lib/motion.ts",
+        "ui/lib/surface.tsx"
       ],
       "packages": [
         "lucide-react",
@@ -1369,16 +1515,48 @@
       ],
       "copy": [
         "ui/components/overlays/Menu.tsx",
-        "ui/components/overlays/Sheet.tsx",
+        "ui/components/overlays/Menu.tsx",
+        "ui/components/overlays/MenuList.tsx",
         "ui/components/overlays/geometry.ts",
         "ui/lib/cn.ts",
-        "ui/lib/focus-trap.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
         "ui/lib/layers.ts",
         "ui/lib/motion.ts",
-        "ui/lib/surface.tsx",
-        "ui/lib/tokens.ts"
+        "ui/lib/surface.tsx"
+      ],
+      "allPackages": [
+        "lucide-react",
+        "motion",
+        "react-dom"
+      ]
+    },
+    "ui/components/overlays/MenuList.tsx": {
+      "summary": "The one look of every small menu (pull-down, context menu): a translucent",
+      "exports": [
+        "MENU_SURFACE",
+        "menuHeight",
+        "MenuItems"
+      ],
+      "files": [
+        "ui/components/overlays/Menu.tsx",
+        "ui/lib/cn.ts"
+      ],
+      "packages": [
+        "lucide-react",
+        "motion"
+      ],
+      "copy": [
+        "ui/components/overlays/MenuList.tsx",
+        "ui/components/overlays/Menu.tsx",
+        "ui/components/overlays/MenuList.tsx",
+        "ui/components/overlays/geometry.ts",
+        "ui/lib/cn.ts",
+        "ui/lib/haptics.ts",
+        "ui/lib/hooks.ts",
+        "ui/lib/layers.ts",
+        "ui/lib/motion.ts",
+        "ui/lib/surface.tsx"
       ],
       "allPackages": [
         "lucide-react",
@@ -1387,7 +1565,7 @@
       ]
     },
     "ui/components/overlays/Sheet.tsx": {
-      "summary": "Bottom sheet on phones (drag handle, snap points, flick to dismiss),",
+      "summary": "Panel for long tasks — writing a mail, editing a profile, picking files.",
       "exports": [
         "SheetProps",
         "Sheet"
@@ -1646,6 +1824,11 @@
         "SERIES",
         "AMBIENT",
         "AmbientName",
+        "AMBIENT_POSE",
+        "SIGNALS",
+        "Signal",
+        "PLACES",
+        "Place",
         "ACCENTS",
         "Accent",
         "GLASS_LEVELS",

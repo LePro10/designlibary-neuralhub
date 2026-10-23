@@ -6,7 +6,7 @@ import { DemoApp } from './demoApp';
 export default function SidebarPage() {
   return (
     <Doc eyebrow="Navigation & Layout" title="Sidebar" source="ui/components/layout/Sidebar.tsx"
-      lead="A 76px rail of quiet icons. Point at it and it opens to 232px over the page with a spring and a long soft shadow — labels and shortcuts fade in, nothing underneath moves. The active item carries a highlight that slides between entries.">
+      lead="A 64px rail of quiet icons. Point at it and it opens to 220px over the page on a spring — labels and shortcuts fade in, nothing underneath moves. The active item wears its place's colour, and its highlight slides between entries.">
       <Demo padded={false} minHeight={420}>{() => <div className="w-full p-4 @min-[760px]:p-8"><Browser height={640}><DemoApp mode="desktop" ambient /></Browser></div>}</Demo>
       <DocSection title="Rules">
         <Rules items={[

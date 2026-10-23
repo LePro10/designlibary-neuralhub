@@ -10,7 +10,7 @@ import { Doc, DocSection, Grid, Rules, Tile, Why } from '../../kit/Doc';
 export default function ListsPage() {
   return (
     <Doc eyebrow="Components" title="Lists & Rows" source="ui/components/core/List.tsx"
-      lead="The grouped list is the workhorse: a card with hairlines, 54px rows, quiet monochrome icon tiles. It reads as text first — colour is reserved for danger and selection.">
+      lead="The grouped list is the workhorse: 46px rows, quiet icon tiles, separators that start where the text starts. It reads as text first; colour only for danger, selection or the place (tint).">
       <Demo title="Settings group" controls={{ icons: bool(true), details: bool(true), footer: bool(true) }} center={false}
         code={(v) => `<List label="Account"${v.footer ? ' footer="…"' : ''}>\n  <Row${v.icons ? ' Icon={Bell}' : ''} title="Notifications"${v.details ? ' detail="Mail, Luna, reminders"' : ''} onClick={open} />\n  <Row title="Dark mode" trailing={<Switch … />} />\n  <Row Icon={LogOut} title="Sign out" danger onClick={signOut} />\n</List>`}>
         {(v) => <ListDemo {...v} />}

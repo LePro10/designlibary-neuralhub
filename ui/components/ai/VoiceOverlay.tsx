@@ -1,8 +1,8 @@
 /**
  * Voice mode: the orb fills the screen's heart, a status word sits under it,
  * and while the assistant speaks its words run like karaoke — the current
- * phrase lit (accent tint + hairline ring), what was said dims, what comes is
- * faint. Big 56px controls at the bottom; hang-up is the only red.
+ * phrase lit (a soft wash of the place's colour), what was said dims, what
+ * comes is faint. 52px controls at the bottom; hang-up is the only red.
  *
  * Render it inside a positioned container (it is `absolute inset-0`) and
  * wrap it in <AnimatePresence> to fade in/out. The orb swells with `level`.
@@ -58,40 +58,40 @@ export function VoiceOverlay({ state, transcript = '', spokenWords = 0, heard, m
   const speaking = state === 'speaking' && !!transcript;
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.18 } }} transition={{ duration: 0.3 }}
       className={cn('absolute inset-0 z-30 flex flex-col items-center bg-bg', className)}
-      style={{ paddingTop: 'calc(var(--safe-top) + 16px)', paddingBottom: 'calc(var(--safe-bottom) + 28px)' }}>
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_45%_at_50%_40%,color-mix(in_oklab,var(--orb-1)_18%,transparent),transparent_70%)]" />
+      style={{ paddingTop: 'calc(var(--safe-top) + 14px)', paddingBottom: 'calc(var(--safe-bottom) + 24px)' }}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_40%_at_50%_40%,color-mix(in_oklab,var(--orb-1)_12%,transparent),transparent_70%)]" />
       <div className="relative flex w-full max-w-[760px] items-center justify-between px-5">
         <span className="eyebrow">{label}</span>
-        {state !== 'connecting' && state !== 'error' && <span className="text-meta text-dim">{speaking ? 'Talk or tap to interrupt' : 'Just talk'}</span>}
+        {state !== 'connecting' && state !== 'error' && <span className="text-meta text-faint">{speaking ? 'Talk or tap to interrupt' : 'Just talk'}</span>}
       </div>
 
       <div className="relative flex min-h-0 w-full max-w-[640px] flex-1 flex-col items-center justify-center px-6">
         <motion.button type="button" aria-label={speaking || state === 'thinking' ? 'Interrupt' : 'Assistant'}
           onClick={() => { if (speaking || state === 'thinking') { haptic('select'); onInterrupt?.(); } }}
-          className="rounded-full outline-offset-8" initial={{ scale: 0.2, opacity: 0 }} animate={{ scale: 1, opacity: state === 'error' ? 0.5 : 1 }} transition={SPRING.bouncy} whileTap={{ scale: 0.94 }}>
-          <AssistantOrb size={220} state={state === 'thinking' || state === 'connecting' ? 'busy' : 'idle'} level={level ?? fallback} className="!h-[min(58vw,220px)] !w-[min(58vw,220px)]" />
+          className="rounded-full outline-offset-8" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: state === 'error' ? 0.5 : 1 }} transition={SPRING.soft} whileTap={{ scale: 0.95 }}>
+          <AssistantOrb size={184} state={state === 'thinking' || state === 'connecting' ? 'busy' : 'idle'} level={level ?? fallback} className="!h-[min(48vw,184px)] !w-[min(48vw,184px)]" />
         </motion.button>
 
-        <div className="mt-10 flex h-[148px] w-full flex-col items-center text-center">
+        <div className="mt-9 flex h-[140px] w-full flex-col items-center text-center">
           {state === 'thinking' || state === 'connecting'
-            ? <Shimmer className="text-meta tracking-[.14em] uppercase">{STATUS[state]}</Shimmer>
-            : <span className={cn('text-meta tracking-[.14em] uppercase', state === 'error' ? 'text-danger' : 'text-dim')}>{muted && state === 'listening' ? 'Muted' : STATUS[state]}</span>}
+            ? <Shimmer className="eyebrow">{STATUS[state]}</Shimmer>
+            : <span className={cn('eyebrow', state === 'error' && '!text-danger')}>{muted && state === 'listening' ? 'Muted' : STATUS[state]}</span>}
           {speaking ? (
-            <div ref={box} className="fade-y scroller relative mt-3 w-full flex-1 text-title leading-[1.45] font-light @min-[700px]:text-[22px]">
+            <div ref={box} className="fade-y scroller relative mt-2.5 w-full flex-1 text-title leading-[1.45] font-light @min-[700px]:text-headline">
               <p className="py-[1.2em]">
                 {list.map((p, i) => (
                   <span key={i} ref={i === current ? lit : undefined}
-                    className={cn('transition-colors duration-300', i < current ? 'text-ink/55' : i === current ? 'rounded-md bg-accent/[.14] px-1 text-bright ring-1 ring-accent/20 [box-decoration-break:clone] [-webkit-box-decoration-break:clone]' : 'text-faint')}>
+                    className={cn('transition-colors duration-300', i < current ? 'text-ink/50' : i === current ? 'rounded-[6px] bg-tab/[.12] px-1 text-bright [box-decoration-break:clone] [-webkit-box-decoration-break:clone]' : 'text-faint')}>
                     {p.text}
                   </span>
                 ))}
               </p>
             </div>
           ) : (
-            <p className="mt-3 line-clamp-3 text-title leading-[1.4] font-light text-bright">
-              {state === 'error' ? <span className="text-input text-ink/80">Can’t reach the voice service. Check your connection and try again.</span>
+            <p className="mt-2.5 line-clamp-3 text-title leading-[1.4] font-light text-bright">
+              {state === 'error' ? <span className="text-body text-ink/80">Can’t reach the voice service. Check your connection and try again.</span>
                 : muted ? <span className="text-faint">Microphone is off.</span>
                 : heard ? <span className="text-ink/80">{heard}</span>
                 : state === 'listening' ? <span className="text-faint">Go ahead, I’m listening.</span> : null}
@@ -100,12 +100,12 @@ export function VoiceOverlay({ state, transcript = '', spokenWords = 0, heard, m
         </div>
       </div>
 
-      <div className="relative flex items-center gap-4">
+      <div className="relative flex items-center gap-3.5">
         {state === 'error'
-          ? <Round label="Try again" onClick={() => onRetry?.()}><RotateCw size={21} strokeWidth={1.7} /></Round>
-          : onMute && <Round label={muted ? 'Unmute' : 'Mute'} active={muted} disabled={state === 'connecting'} onClick={onMute}>{muted ? <MicOff size={22} strokeWidth={1.7} /> : <Mic size={22} strokeWidth={1.7} />}</Round>}
-        <button type="button" aria-label="End voice mode" onClick={() => { haptic('heavy'); onEnd(); }} className="pressable grid h-14 w-14 place-items-center rounded-full bg-danger/90 text-white hover:bg-danger">
-          <X size={24} strokeWidth={1.8} />
+          ? <Round label="Try again" onClick={() => onRetry?.()}><RotateCw size={19} strokeWidth={1.6} /></Round>
+          : onMute && <Round label={muted ? 'Unmute' : 'Mute'} active={muted} disabled={state === 'connecting'} onClick={onMute}>{muted ? <MicOff size={19} strokeWidth={1.6} /> : <Mic size={19} strokeWidth={1.6} />}</Round>}
+        <button type="button" aria-label="End voice mode" onClick={() => { haptic('heavy'); onEnd(); }} className="pressable grid h-[52px] w-[52px] place-items-center rounded-full bg-danger text-white hover:brightness-110">
+          <X size={21} strokeWidth={1.7} />
         </button>
       </div>
     </motion.div>
@@ -115,7 +115,7 @@ export function VoiceOverlay({ state, transcript = '', spokenWords = 0, heard, m
 function Round({ label, active, disabled, onClick, children }: { label: string; active?: boolean; disabled?: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button type="button" aria-label={label} aria-pressed={active} disabled={disabled} onClick={() => { haptic('select'); onClick(); }}
-      className={cn('pressable grid h-14 w-14 place-items-center rounded-full border transition-colors disabled:opacity-40', active ? 'border-white/20 bg-bright text-bg' : 'border-white/10 bg-fill-3 text-bright hover:bg-white/[.12]')}>
+      className={cn('pressable grid h-[52px] w-[52px] place-items-center rounded-full transition-colors disabled:opacity-40', active ? 'bg-bright text-bg' : 'bg-fill-3 text-bright hover:bg-fill-4')}>
       {children}
     </button>
   );

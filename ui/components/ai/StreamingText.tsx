@@ -34,13 +34,15 @@ export function StreamingText({ text, live = false, smooth = true, caret = true,
   const blocks = shown ? shown.split(/\n{2,}/) : [];
   const showCaret = live && caret;
   return (
-    <div className={cn('selectable space-y-[0.65em] text-[15.5px] leading-[1.62] text-ink [&_strong]:font-medium [&_strong]:text-bright', className)} aria-live={live ? 'polite' : undefined} aria-busy={live || undefined}>
+    <div className={cn('selectable space-y-[0.6em] text-body leading-[1.6] text-ink [&_strong]:font-medium [&_strong]:text-bright',
+      // A thin caret in ink, not a block: the stream is quiet, the words are the event.
+      '[&_.caret]:after:ml-[3px] [&_.caret]:after:w-[1.5px] [&_.caret]:after:h-[1.1em] [&_.caret]:after:rounded-full [&_.caret]:after:bg-ink', className)} aria-live={live ? 'polite' : undefined} aria-busy={live || undefined}>
       {blocks.map((b, bi) => {
         const last = bi === blocks.length - 1;
         const lines = b.split('\n');
         if (lines.every((l) => /^\s*[-•]\s/.test(l))) {
           return (
-            <ul key={bi} className="list-disc space-y-1 pl-5 marker:text-faint">
+            <ul key={bi} className="list-disc space-y-0.5 pl-4.5 marker:text-faint">
               {lines.map((l, li) => <li key={li} className={cn(last && li === lines.length - 1 && showCaret && 'caret')}>{inline(l.replace(/^\s*[-•]\s/, ''), live, counter, sources)}</li>)}
             </ul>
           );
@@ -55,7 +57,7 @@ export function StreamingText({ text, live = false, smooth = true, caret = true,
 function inline(src: string, live: boolean, counter: { i: number }, sources?: Source[]): ReactNode[] {
   return src.split(/(\*\*[^*]+\*\*|`[^`]+`|\[\d+\])/).filter(Boolean).map((seg, k) => {
     if (seg.startsWith('**')) return <strong key={k}>{words(seg.slice(2, -2), live, counter)}</strong>;
-    if (seg.startsWith('`')) return <code key={k} className="rounded-[6px] bg-fill-3 px-1.5 py-0.5 font-mono text-[.86em] text-bright">{seg.slice(1, -1)}</code>;
+    if (seg.startsWith('`')) return <code key={k} className="rounded-[5px] bg-fill-3 px-1 py-px font-mono text-[.84em] text-bright">{seg.slice(1, -1)}</code>;
     const m = seg.match(/^\[(\d+)\]$/);
     if (m) {
       const n = Number(m[1]);

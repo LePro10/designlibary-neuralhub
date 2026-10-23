@@ -1,9 +1,13 @@
 /**
- * The assistant's input: a glass pill that grows to five lines.
+ * The assistant's input: a slim glass pill (44px on phones, 40 on desktop)
+ * that grows to five lines.
  *
- * - The right-hand button morphs with intent: voice orb + mic when empty,
- *   send (bright, with glow) once there is something to send, stop while a
- *   reply streams and the field is empty. Typing stays open during a reply.
+ * - The right-hand button morphs with intent: a quiet mic + voice orb when
+ *   empty, a 32px send button once there is something to send, and — when a
+ *   reply starts — the arrow flies up and out while a stop square scales in,
+ *   with a thin ring running around it until the reply ends. Typing stays
+ *   open during a reply (the button turns back into send).
+ * - Attach opens a small translucent pull-down from the + button.
  * - Attachments are preview tiles: images as thumbnails, other files as small
  *   cards; very long pasted text becomes a card instead of a wall of text.
  *   Files arrive by picker, paste (screenshots) or drop.
@@ -22,7 +26,7 @@ import { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState, type
 import { cn } from '../../lib/cn';
 import { haptic } from '../../lib/haptics';
 import { useFinePointer, useKeyboardOpen } from '../../lib/hooks';
-import { SPRING } from '../../lib/motion';
+import { EASE, SPRING } from '../../lib/motion';
 import { AssistantOrb } from './AssistantOrb';
 import { Waveform } from './Waveform';
 
@@ -56,8 +60,10 @@ export interface ComposerProps {
   /** Return false to refuse (text and attachments stay). */
   onSend: (text: string, attachments: Attachment[]) => void | boolean;
   placeholder?: string;
-  /** A reply is streaming: shows Stop while the field is empty. */
+  /** A reply is streaming: shows Stop (with a running ring) while the field is empty. */
   busy?: boolean;
+  /** 0–1 progress of the reply, if known — draws the ring instead of the spinning arc. */
+  progress?: number;
   onStop?: () => void;
   /** Shows the voice-mode orb. */
   onVoice?: () => void;
@@ -76,7 +82,7 @@ export interface ComposerProps {
   className?: string;
 }
 
-export function Composer({ onSend, placeholder = 'Ask anything', busy, onStop, onVoice, compact, attachments: allowFiles = !compact, dictation = true, maxRows = 5, disabled, defaultValue = '', onTextChange, autoFocus, ref, className }: ComposerProps) {
+export function Composer({ onSend, placeholder = 'Ask anything', busy, progress, onStop, onVoice, compact, attachments: allowFiles = !compact, dictation = true, maxRows = 5, disabled, defaultValue = '', onTextChange, autoFocus, ref, className }: ComposerProps) {
   const [text, setText] = useState(defaultValue);
   const [files, setFiles] = useState<Attachment[]>([]);
   const [menu, setMenu] = useState(false);
@@ -98,7 +104,7 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, onStop, o
     const el = area.current;
     if (!el) return;
     el.style.height = 'auto';
-    el.style.height = `${Math.min(el.scrollHeight, LINE * maxRows + 22)}px`;
+    el.style.height = `${Math.min(el.scrollHeight, LINE * maxRows + 14)}px`;
   }, [text, maxRows, recording]);
 
   const add = (list: Attachment[]) => { if (list.length) { haptic('select'); setFiles((f) => [...f, ...list]); } };
@@ -154,48 +160,53 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, onStop, o
   };
 
   const showStop = busy && !canSend && !!onStop;
+  const showSend = (canSend || showStop) && !recording;
   return (
     <div className={cn('relative', className)}
       onDragOver={(e) => { if (allowFiles && e.dataTransfer.types.includes('Files')) { e.preventDefault(); setDrag(true); } }}
       onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDrag(false); }}
       onDrop={(e) => { if (!allowFiles) return; e.preventDefault(); setDrag(false); addFiles(Array.from(e.dataTransfer.files)); }}>
+      {/* Attach: a small pull-down that grows out of the + button, not a panel. */}
       <AnimatePresence>
         {menu && (
-          <motion.div initial={{ opacity: 0, y: 8, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 6, scale: 0.97 }} transition={SPRING.pop}
-            className="glass absolute bottom-full left-0 z-10 mb-2 flex gap-1 rounded-[20px] p-1.5" style={{ transformOrigin: 'bottom left' }}>
-            {([...(!fine ? [['Camera', Camera, 'camera']] as const : []), ['Photo', ImageIcon, 'image'], ['File', FileText, 'doc']] as const).map(([label, Icon, kind]) => (
-              <button key={label} type="button" onClick={() => pick(kind)} className="flex h-16 w-[76px] flex-col items-center justify-center gap-1.5 rounded-field text-meta text-ink hover:bg-fill-3 active:bg-white/10">
-                <Icon size={19} strokeWidth={1.7} />{label}
-              </button>
+          <motion.div role="menu" initial={{ opacity: 0, scale: 0.86, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.12 } }} transition={SPRING.pop}
+            className="glass absolute bottom-full left-0 z-10 mb-1.5 w-[172px] rounded-menu !bg-popover/[.86] p-1 shadow-menu" style={{ transformOrigin: '18px 100%' }}>
+            {([...(!fine ? [['Take photo', Camera, 'camera']] as const : []), ['Photo', ImageIcon, 'image'], ['File', FileText, 'doc']] as const).map(([label, Icon, kind], i) => (
+              <motion.button key={label} role="menuitem" type="button" onClick={() => pick(kind)}
+                initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.03 + i * 0.022 }}
+                className="flex h-9 w-full items-center gap-2.5 rounded-[9px] px-2.5 text-chip text-bright hover:bg-fill-3 active:bg-fill-4">
+                <Icon size={15} strokeWidth={1.6} className="text-dim" />{label}
+              </motion.button>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className={cn('relative rounded-[28px] border transition-[border-color,box-shadow] duration-300 focus-within:border-white/20',
-        compact ? 'border-white/15 bg-black/40' : 'glass', drag && '!border-accent/60 shadow-[0_0_0_4px_color-mix(in_oklab,var(--color-accent)_15%,transparent)]')}>
+      <div className={cn('relative rounded-[22px] border-hair transition-[border-color,box-shadow] duration-300 focus-within:border-white/20 min-[900px]:rounded-[20px]',
+        compact ? 'border-line-2 bg-fill-1' : 'glass !shadow-none', drag && '!border-accent/50 shadow-[0_0_0_3px_color-mix(in_oklab,var(--color-accent)_12%,transparent)]')}>
         <AnimatePresence initial={false}>
           {files.length > 0 && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={SPRING.sheet} className="overflow-hidden">
-              <div data-no-swipe className="scroll-x flex gap-2 px-3 pt-3 pb-0.5">
+              <div data-no-swipe className="scroll-x flex gap-1.5 px-2.5 pt-2.5">
                 <AnimatePresence initial={false}>{files.map((a) => <Tile key={a.id} a={a} onRemove={() => remove(a.id)} />)}</AnimatePresence>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="flex items-end gap-1 p-1.5">
+        <div className="flex items-end gap-0.5 p-1 min-[900px]:p-[3px]">
           {allowFiles && (
-            <button type="button" aria-label="Attach" aria-expanded={menu} onClick={() => setMenu((o) => !o)} className="pressable grid h-11 w-11 shrink-0 place-items-center rounded-full text-ink hover:bg-fill-3">
-              <motion.span animate={{ rotate: menu ? 45 : 0 }} transition={SPRING.toggle}><Plus size={22} strokeWidth={1.6} /></motion.span>
+            <button type="button" aria-label="Attach" aria-haspopup="menu" aria-expanded={menu} onClick={() => { haptic('select'); setMenu((o) => !o); }}
+              className="pressable relative grid h-9 w-9 shrink-0 place-items-center rounded-full text-dim transition-colors hover:bg-fill-3 hover:text-bright after:absolute after:-inset-1 after:content-[''] min-[900px]:h-[34px] min-[900px]:w-[34px]">
+              <motion.span animate={{ rotate: menu ? 45 : 0 }} transition={SPRING.toggle}><Plus size={18} strokeWidth={1.6} /></motion.span>
             </button>
           )}
-          <div className="relative min-h-11 min-w-0 flex-1">
+          <div className="relative min-h-9 min-w-0 flex-1 min-[900px]:min-h-[34px]">
             <AnimatePresence initial={false} mode="popLayout">
               {recording ? (
-                <motion.div key="rec" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex h-11 min-w-0 items-center gap-3 pl-3">
-                  <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-danger" />
-                  <Waveform className="flex-1" bars={40} height={22} />
+                <motion.div key="rec" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.12 } }} className="flex h-9 min-w-0 items-center gap-2.5 pl-2.5">
+                  <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-danger" />
+                  <Waveform className="flex-1" bars={36} height={18} color="var(--color-ink)" />
                   <RecTimer />
                 </motion.div>
               ) : (
@@ -205,39 +216,30 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, onStop, o
                   onFocus={() => setMenu(false)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229 && fine) { e.preventDefault(); send(); } }}
                   placeholder={placeholder} aria-label={placeholder}
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className={cn('scroller block min-h-11 w-full resize-none bg-transparent py-[11px] text-input leading-[22px] text-bright outline-none placeholder:truncate placeholder:text-dim', allowFiles ? 'pl-1' : 'pl-4')} />
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                  className={cn('scroller block min-h-9 w-full resize-none bg-transparent py-[7px] text-input leading-[22px] text-bright outline-none placeholder:truncate placeholder:text-faint min-[900px]:min-h-[34px] min-[900px]:py-[6px] min-[900px]:text-button', allowFiles ? 'pl-0.5' : 'pl-3')} />
               )}
             </AnimatePresence>
           </div>
 
           <AnimatePresence initial={false} mode="popLayout">
-            {showStop ? (
-              <motion.button key="stop" type="button" aria-label="Stop reply" onClick={() => { haptic('select'); onStop!(); }}
-                initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.4, opacity: 0 }} transition={SPRING.toggle}
-                className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/[.1] text-bright hover:bg-white/[.14] active:scale-95">
-                <svg viewBox="0 0 44 44" className="absolute inset-0 animate-[spin_1.4s_linear_infinite]" aria-hidden="true">
-                  <circle cx="22" cy="22" r="20" fill="none" stroke="var(--color-accent)" strokeOpacity=".7" strokeWidth="1.5" strokeDasharray="22 104" strokeLinecap="round" />
-                </svg>
-                <Square size={13} fill="currentColor" strokeWidth={0} />
-              </motion.button>
-            ) : canSend && !recording ? (
-              <motion.button key="send" type="button" aria-label="Send" onClick={send}
-                initial={{ scale: 0.4, opacity: 0, rotate: -40 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} exit={{ scale: 0.4, opacity: 0 }} transition={SPRING.toggle}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-bright text-bg shadow-[0_0_30px_-6px_color-mix(in_oklab,var(--color-accent)_70%,transparent)] active:scale-95">
-                <ArrowUp size={20} strokeWidth={2.2} />
-              </motion.button>
+            {showSend ? (
+              <motion.div key="send" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0, transition: { duration: 0.12 } }} transition={SPRING.pop}>
+                <SendButton mode={showStop ? 'stop' : 'send'} busy={!!busy} progress={progress}
+                  onClick={() => { if (showStop) { haptic('select'); onStop!(); } else send(); }} />
+              </motion.div>
             ) : (
-              <motion.div key="voice" className="flex" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0 }} transition={SPRING.toggle}>
+              <motion.div key="voice" className="flex" initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.6, opacity: 0, transition: { duration: 0.12 } }} transition={SPRING.pop}>
                 {canDictate && (
                   <button type="button" aria-label={recording ? 'Stop dictation' : 'Dictate'} onClick={() => { haptic('select'); if (recording) stopRec(); else startRec(); }}
-                    className={cn('pressable grid h-11 w-11 shrink-0 place-items-center rounded-full', recording ? 'bg-danger/20 text-danger' : 'text-ink hover:bg-fill-3')}>
-                    {recording ? <Square size={15} fill="currentColor" /> : <Mic size={20} strokeWidth={1.6} />}
+                    className={cn('pressable relative grid h-9 w-9 shrink-0 place-items-center rounded-full after:absolute after:-inset-1 after:content-[""] min-[900px]:h-[34px] min-[900px]:w-[34px]', recording ? 'bg-danger/15 text-danger' : 'text-dim hover:bg-fill-3 hover:text-bright')}>
+                    {recording ? <Square size={12} fill="currentColor" strokeWidth={0} /> : <Mic size={17} strokeWidth={1.6} />}
                   </button>
                 )}
                 {onVoice && !recording && (
-                  <button type="button" aria-label="Voice mode" title="Talk" onClick={() => { haptic('select'); onVoice(); }} className="orb-trigger grid h-11 w-11 shrink-0 place-items-center rounded-full">
-                    <AssistantOrb size={32} state="rest" />
+                  <button type="button" aria-label="Voice mode" title="Talk" onClick={() => { haptic('select'); onVoice(); }}
+                    className="orb-trigger relative grid h-9 w-9 shrink-0 place-items-center rounded-full after:absolute after:-inset-1 after:content-[''] min-[900px]:h-[34px] min-[900px]:w-[34px]">
+                    <AssistantOrb size={24} state="rest" />
                   </button>
                 )}
               </motion.div>
@@ -249,24 +251,65 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, onStop, o
   );
 }
 
+/**
+ * Send ⇄ stop. The arrow flies up and out when a reply starts; a stop square
+ * scales in and a thin ring runs around the button while the answer comes
+ * (real `progress` 0–1 if you have it, else an indeterminate arc). When the
+ * reply ends the arrow comes back from below.
+ */
+export function SendButton({ mode, busy, progress, onClick, className }: {
+  mode: 'send' | 'stop'; busy?: boolean; progress?: number; onClick: () => void; className?: string;
+}) {
+  const ring = busy || mode === 'stop';
+  return (
+    <button type="button" aria-label={mode === 'stop' ? 'Stop reply' : 'Send'} onClick={onClick}
+      className={cn('group relative grid h-9 w-9 shrink-0 place-items-center min-[900px]:h-[34px] min-[900px]:w-[34px]', className)}>
+      <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-bright text-bg transition-transform duration-200 group-active:scale-90 min-[900px]:h-[30px] min-[900px]:w-[30px]">
+        <AnimatePresence initial={false} mode="popLayout">
+          {mode === 'send' ? (
+            <motion.span key="arrow" initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -16, opacity: 0, transition: { duration: 0.22, ease: [0.55, 0, 0.75, 0.2] } }} transition={{ duration: 0.26, ease: EASE.outSoft }}>
+              <ArrowUp size={16} strokeWidth={2.2} />
+            </motion.span>
+          ) : (
+            <motion.span key="stop" initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0, transition: { duration: 0.14 } }} transition={SPRING.pop}>
+              <Square size={10} fill="currentColor" strokeWidth={0} />
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </span>
+      <AnimatePresence>
+        {ring && (
+          <motion.svg key="ring" viewBox="0 0 36 36" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full -rotate-90"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
+            <circle cx="18" cy="18" r="17" fill="none" stroke="var(--color-line-2)" strokeWidth="1.25" />
+            {progress === undefined
+              ? <circle cx="18" cy="18" r="17" fill="none" stroke="var(--color-bright)" strokeWidth="1.25" strokeLinecap="round" pathLength={1} strokeDasharray="0.22 0.78" className="origin-center animate-[spin_1.2s_linear_infinite] [transform-box:fill-box]" />
+              : <motion.circle cx="18" cy="18" r="17" fill="none" stroke="var(--color-bright)" strokeWidth="1.25" strokeLinecap="round" pathLength={1} strokeDasharray="1 1" initial={false} animate={{ strokeDashoffset: 1 - Math.max(0, Math.min(1, progress)) }} transition={{ duration: 0.3, ease: 'linear' }} />}
+          </motion.svg>
+        )}
+      </AnimatePresence>
+    </button>
+  );
+}
+
 function Tile({ a, onRemove }: { a: Attachment; onRemove: () => void }) {
   const name = a.kind === 'file' ? a.file.name || 'File' : a.name;
   return (
-    <motion.div layout initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.85, opacity: 0, transition: { duration: 0.15 } }} transition={SPRING.pop} className="relative mt-1.5 shrink-0" title={name}>
+    <motion.div layout initial={{ scale: 0.88, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.88, opacity: 0, transition: { duration: 0.12 } }} transition={SPRING.pop} className="relative mt-1 shrink-0" title={name}>
       <button type="button" aria-label={`Remove ${name}`} onClick={onRemove}
-        className="absolute -top-1.5 -right-1.5 z-10 grid h-5 w-5 place-items-center rounded-full border border-white/15 bg-card-3 text-ink shadow-md after:absolute after:-inset-2.5 after:content-[''] hover:text-bright">
-        <X size={11} strokeWidth={2.2} />
+        className="absolute -top-1 -right-1 z-10 grid h-[18px] w-[18px] place-items-center rounded-full bg-card-3 text-ink shadow-[0_1px_3px_rgb(0_0_0/.5)] after:absolute after:-inset-3 after:content-[''] hover:text-bright">
+        <X size={10} strokeWidth={2.4} />
       </button>
       {a.kind === 'file' && a.url ? (
-        <img src={a.url} alt={name} className="h-14 w-14 rounded-field border border-white/10 object-cover" />
+        <img src={a.url} alt={name} className="h-12 w-12 rounded-tile border-hair border-white/10 object-cover" />
       ) : (
-        <div className="flex h-14 w-[184px] items-center gap-2.5 rounded-field border border-line-2 bg-fill-2 pr-3 pl-2">
-          <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-tile bg-fill-3 text-accent">
-            {a.kind === 'text' ? <TextQuote size={16} /> : <span className="font-mono text-[9px] font-medium">{ext(a.file.name)}</span>}
+        <div className="flex h-12 w-[168px] items-center gap-2 rounded-field border-hair border-line-2 bg-fill-2 pr-2.5 pl-1.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[7px] bg-fill-3 text-dim">
+            {a.kind === 'text' ? <TextQuote size={14} strokeWidth={1.7} /> : <span className="font-mono text-[8.5px]">{ext(a.file.name)}</span>}
           </span>
           <div className="min-w-0">
-            <div className="truncate text-detail text-bright">{name}</div>
-            <div className="truncate text-[11.5px] text-dim">{a.kind === 'file' ? `${ext(a.file.name)} · ${sizeLabel(a.file.size)}` : `${a.text.split('\n').length.toLocaleString('en')} lines`}</div>
+            <div className="truncate text-meta text-bright">{name}</div>
+            <div className="truncate text-tiny text-dim">{a.kind === 'file' ? `${ext(a.file.name)} · ${sizeLabel(a.file.size)}` : `${a.text.split('\n').length.toLocaleString('en')} lines`}</div>
           </div>
         </div>
       )}
@@ -277,7 +320,7 @@ function Tile({ a, onRemove }: { a: Attachment; onRemove: () => void }) {
 function RecTimer() {
   const [s, setS] = useState(0);
   useEffect(() => { const t = window.setInterval(() => setS((v) => v + 1), 1000); return () => window.clearInterval(t); }, []);
-  return <span className="shrink-0 font-mono text-meta text-dim tabular">{Math.floor(s / 60)}:{String(s % 60).padStart(2, '0')}</span>;
+  return <span className="shrink-0 pr-1 font-mono text-tiny text-dim tabular">{Math.floor(s / 60)}:{String(s % 60).padStart(2, '0')}</span>;
 }
 
 /**
@@ -289,8 +332,8 @@ export function ComposerDock({ children, className }: { children: ReactNode; cla
   const keyboard = useKeyboardOpen();
   return (
     <div className={cn('pointer-events-none absolute inset-x-0 bottom-0 z-20', className)}
-      style={{ paddingBottom: keyboard ? 10 : 'calc(var(--tabbar-space) + 8px)' }}>
-      <div aria-hidden="true" className="absolute inset-x-0 -top-10 bottom-0 bg-[linear-gradient(180deg,rgb(8_9_9/0),rgb(8_9_9/.86)_40%,var(--color-bg))]" />
+      style={{ paddingBottom: keyboard ? 8 : 'calc(var(--tabbar-space) + 6px)' }}>
+      <div aria-hidden="true" className="absolute inset-x-0 -top-8 bottom-0 bg-[linear-gradient(180deg,rgb(8_9_9/0),rgb(8_9_9/.82)_45%,var(--color-bg))]" />
       <div className="pointer-events-auto relative mx-auto w-full max-w-[760px] px-3">{children}</div>
     </div>
   );

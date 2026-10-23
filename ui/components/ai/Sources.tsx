@@ -29,8 +29,8 @@ export function SourceIcon({ source, size = 18 }: { source: Source; size?: numbe
   const c = source.color ?? hueOf(source.where);
   const Icon = source.kind && source.kind !== 'web' ? KIND_ICON[source.kind] : null;
   return (
-    <span className="grid shrink-0 place-items-center rounded-[6px] font-medium text-bg" style={{ width: size, height: size, fontSize: size * 0.55, background: `radial-gradient(120% 120% at 25% 15%, rgb(255 255 255 / .5), transparent 45%), ${c}` }}>
-      {Icon ? <Icon size={size * 0.6} strokeWidth={2.2} /> : source.where.replace(/^www\./, '')[0]?.toUpperCase()}
+    <span className="grid shrink-0 place-items-center rounded-[5px] font-medium text-bg" style={{ width: size, height: size, fontSize: size * 0.56, background: `radial-gradient(120% 120% at 25% 15%, rgb(255 255 255 / .32), transparent 45%), ${c}` }}>
+      {Icon ? <Icon size={size * 0.58} strokeWidth={2} /> : source.where.replace(/^www\./, '')[0]?.toUpperCase()}
     </span>
   );
 }
@@ -46,7 +46,7 @@ export function Citation({ n, source }: { n: number; source?: Source }) {
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         aria-label={source ? `Source ${n}: ${source.title}` : `Source ${n}`}
-        className="mx-[1px] inline-grid h-[17px] min-w-[17px] -translate-y-[1px] place-items-center rounded-[6px] bg-fill-3 px-1 align-middle font-mono text-[10px] text-ink no-underline transition-colors hover:bg-accent/20 hover:text-bright"
+        className="mx-px inline-grid h-[15px] min-w-[15px] -translate-y-px place-items-center rounded-[4px] bg-fill-3 px-[3px] align-middle font-mono text-[9.5px] leading-none text-dim no-underline transition-colors hover:bg-fill-4 hover:text-bright"
       >
         {n}
       </Tag>
@@ -54,15 +54,16 @@ export function Citation({ n, source }: { n: number; source?: Source }) {
         {open && source && (
           <motion.span
             role="tooltip"
-            initial={{ opacity: 0, y: 4, scale: 0.97 }}
+            initial={{ opacity: 0, y: 3, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 2, transition: { duration: 0.12 } }}
+            exit={{ opacity: 0, transition: { duration: 0.1 } }}
             transition={SPRING.pop}
-            className="glass pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-30 block w-[260px] -translate-x-1/2 rounded-field p-3 text-left"
+            style={{ x: '-50%', transformOrigin: '50% 100%' }}
+            className="glass pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-30 block w-[236px] rounded-menu p-2.5 text-left shadow-menu"
           >
-            <span className="flex items-center gap-2"><SourceIcon source={source} size={16} /><span className="truncate text-meta text-dim">{source.where}</span></span>
-            <span className="mt-1.5 block text-small leading-snug text-bright">{source.title}</span>
-            {source.snippet && <span className="mt-1 line-clamp-3 block text-meta leading-relaxed text-dim">{source.snippet}</span>}
+            <span className="flex items-center gap-1.5"><SourceIcon source={source} size={14} /><span className="truncate text-tiny text-dim">{source.where}</span></span>
+            <span className="mt-1 block text-small leading-snug text-bright">{source.title}</span>
+            {source.snippet && <span className="mt-0.5 line-clamp-3 block text-meta leading-relaxed text-dim">{source.snippet}</span>}
           </motion.span>
         )}
       </AnimatePresence>
@@ -73,19 +74,19 @@ export function Citation({ n, source }: { n: number; source?: Source }) {
 /** A row of source cards under an answer; scrolls sideways, numbered like the inline citations. */
 export function SourceCards({ sources, className }: { sources: Source[]; className?: string }) {
   return (
-    <div data-no-swipe className={cn('rail -mx-4 gap-2 px-4', className)}>
+    <div data-no-swipe className={cn('rail -mx-4 gap-1.5 px-4', className)}>
       {sources.map((s, i) => {
         const Tag = s.href ? 'a' : 'div';
         return (
-          <motion.div key={s.title + i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING.soft, delay: Math.min(i, 6) * 0.05 }} className="shrink-0">
+          <motion.div key={s.title + i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ...SPRING.soft, delay: Math.min(i, 6) * 0.03 }} className="shrink-0">
             <Tag {...(s.href ? { href: s.href, target: '_blank', rel: 'noreferrer' } : {})}
-              className="pressable group flex h-[92px] w-[208px] flex-col justify-between rounded-stat border border-line bg-fill-1 p-3 transition-colors hover:border-line-2 hover:bg-fill-2">
-              <span className="line-clamp-2 text-small leading-snug text-bright">{s.title}</span>
-              <span className="flex items-center gap-2">
-                <SourceIcon source={s} size={16} />
-                <span className="min-w-0 flex-1 truncate text-meta text-dim">{s.where}</span>
-                <span className="font-mono text-[10px] text-faint">{i + 1}</span>
-                {s.href && <ArrowUpRight size={13} className="text-faint transition-colors group-hover:text-bright" />}
+              className="pressable group flex h-[76px] w-[184px] flex-col justify-between rounded-stat border-hair border-line-2 bg-fill-1 p-2.5 transition-colors hover:bg-fill-2">
+              <span className="line-clamp-2 text-meta leading-snug text-bright">{s.title}</span>
+              <span className="flex items-center gap-1.5">
+                <SourceIcon source={s} size={14} />
+                <span className="min-w-0 flex-1 truncate text-tiny text-dim">{s.where}</span>
+                <span className="font-mono text-[9.5px] text-faint">{i + 1}</span>
+                {s.href && <ArrowUpRight size={12} strokeWidth={1.75} className="text-faint transition-[color,transform] duration-300 ease-out-soft group-hover:translate-x-px group-hover:-translate-y-px group-hover:text-bright" />}
               </span>
             </Tag>
           </motion.div>
@@ -98,8 +99,8 @@ export function SourceCards({ sources, className }: { sources: Source[]; classNa
 /** Compact "3 sources" pill with stacked icons — for collapsed answers and history. */
 export function SourceStack({ sources, onClick }: { sources: Source[]; onClick?: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="pressable inline-flex h-8 items-center gap-2 rounded-full border border-line bg-fill-1 pr-3 pl-1.5 text-meta text-ink hover:bg-fill-2">
-      <span className="flex">{sources.slice(0, 3).map((s, i) => <span key={i} className={cn('rounded-[7px] ring-2 ring-bg', i && '-ml-1.5')}><SourceIcon source={s} size={18} /></span>)}</span>
+    <button type="button" onClick={onClick} className="pressable relative inline-flex h-7 items-center gap-1.5 rounded-full border-hair border-line-2 pr-2.5 pl-1 text-meta text-ink after:absolute after:-inset-y-2 after:inset-x-0 after:content-[''] hover:bg-fill-2">
+      <span className="flex">{sources.slice(0, 3).map((s, i) => <span key={i} className={cn('rounded-[6px] ring-[1.5px] ring-bg', i && '-ml-1')}><SourceIcon source={s} size={16} /></span>)}</span>
       {sources.length} source{sources.length === 1 ? '' : 's'}
     </button>
   );

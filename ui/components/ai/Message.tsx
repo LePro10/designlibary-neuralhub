@@ -22,26 +22,26 @@ export function UserBubble({ children, attachments, time, clip = 176, animate = 
   useLayoutEffect(() => { const el = ref.current; if (el) { setFull(el.scrollHeight); setLong(el.scrollHeight > clip + 24); } }, [children, clip]);
   return (
     <motion.div
-      initial={animate ? { opacity: 0, y: 12, scale: 0.96 } : false}
+      initial={animate ? { opacity: 0, y: 8, scale: 0.97 } : false}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={SPRING.pop}
       style={{ transformOrigin: '100% 100%' }}
-      className={cn('ml-auto flex max-w-[min(84%,560px)] flex-col items-end gap-1.5', className)}
+      className={cn('ml-auto flex max-w-[min(82%,520px)] flex-col items-end gap-1', className)}
     >
       {attachments && <div className="flex flex-wrap justify-end gap-1.5">{attachments}</div>}
-      <div className="selectable relative rounded-list rounded-br-[8px] border border-white/[.08] bg-fill-3 px-4 py-2.5 text-input leading-[1.5] text-bright">
+      <div className="selectable relative rounded-[18px] rounded-br-[6px] bg-fill-3 px-3.5 py-2 text-body leading-[1.5] text-bright">
         <div ref={ref} className={cn('overflow-hidden whitespace-pre-wrap break-words transition-[max-height] duration-500 ease-out-soft', long && !open && '[mask-image:linear-gradient(180deg,#000_55%,transparent)]')}
           style={{ maxHeight: long ? (open ? full : clip) : undefined }}>
           {children}
         </div>
         {long && (
-          <button type="button" onClick={() => setOpen(!open)} className="-mb-1 flex h-8 items-center gap-1 text-meta text-dim hover:text-ink">
+          <button type="button" onClick={() => setOpen(!open)} className="-mb-1 flex h-7 items-center gap-1 text-meta text-dim hover:text-ink">
             {open ? 'Show less' : 'Show all'}
-            <ChevronDown size={13} className="transition-transform duration-300" style={{ transform: open ? 'rotate(180deg)' : 'none' }} />
+            <ChevronDown size={12} strokeWidth={1.75} className="transition-transform duration-300 ease-out-soft" style={{ transform: open ? 'rotate(180deg)' : 'none' }} />
           </button>
         )}
       </div>
-      {time && <span className="px-1 text-tiny text-faint">{time}</span>}
+      {time && <span className="px-1 text-tiny text-faint tabular">{time}</span>}
     </motion.div>
   );
 }
@@ -49,10 +49,10 @@ export function UserBubble({ children, attachments, time, clip = 176, animate = 
 /** The assistant's answer: no bubble. Optional header (trace), body, footer (sources, actions). */
 export function AssistantMessage({ header, children, footer, className }: { header?: ReactNode; children: ReactNode; footer?: ReactNode; className?: string }) {
   return (
-    <div className={cn('max-w-[680px]', className)}>
+    <div className={cn('max-w-[660px]', className)}>
       {header}
       {children}
-      {footer && <div className="mt-3 space-y-3">{footer}</div>}
+      {footer && <div className="mt-3 space-y-2.5">{footer}</div>}
     </div>
   );
 }
@@ -61,7 +61,7 @@ export type Feedback = 'up' | 'down' | null;
 
 /**
  * Quiet action row: copy (morphs to a check), retry, read aloud, feedback.
- * The icons draw at 32px but keep a 44px touch target. `meta` is a faint
+ * The icons draw at 30px but keep a 44px touch target. `meta` is a faint
  * line at the end (model, tokens, time) — trust signals, not decoration.
  */
 export function MessageActions({ text, onRetry, onSpeak, feedback, onFeedback, meta, extra, className }: {
@@ -71,26 +71,26 @@ export function MessageActions({ text, onRetry, onSpeak, feedback, onFeedback, m
 }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className={cn('-ml-1.5 flex items-center gap-0.5', className)}>
+    <div className={cn('-ml-2 flex items-center', className)}>
       {text !== undefined && (
         <Act label={copied ? 'Copied' : 'Copy'} onClick={async () => { try { await navigator.clipboard.writeText(text); } catch { /* insecure context */ } haptic('success'); setCopied(true); window.setTimeout(() => setCopied(false), 1400); }}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.span key={copied ? 'y' : 'n'} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.14 }}>
-              {copied ? <Check size={15} className="text-mint" /> : <Copy size={15} />}
+              {copied ? <Check size={14} strokeWidth={2} className="text-mint" /> : <Copy size={14} strokeWidth={1.6} />}
             </motion.span>
           </AnimatePresence>
         </Act>
       )}
-      {onRetry && <Act label="Retry" onClick={onRetry}><RotateCcw size={15} /></Act>}
-      {onSpeak && <Act label="Read aloud" onClick={onSpeak}><Volume2 size={15} /></Act>}
+      {onRetry && <Act label="Retry" onClick={onRetry}><RotateCcw size={14} strokeWidth={1.6} /></Act>}
+      {onSpeak && <Act label="Read aloud" onClick={onSpeak}><Volume2 size={14} strokeWidth={1.6} /></Act>}
       {onFeedback && (
         <>
-          <Act label="Good answer" active={feedback === 'up'} onClick={() => onFeedback(feedback === 'up' ? null : 'up')}><ThumbsUp size={15} /></Act>
-          <Act label="Bad answer" active={feedback === 'down'} onClick={() => onFeedback(feedback === 'down' ? null : 'down')}><ThumbsDown size={15} /></Act>
+          <Act label="Good answer" active={feedback === 'up'} onClick={() => onFeedback(feedback === 'up' ? null : 'up')}><ThumbsUp size={14} strokeWidth={1.6} /></Act>
+          <Act label="Bad answer" active={feedback === 'down'} onClick={() => onFeedback(feedback === 'down' ? null : 'down')}><ThumbsDown size={14} strokeWidth={1.6} /></Act>
         </>
       )}
-      {extra?.map((x) => <Act key={x.label} label={x.label} onClick={x.onClick}><x.Icon size={15} /></Act>)}
-      {meta && <span className="ml-2 truncate text-meta text-faint">{meta}</span>}
+      {extra?.map((x) => <Act key={x.label} label={x.label} onClick={x.onClick}><x.Icon size={14} strokeWidth={1.6} /></Act>)}
+      {meta && <span className="ml-1.5 truncate text-tiny text-faint">{meta}</span>}
     </div>
   );
 }
@@ -98,8 +98,8 @@ export function MessageActions({ text, onRetry, onSpeak, feedback, onFeedback, m
 function Act({ label, onClick, active, children }: { label: string; onClick: () => void; active?: boolean; children: ReactNode }) {
   return (
     <button type="button" aria-label={label} title={label} aria-pressed={active} onClick={() => { haptic('select'); onClick(); }}
-      className={cn('pressable relative grid h-8 w-8 place-items-center rounded-full transition-colors after:absolute after:-inset-1.5 after:content-[""]',
-        active ? 'bg-fill-3 text-bright' : 'text-dim hover:bg-fill-2 hover:text-bright')}>
+      className={cn('pressable relative grid h-[30px] w-[30px] place-items-center rounded-full transition-colors after:absolute after:-inset-[7px] after:content-[""]',
+        active ? 'bg-fill-3 text-bright' : 'text-faint hover:bg-fill-2 hover:text-bright')}>
       {children}
     </button>
   );
@@ -108,8 +108,8 @@ function Act({ label, onClick, active, children }: { label: string; onClick: () 
 /** Day / section divider in a long conversation. */
 export function ChatDivider({ children }: { children: ReactNode }) {
   return (
-    <div className="my-6 flex items-center gap-3" role="separator">
-      <span className="h-px flex-1 bg-line" /><span className="eyebrow">{children}</span><span className="h-px flex-1 bg-line" />
+    <div className="my-5 flex items-center gap-3" role="separator">
+      <span className="h-[var(--hair)] flex-1 bg-line" /><span className="text-tiny text-faint tabular">{children}</span><span className="h-[var(--hair)] flex-1 bg-line" />
     </div>
   );
 }

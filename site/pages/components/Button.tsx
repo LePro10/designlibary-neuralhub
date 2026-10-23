@@ -6,7 +6,7 @@ import { Doc, DocSection, Grid, Props, Rules, Tile, Why } from '../../kit/Doc';
 export default function ButtonPage() {
   return (
     <Doc eyebrow="Components" title="Button" source="ui/components/core/Button.tsx"
-      lead="Always a pill. One action per view is primary — solid bright with a soft accent glow. Everything else steps back: glass over light, ghost for secondary, quiet for inline.">
+      lead="Always a pill, light type, no glow. One action per view is primary, solid bright; tint takes the place's colour; everything else steps back: glass over light, ghost for secondary, quiet for inline.">
       <Demo
         title="Playground"
         controls={{
@@ -42,7 +42,7 @@ export default function ButtonPage() {
         </Grid>
       </DocSection>
 
-      <DocSection title="Icon buttons" description="Round, 40px by default. The small size draws 32px but keeps a 44px touch target — its hit area extends past the edge.">
+      <DocSection title="Icon buttons" description="Round: 30, 36 (default) and 52px. Every size keeps a 44px touch target — the hit area extends past the edge.">
         <Grid cols={4}>
           <Tile label="fill (default)"><IconButton label="Add"><Plus size={18} /></IconButton></Tile>
           <Tile label="glass" className="relative overflow-hidden"><BackdropLayer kind="ambient" /><IconButton variant="glass" label="Like"><Heart size={18} /></IconButton></Tile>
@@ -53,20 +53,20 @@ export default function ButtonPage() {
 
       <DocSection title="Rules">
         <Rules items={[
-          { do: 'Use one primary per view. Its glow is the visual anchor of the screen.', dont: 'Two glowing buttons side by side — the eye has nowhere to land.' },
+          { do: 'Use one primary per view; it is the brightest thing on the screen.', dont: 'Two primaries side by side, or a glow behind a button.' },
           { do: 'Set busy while saving: the spinner replaces the icon and a second tap cannot slip through.', dont: 'Disable without a reason in view. Explain what is missing next to the button.' },
           { do: 'Glass only on light, images or video. On flat black it is just a grey ghost.', dont: 'Override heights with !h-9 — add a size here instead.' },
         ]} />
         <Why>
-          <p>The dashboard had 20 buttons with <code>!h-…</code> overrides and 28 hand-made pill buttons — the component lacked sizes, so pages made their own. Now there are four sizes (32 / 40 / 44 / 52px) and the overrides have nowhere left to come from.</p>
+          <p>The dashboard had 20 buttons with <code>!h-…</code> overrides and 28 hand-made pill buttons — the component lacked sizes, so pages made their own. Now there are four sizes (28 / 32 / 38 / 44px); the small ones extend their hit area to 44px, so they look light but stay easy to hit.</p>
           <p><code>type="button"</code> is the default because inside a form a bare button submits it — the dashboard shipped that bug twice.</p>
         </Why>
       </DocSection>
 
       <DocSection title="Props">
         <Props rows={[
-          { name: 'variant', type: "'primary' | 'solid' | 'glass' | 'ghost' | 'quiet' | 'danger'", default: "'primary'", description: 'Importance.' },
-          { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg'", default: "'md'", description: '32 / 40 / 44 / 52px.' },
+          { name: 'variant', type: "'primary' | 'tint' | 'glass' | 'ghost' | 'quiet' | 'danger'", default: "'primary'", description: 'Importance.' },
+          { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg'", default: "'md'", description: '28 / 32 / 38 / 44px (xs, sm hit 44px).' },
           { name: 'Icon / IconEnd', type: 'LucideIcon', description: 'Leading / trailing icon, sized to the button.' },
           { name: 'sheen', type: 'boolean', description: 'A gloss band sweeps across on hover (pointer devices).' },
           { name: 'busy', type: 'boolean', description: 'Spinner instead of icon, locked.' },

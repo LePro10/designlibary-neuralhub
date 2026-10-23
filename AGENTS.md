@@ -138,9 +138,11 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | A title that arrives | `RevealText` (Page titles do it by themselves) | lines rise out of a mask |
 | "Working on it" | `LogoLoader` | the mark at work instead of a glowing orb |
 | Brand mark | `LogoMark`, `Wordmark` | template for any product mark |
-| Bottom sheet / dialog | `Sheet` (`overlays/`) | drawer with snaps on phones (`SNAPS`), dialog on desktop; `footer` stays reachable |
-| Confirm something irreversible | `ConfirmSheet` | reversible things get a toast with Undo instead |
-| Options / sort / "more" / any select | `Menu` | popover on desktop, sheet on phone; radio/check items, sections, shortcuts |
+| Options / sort / “more” / any select | `Menu` (`overlays/`) | small translucent pull-down from the trigger, phone and desktop; radio/check, sections, shortcuts |
+| A choice inside a form or settings | `InlinePicker` / `Disclosure` | expands under its row; never a sheet |
+| Confirm a reversible-but-careful action | `ConfirmButton` | two taps, reverts after 3 s, optional Undo |
+| A long task (write a mail, pick files) | `Sheet` | full-height panel on phones, dialog on desktop |
+| Confirm something irreversible or external | `ConfirmSheet` | rare; reversible things get a toast with Undo |
 | Long-press / right-click actions | `ContextMenu` | lifts the item over a blurred backdrop; tap never fires too |
 | Confirmation with undo | `toast()` + one `<Toaster/>` | max 3, sits above the tab bar; `toast.loading → update` |
 | Swipe actions in lists | `SwipeRow` | trailing/leading actions, full-swipe destructive |
@@ -151,19 +153,22 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | Pointer light on cards | `Spotlight` | no re-render on move |
 | Listening / AI presence | `VoiceOrb` (button, small), `ParticleOrb` (hero, voice mode) | themed by accent |
 | Working… label | `Shimmer` | compositor only |
-| Rolling number / decode text | `NumberTicker`, `TextScramble` | |
+| Rolling number / decode text | `Odometer`, `TextScramble` | digits roll on springs, unchanged digits stay still |
+| A task being done | `TaskCheck` | fill → tick → strike, 520 ms |
 | Playful pull on a CTA | `Magnetic` | pointer devices only |
 | App start / brand moment | `LogoIntro` | skippable, reduced-motion crossfade |
 | Progress toward a goal | `Ring` (round), `Meter` (bar, thresholds 80/100%) (`data/`) | one implementation each |
+| A goal as an instrument | `TickRing` | 60 ticks light up, readout counts along |
 | Values over time (bars) | `BarChart` | scrub with finger, tap pins, average line, stacked |
 | Trend line / inline trend | `LineChart`, `Sparkline` | target band, gaps |
 | Activity over a year / week | `CalendarHeatmap`, `GridHeatmap` | |
 | Share of a whole | `Donut` | gaps, sequential draw, legend |
 | Chat input | `Composer` (+ `ComposerDock` above tab bar / keyboard) (`ai/`) | grows to 5 lines, attachments, mic → send → stop; Enter sends only with a real keyboard |
+| Send / stop | `SendButton` | arrow flies up, stop springs in, ring shows the running answer |
 | User message / assistant answer | `UserBubble`, `AssistantMessage`, `MessageActions` | assistant has no bubble; actions 32px drawn, 44px hit |
 | Streaming answer | `StreamingText` + `useSmoothText` | words fade in by colour, caret, no layout shift, `[n]` citations |
 | What the agent is doing | `AgentTrace` / `StatusLine` + `traceLabel()` | labels from real events, held ≥ 650ms; timeline of tool steps |
-| Waiting | `ThinkingIndicator` (shimmer, dots, orb, pulse) | |
+| Waiting | `ThinkingIndicator` (`mark` default: the logo at work; shimmer, dots, orb, pulse) | |
 | A tool call | `ToolCallCard` | announce → running → done (result inline) / error (retry) |
 | Sources | `Citation`, `SourceCards`, `SourceStack` | letter tiles, no favicon requests |
 | Ask the user | `QuestionCard` | wizard, single/multi, free text |

@@ -12,27 +12,27 @@ export default function ControlsPage() {
     <Doc eyebrow="Components" title="Controls" source={['ui/components/core/Segmented.tsx', 'ui/components/core/Switch.tsx', 'ui/components/core/Slider.tsx']}
       lead="Segmented, Switch, Check and Slider. Each one answers a choice with motion: a pill that slides, a thumb that stretches, a tick that draws itself, a haptic at every detent.">
 
-      <DocSection title="Segmented" description="A page's main switcher is md (bright pill, dark text). Secondary switches inside a card use sm — no fill, so it never competes. Many options? `scroll` lets it run sideways on phones.">
+      <DocSection title="Segmented" description="The active segment is a slightly raised pill that slides on a spring, like iOS. sm is the quieter one inside cards. Many options? `scroll` lets it run sideways on phones.">
         <Demo controls={{ size: select(['md', 'sm'] as const), icons: bool(false), options: range(2, 5, 3) }}
           code={(v) => `<Segmented size="${v.size}" value={view} onChange={setView}\n  options={[{ value: 'day', label: 'Day'${v.icons ? ', Icon: CalendarDays' : ''} }, …]} />`}>
           {(v) => <SegDemo size={v.size} icons={v.icons} n={v.options} />}
         </Demo>
       </DocSection>
 
-      <DocSection title="Switch" description="Spring thumb (stiffness 700) that stretches sideways while pressed. On = the deep accent, so it themes with the accent.">
+      <DocSection title="Switch" description="42 × 25. The thumb springs across (stiffness 700) and widens while pressed. On = the deep accent, so it themes with the accent.">
         <Demo controls={{ size: select(['md', 'sm'] as const), disabled: bool(false) }} code={(v) => `<Switch${v.size === 'sm' ? ' size="sm"' : ''} checked={on} onChange={setOn} label="Focus mode" />`}>
           {(v) => <SwitchDemo size={v.size} disabled={v.disabled} />}
         </Demo>
       </DocSection>
 
-      <DocSection title="Check" description="Round for single tasks and radios, square for multi-select. The tick draws with pathLength; `indeterminate` shows a bar for 'some'. `display` turns it visual-only when the whole row is the button.">
+      <DocSection title="Check" description="20px. Round for tasks and radios, square for multi-select. It fills, then the tick draws, with a short scale pop; `indeterminate` shows a bar for 'some'. `display` makes it visual-only when the whole row is the button.">
         <Demo controls={{ shape: select(['round', 'square'] as const), color: colors(['var(--color-bright)', 'var(--color-accent)', 'var(--color-mint)', 'var(--color-ember)', 'var(--color-lilac)'] as const) }}
           code={(v) => `<Check checked={done} onChange={setDone} label="Done"${v.shape === 'square' ? ' square' : ''} color="${v.color}" />`}>
           {(v) => <CheckDemo square={v.shape === 'square'} color={v.color} />}
         </Demo>
       </DocSection>
 
-      <DocSection title="Slider" description="New. The track fills with an accent gradient, the thumb swells while held, every step ticks (haptic), a glass bubble shows the value while dragging. The whole 44px row is the target.">
+      <DocSection title="Slider" description="A 4px track that fills in the place's colour, an 18px thumb that swells a little while held, a haptic tick at every step, a glass bubble with the value while dragging. The whole 44px row is the target.">
         <Demo controls={{ step: select(['1', '5', '10', '25'] as const, '5'), ticks: bool(false), bubble: bool(true) }}
           code={(v) => `<Slider label="Volume" value={v} onChange={setV} step={${v.step}}${v.ticks ? ' ticks' : ''}${v.bubble ? '' : ' bubble={false}'} format={(x) => \`\${x}%\`} />`}>
           {(v) => <SliderDemo step={Number(v.step)} ticks={v.ticks} bubble={v.bubble} />}

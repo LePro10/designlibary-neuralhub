@@ -16,8 +16,8 @@ import { Check, ChevronDown, CircleAlert, ShieldCheck, Wrench, type LucideIcon }
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../../lib/cn';
 import { EASE } from '../../lib/motion';
+import { LogoLoader } from '../effects/LogoLoader';
 import { Shimmer } from '../effects/Shimmer';
-import { AssistantOrb } from './AssistantOrb';
 import { useLinger, useSmoothText, useStable } from './stream';
 
 export type StepState = 'running' | 'done' | 'error' | 'waiting';
@@ -77,21 +77,25 @@ export function AgentTrace({ steps, working, thinking, isThinking, seconds, stop
   if (!working && !hasContent && !stopped) return null;
 
   return (
-    <div className={cn('mb-2.5', className)}>
+    <div className={cn('mb-2', className)}>
       <button type="button" aria-expanded={hasContent ? open : undefined} onClick={() => hasContent && setOpen(!open)}
-        className={cn('-mx-2 flex max-w-full items-center gap-2 rounded-full px-2 py-1 text-chip transition-colors', hasContent ? 'hover:bg-fill-2' : 'cursor-default')}>
-        <span className="grid h-5 w-5 shrink-0 place-items-center">
-          {working ? <AssistantOrb size={18} state="busy" /> : stopped ? <span className="h-2 w-2 rounded-[2px] bg-dim" /> : <Check size={14} className="text-dim" />}
+        className={cn('-mx-2 flex min-h-8 max-w-full items-center gap-2 rounded-full px-2 text-chip transition-colors', hasContent ? 'hover:bg-fill-2' : 'cursor-default')}>
+        <span className="grid h-4 w-4 shrink-0 place-items-center">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span key={working ? 'w' : stopped ? 's' : 'd'} initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.12 } }} transition={{ duration: 0.22, ease: EASE.outSoft }} className="grid place-items-center">
+              {working ? <LogoLoader size={15} className="text-ink" /> : stopped ? <span className="h-[7px] w-[7px] rounded-[2px] bg-dim" /> : <Check size={13} strokeWidth={2} className="text-dim" />}
+            </motion.span>
+          </AnimatePresence>
         </span>
         <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span key={label} className={cn('min-w-0 truncate font-medium', !working && 'text-dim')}
+          <motion.span key={label} className={cn('min-w-0 truncate', !working && 'text-dim')}
             initial={{ opacity: 0, y: 6, filter: 'blur(2px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -6, filter: 'blur(2px)', transition: { duration: 0.14 } }} transition={{ duration: 0.24, ease: EASE.outSoft }}>
             {working ? <Shimmer className="block truncate">{`${label.replace(/[.…:!]+$/, '')}…`}</Shimmer> : `${label}${time}`}
           </motion.span>
         </AnimatePresence>
-        {working && tools > 1 && <motion.span key={tools} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="shrink-0 rounded-full bg-fill-3 px-1.5 text-[11px] text-faint tabular">{tools}</motion.span>}
-        {hasContent && <ChevronDown size={14} className="shrink-0 text-faint transition-transform duration-300" style={{ transform: open ? 'rotate(180deg)' : 'none' }} />}
+        {working && tools > 1 && <motion.span key={tools} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="shrink-0 rounded-full bg-fill-3 px-1.5 text-tiny text-dim tabular">{tools}</motion.span>}
+        {hasContent && <ChevronDown size={13} strokeWidth={1.75} className="shrink-0 text-faint transition-transform duration-300 ease-out-soft" style={{ transform: open ? 'rotate(180deg)' : 'none' }} />}
       </button>
 
       <AnimatePresence initial={false}>
@@ -101,7 +105,7 @@ export function AgentTrace({ steps, working, thinking, isThinking, seconds, stop
           </motion.div>
         )}
         {!open && working && !thoughtsVisible && last?.state === 'error' && last.detail && (
-          <motion.p key="err" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={OPEN} className="overflow-hidden pl-7 font-mono text-[11.5px] text-dim">
+          <motion.p key="err" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={OPEN} className="overflow-hidden pl-6 font-mono text-tiny text-dim">
             <span className="line-clamp-1">{last.detail}</span>
           </motion.p>
         )}
@@ -111,12 +115,12 @@ export function AgentTrace({ steps, working, thinking, isThinking, seconds, stop
         {open && (
           <motion.div key="timeline" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={OPEN} className="overflow-hidden">
             {steps.length > 0 && (
-              <ol className="relative mt-1 ml-[9px] border-l border-line pl-4">
+              <ol className="relative mt-0.5 ml-[7px] border-l-[length:var(--hair)] border-solid border-line-2 pl-3.5">
                 {steps.map((s) => <StepRow key={s.id} step={s} active={s.state === 'running' && working && running} />)}
               </ol>
             )}
             {thinking && (
-              <div className="mt-2 ml-[9px] border-l border-line pl-4">
+              <div className="mt-1.5 ml-[7px] border-l-[length:var(--hair)] border-solid border-line-2 pl-3.5">
                 <div className="mb-1 text-meta text-faint">Thoughts</div>
                 <Thoughts text={thinking} live={working && !!isThinking} full />
               </div>
@@ -129,25 +133,25 @@ export function AgentTrace({ steps, working, thinking, isThinking, seconds, stop
 }
 
 function StepRow({ step: s, active }: { step: TraceStep; active: boolean }) {
-  const enter = { initial: { opacity: 0, x: -6 }, animate: { opacity: 1, x: 0 }, transition: { duration: 0.22, ease: EASE.outSoft } } as const;
+  const enter = { initial: { opacity: 0, x: -4 }, animate: { opacity: 1, x: 0 }, transition: { duration: 0.22, ease: EASE.outSoft } } as const;
   if (s.kind === 'status') {
     return (
-      <motion.li {...enter} className="flex min-h-7 items-start gap-2.5 py-1">
-        <span className="grid h-6 w-6 shrink-0 place-items-center"><span className="h-1.5 w-1.5 rounded-full bg-accent/70" /></span>
-        <span className="min-w-0 pt-[3px] text-small leading-snug text-dim">{s.label}</span>
+      <motion.li {...enter} className="flex min-h-6 items-start gap-2 py-0.5">
+        <span className="grid h-5 w-5 shrink-0 place-items-center"><span className="h-1 w-1 rounded-full bg-dim" /></span>
+        <span className="min-w-0 pt-px text-small leading-snug text-dim">{s.label}</span>
       </motion.li>
     );
   }
   const Icon = s.state === 'error' ? CircleAlert : s.state === 'waiting' ? ShieldCheck : s.Icon ?? Wrench;
   return (
-    <motion.li {...enter} className="flex min-h-8 items-center gap-2.5 py-1">
-      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-chip border border-line bg-fill-1">
-        {active ? <i className="spinner" style={{ ['--size' as string]: '12px' }} />
-          : <Icon size={13} strokeWidth={1.8} className={s.state === 'error' ? 'text-danger' : s.state === 'waiting' ? 'text-accent' : 'text-ink'} />}
+    <motion.li {...enter} className="flex min-h-7 items-center gap-2 py-0.5">
+      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[6px] bg-fill-3">
+        {active ? <i className="spinner" style={{ ['--size' as string]: '10px' }} />
+          : <Icon size={11} strokeWidth={1.8} className={s.state === 'error' ? 'text-danger' : s.state === 'waiting' ? 'text-tab' : 'text-ink'} />}
       </span>
-      <span className="min-w-0 text-chip text-bright">{s.label}</span>
-      {s.detail && <span className="min-w-0 truncate font-mono text-[11.5px] text-dim">{s.detail}</span>}
-      {s.ms !== undefined && s.state !== 'running' && <span className="ml-auto shrink-0 pl-2 font-mono text-[11px] text-faint tabular">{s.ms < 1000 ? `${s.ms}ms` : `${(s.ms / 1000).toFixed(1)}s`}</span>}
+      <span className="min-w-0 shrink-0 text-small text-bright">{s.label}</span>
+      {s.detail && <span className="min-w-0 truncate text-meta text-dim">{s.detail}</span>}
+      {s.ms !== undefined && s.state !== 'running' && <span className="ml-auto shrink-0 pl-2 font-mono text-tiny text-faint tabular">{s.ms < 1000 ? `${s.ms}ms` : `${(s.ms / 1000).toFixed(1)}s`}</span>}
     </motion.li>
   );
 }
@@ -163,7 +167,7 @@ function Thoughts({ text, live, full }: { text: string; live: boolean; full?: bo
   const from = live ? Math.max(0, words.length - 500) : 0;
   return (
     <div ref={ref} onScroll={(e) => { const el = e.currentTarget; atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24; }}
-      className={cn('scroller scroller-subtle overflow-y-auto pr-1 text-small leading-[1.55] whitespace-pre-wrap text-dim', full ? 'max-h-[280px]' : 'mt-0.5 ml-7 max-h-[88px] [mask-image:linear-gradient(180deg,transparent,#000_28px)]')}>
+      className={cn('scroller scroller-subtle overflow-y-auto pr-1 text-small leading-[1.55] whitespace-pre-wrap text-dim', full ? 'max-h-[260px]' : 'mt-0.5 ml-6 max-h-[80px] [mask-image:linear-gradient(180deg,transparent,#000_26px)]')}>
       {live ? words.slice(from).map((w, i) => <span key={from + i} className="word-in">{w}</span>) : shown}
     </div>
   );
@@ -171,7 +175,7 @@ function Thoughts({ text, live, full }: { text: string; live: boolean; full?: bo
 
 /**
  * Just the status line — for a header, a voice screen or a compact row:
- * orb + shimmering label while working (labels swap with a soft blur and
+ * the mark at work + shimmering label while working (labels swap with a soft blur and
  * hold ≥ 650 ms), a check and the final text when done.
  */
 export function StatusLine({ label, working, className }: { label: string; working: boolean; className?: string }) {
@@ -179,9 +183,9 @@ export function StatusLine({ label, working, className }: { label: string; worki
   const shown = working ? stable : label;
   return (
     <span role="status" className={cn('inline-flex max-w-full items-center gap-2 text-chip', className)}>
-      <span className="grid h-5 w-5 shrink-0 place-items-center">{working ? <AssistantOrb size={18} state="busy" /> : <Check size={14} className="text-mint" />}</span>
+      <span className="grid h-4 w-4 shrink-0 place-items-center">{working ? <LogoLoader size={15} className="text-ink" /> : <Check size={13} strokeWidth={2} className="text-mint" />}</span>
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span key={shown} className={cn('min-w-0 truncate font-medium', !working && 'text-ink')}
+        <motion.span key={shown} className={cn('min-w-0 truncate', !working && 'text-ink')}
           initial={{ opacity: 0, y: 6, filter: 'blur(2px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           exit={{ opacity: 0, y: -6, filter: 'blur(2px)', transition: { duration: 0.14 } }} transition={{ duration: 0.24, ease: EASE.outSoft }}>
           {working ? <Shimmer className="block truncate">{`${shown.replace(/[.…:!]+$/, '')}…`}</Shimmer> : shown}

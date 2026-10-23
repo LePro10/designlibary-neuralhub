@@ -18,16 +18,16 @@ export function ChangePills({ changes, onUndo, onRedo, onOpen, className }: {
     <div className={cn('flex flex-wrap gap-1.5', className)}>
       <AnimatePresence initial={false}>
         {changes.map((c, i) => (
-          <motion.div key={c.id} layout initial={{ opacity: 0, scale: 0.9, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ ...SPRING.pop, delay: i * 0.04 }}
-            className={cn('flex h-8 items-center rounded-full border text-meta transition-colors', c.undone ? 'border-line bg-transparent' : 'border-line-2 bg-fill-2')}>
-            <button type="button" onClick={() => onOpen?.(c.id)} disabled={!onOpen} className={cn('flex h-full items-center gap-1.5 pl-3', onUndo || onRedo ? 'pr-1.5' : 'pr-3')}>
-              {c.Icon && <c.Icon size={13} className={c.undone ? 'text-faint' : 'text-accent'} />}
-              <span className={cn('max-w-[220px] truncate', c.undone ? 'text-faint line-through' : 'text-ink')}>{c.label}</span>
+          <motion.div key={c.id} layout initial={{ opacity: 0, scale: 0.92, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.12 } }} transition={{ ...SPRING.pop, delay: i * 0.03 }}
+            className={cn('flex h-7 items-center rounded-full border-hair text-meta transition-colors duration-300', c.undone ? 'border-line bg-transparent' : 'border-line-2 bg-fill-1')}>
+            <button type="button" onClick={() => onOpen?.(c.id)} disabled={!onOpen} className={cn('flex h-full items-center gap-1.5 pl-2.5', onUndo || onRedo ? 'pr-1' : 'pr-2.5')}>
+              {c.Icon && <c.Icon size={12} strokeWidth={1.7} className={cn('transition-colors', c.undone ? 'text-faint' : 'text-tab')} />}
+              <span className={cn('max-w-[220px] truncate transition-colors', c.undone ? 'text-faint line-through decoration-faint' : 'text-ink')}>{c.label}</span>
             </button>
             {(c.undone ? onRedo : onUndo) && (
               <button type="button" aria-label={c.undone ? `Redo: ${c.label}` : `Undo: ${c.label}`} onClick={() => { haptic('select'); (c.undone ? onRedo : onUndo)?.(c.id); }}
-                className="relative mr-1 grid h-6 w-6 place-items-center rounded-full text-dim transition-colors after:absolute after:-inset-2 after:content-[''] hover:bg-fill-3 hover:text-bright">
-                {c.undone ? <Redo2 size={12} /> : <Undo2 size={12} />}
+                className="relative mr-0.5 grid h-[22px] w-[22px] place-items-center rounded-full text-faint transition-colors after:absolute after:-inset-2.5 after:content-[''] hover:bg-fill-3 hover:text-bright">
+                {c.undone ? <Redo2 size={11} strokeWidth={1.8} /> : <Undo2 size={11} strokeWidth={1.8} />}
               </button>
             )}
           </motion.div>
