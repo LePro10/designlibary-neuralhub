@@ -10,7 +10,7 @@ import { Legend } from './Legend';
 
 export interface DonutPart { value: number; color: string; label?: string }
 
-export function Donut({ parts, center, sub, size = 104, thickness = 11, gap = 3, legend = true, className }: {
+export function Donut({ parts, center, sub, size = 104, thickness = 7, gap = 3, legend = true, className }: {
   parts: DonutPart[];
   center?: string;
   sub?: string;
@@ -29,7 +29,7 @@ export function Donut({ parts, center, sub, size = 104, thickness = 11, gap = 3,
     <div className={cn('flex items-center gap-5', className)}>
       <div className="relative shrink-0" style={{ width: size, height: size }} role="img" aria-label={parts.map((p) => `${p.label ?? ''} ${Math.round((p.value / total) * 100)}%`).join(', ')}>
         <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90" aria-hidden="true">
-          <circle cx="50" cy="50" r={r} fill="none" stroke="rgb(255 255 255 / .05)" strokeWidth={thickness} />
+          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-fill-2)" strokeWidth={thickness} />
           {parts.map((p, i) => {
             const len = Math.max(0, (p.value / total) * c - gap);
             return (
@@ -41,7 +41,7 @@ export function Donut({ parts, center, sub, size = 104, thickness = 11, gap = 3,
         </svg>
         {(center || sub) && (
           <div className="absolute inset-0 grid place-content-center text-center">
-            {center && <span className="tabular text-body text-bright">{center}</span>}
+            {center && <span className="tabular text-body font-light text-bright">{center}</span>}
             {sub && <span className="text-tiny text-dim">{sub}</span>}
           </div>
         )}

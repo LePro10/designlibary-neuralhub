@@ -24,7 +24,7 @@ export default function GlassPage() {
             <Backdrop variant={v.backdrop} />
             <LiquidGlass level={v.level} tilt={v.tilt} shine={v.shine} radius={v.radius} className="relative w-full max-w-[340px]">
               <div className="flex items-center gap-4 p-4">
-                <div className="h-16 w-16 shrink-0 rounded-[14px] bg-[conic-gradient(from_200deg,#3b5bff,#a898ff,#ff8a5c,#3b5bff)] shadow-[0_8px_24px_-8px_rgb(0_0_0/.6)]" />
+                <div className="h-16 w-16 shrink-0 rounded-stat bg-[conic-gradient(from_200deg,#3b5bff,#a898ff,#ff8a5c,#3b5bff)] shadow-[0_8px_24px_-8px_rgb(0_0_0/.6)]" />
                 <div className="min-w-0 flex-1">
                   <div className="eyebrow !text-white/60">Now playing</div>
                   <div className="mt-1 truncate text-body text-bright">Light is content</div>
@@ -45,9 +45,9 @@ export default function GlassPage() {
       <DocSection title="Levels" description={<p>Set globally with <code>data-glass</code> on <code>&lt;html&gt;</code>, or per panel with <code>level</code>. Each level only changes four variables: fill, blur, saturation, rim.</p>}>
         <Grid cols={2}>
           {LEVELS.map((l) => (
-            <div key={l} className="relative h-44 overflow-hidden rounded-stat border border-line">
+            <div key={l} className="relative h-44 overflow-hidden rounded-stat border-hair border-line-2">
               <Backdrop variant="scene" />
-              <GlassPanel level={l} className="absolute inset-x-5 bottom-5 flex items-center gap-3 !rounded-[20px] p-3.5">
+              <GlassPanel level={l} className="absolute inset-x-5 bottom-5 flex items-center gap-3 !rounded-list p-3.5">
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-bright"><Bell size={17} /></span>
                 <span className="min-w-0 flex-1"><span className="block text-chip text-bright">{l}</span><span className="block truncate text-meta text-white/60">{({ subtle: 'busy backgrounds, low-end phones', default: 'the dashboard', strong: 'more blur, more colour', clear: 'liquid, see-through' } as const)[l]}</span></span>
               </GlassPanel>
@@ -59,11 +59,11 @@ export default function GlassPage() {
       <DocSection title="The three glass recipes" description="Use the classes directly when a component is overkill.">
         <Grid cols={3}>
           {[
-            { cls: 'glass', label: '.glass — floating chrome', round: 'rounded-[22px]' },
+            { cls: 'glass', label: '.glass — floating chrome', round: 'rounded-list' },
             { cls: 'glass-lens', label: '.glass-lens — the tab-bar lens', round: 'rounded-full' },
-            { cls: 'glass rim', label: '.glass + .rim — light from the top', round: 'rounded-[22px]' },
+            { cls: 'glass rim', label: '.glass + .rim — light from the top', round: 'rounded-list' },
           ].map((r) => (
-            <div key={r.cls} className="overflow-hidden rounded-stat border border-line">
+            <div key={r.cls} className="overflow-hidden rounded-stat border-hair border-line-2">
               <div className="relative grid h-40 place-items-center"><Backdrop variant="ambient" /><div className={`relative h-16 w-40 ${r.round} ${r.cls}`} /></div>
               <div className="border-t border-line px-3.5 py-2 font-mono text-meta text-dim">{r.label}</div>
             </div>

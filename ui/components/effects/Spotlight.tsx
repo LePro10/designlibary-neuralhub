@@ -7,7 +7,7 @@
 import { useRef, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 
-export function Spotlight({ children, size = 320, className, style, as: Tag = 'div' }: {
+export function Spotlight({ children, size = 280, className, style, as: Tag = 'div' }: {
   children: ReactNode;
   /** Diameter of the light in px. */
   size?: number;

@@ -25,7 +25,7 @@ export function GlassPanel({ level, rim = true, children, className, style }: { 
   );
 }
 
-export function LiquidGlass({ children, level, tilt = 6, shine = 0.5, radius = 28, className }: {
+export function LiquidGlass({ children, level, tilt = 5, shine = 0.4, radius = 20, className }: {
   children: ReactNode;
   level?: GlassLevel;
   /** Max tilt in degrees (0 = flat). */
@@ -37,8 +37,8 @@ export function LiquidGlass({ children, level, tilt = 6, shine = 0.5, radius = 2
 }) {
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.3);
-  const sx = useSpring(px, { stiffness: 180, damping: 22 });
-  const sy = useSpring(py, { stiffness: 180, damping: 22 });
+  const sx = useSpring(px, { stiffness: 180, damping: 26 });
+  const sy = useSpring(py, { stiffness: 180, damping: 26 });
   const rotateY = useTransform(sx, [0, 1], [-tilt, tilt]);
   const rotateX = useTransform(sy, [0, 1], [tilt, -tilt]);
   const hx = useTransform(sx, (v) => `${v * 100}%`);
@@ -61,7 +61,7 @@ export function LiquidGlass({ children, level, tilt = 6, shine = 0.5, radius = 2
       >
         <motion.i aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ backgroundImage: highlight }} />
         {/* Inner bevel: a thin bright line at the top, a faint one at the bottom. */}
-        <i aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgb(255_255_255/.22),inset_0_-1px_0_rgb(255_255_255/.05)]" />
+        <i aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_.5px_0_rgb(255_255_255/.2),inset_0_-.5px_0_rgb(255_255_255/.04)]" />
         <div className="relative">{children}</div>
       </motion.div>
     </div>

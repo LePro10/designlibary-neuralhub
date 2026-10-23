@@ -1,7 +1,8 @@
 /**
- * Bar chart you can scrub. Thin bars with round ends, a quiet dashed
- * average, labels in mono. The headline above shows the value under the
- * finger or pointer, else the pinned bar, else `highlight` (usually today).
+ * Bar chart you can scrub. Thin bars (max 14px) with round ends, a quiet
+ * dashed hairline average, labels in mono. The bar you look at wears the
+ * place's signal colour (--color-tab). The headline above shows the value
+ * under the finger or pointer, else the pinned bar, else `highlight`.
  *
  * - `values` is `number[]` (one series) or `number[][]` (stacked: values[i][s]).
  * - One series is monochrome: the shown bar is bright, the rest recede.
@@ -51,16 +52,16 @@ export function BarChart({ values, labels, title, series, unit = '', format = nu
     <div className={cn('@container', className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="tabular text-[22px] font-light text-bright">{i >= future ? '–' : format(sums[i] ?? 0)}<span className="ml-1 text-small text-dim">{unit}</span></div>
+          <div className="tabular text-title font-light tracking-[-.02em] text-bright">{i >= future ? '–' : format(sums[i] ?? 0)}<span className="ml-1 text-meta text-dim">{unit}</span></div>
           {title && <div className="mt-0.5 truncate text-detail text-dim">{title(i)}{stacked && series && (sums[i] ?? 0) > 0 && <span> · {series.map((s, k) => `${s.name} ${format(rows[i][k] ?? 0)}`).join(' · ')}</span>}</div>}
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1.5">
-          {average && avg > 0 && <span className="flex items-center gap-2 text-meta text-dim"><i className="h-px w-4 border-t border-dashed border-dim" />avg {format(sums.every(Number.isInteger) ? Math.round(avg) : Math.round(avg * 10) / 10)}</span>}
+          {average && avg > 0 && <span className="flex items-center gap-1.5 text-meta text-dim"><i className="w-3.5 border-t-hair border-dashed border-dim" />avg {format(sums.every(Number.isInteger) ? Math.round(avg) : Math.round(avg * 10) / 10)}</span>}
           {action?.(i)}
         </div>
       </div>
       <div data-no-swipe className={cn('relative mt-4 flex touch-pan-y items-end select-none', gap)} style={{ height }} {...handlers}>
-        {average && avg > 0 && <div className="pointer-events-none absolute inset-x-0 border-t border-dashed border-white/15" style={{ bottom: `${(avg / max) * 100}%` }} />}
+        {average && avg > 0 && <div className="pointer-events-none absolute inset-x-0 border-t-hair border-dashed border-white/20" style={{ bottom: `${(avg / max) * 100}%` }} />}
         {rows.map((r, k) => {
           const on = k === i;
           const ahead = k >= future;
@@ -68,13 +69,13 @@ export function BarChart({ values, labels, title, series, unit = '', format = nu
           return (
             <div key={k} className="flex h-full flex-1 flex-col items-center justify-end">
               <motion.div
-                className={cn('flex w-full max-w-[22px] flex-col-reverse overflow-hidden transition-[opacity,background-color] duration-200', stacked ? 'gap-[2px] rounded-t-[5px] rounded-b-[2px]' : 'rounded-full')}
+                className={cn('flex w-full max-w-[14px] flex-col-reverse overflow-hidden transition-[opacity,background-color] duration-200', stacked ? 'gap-[2px] rounded-t-[4px] rounded-b-[2px]' : 'rounded-full')}
                 initial={{ height: 0 }}
                 animate={{ height: h }}
                 transition={{ ...SPRING.grow, delay: k * (0.35 / n) }}
                 style={stacked
                   ? { opacity: hover === null || on ? 1 : 0.45 }
-                  : { background: ahead ? 'rgb(255 255 255 / .06)' : on ? 'var(--color-bright)' : 'rgb(255 255 255 / .2)' }}
+                  : { background: ahead ? 'rgb(255 255 255 / .05)' : on ? 'var(--color-tab)' : 'rgb(255 255 255 / .16)' }}
               >
                 {stacked && r.map((v, s) => v > 0 && (
                   <span key={s} className="block w-full shrink-0" style={{ flexGrow: v, flexBasis: 0, minHeight: 2, background: series?.[s]?.color ?? 'rgb(255 255 255 / .55)' }} />
@@ -85,7 +86,7 @@ export function BarChart({ values, labels, title, series, unit = '', format = nu
         })}
       </div>
       <div className={cn('mt-2 flex', gap)}>
-        {labels.map((l, k) => <span key={k} className={cn('flex-1 text-center font-mono text-[10px] whitespace-nowrap', k === i ? 'text-ink' : 'text-dim')}>{l}</span>)}
+        {labels.map((l, k) => <span key={k} className={cn('flex-1 text-center font-mono text-[9.5px] whitespace-nowrap transition-colors duration-150', k === i ? 'text-bright' : 'text-faint')}>{l}</span>)}
       </div>
       {stacked && series && <Legend series={series} className="mt-3" />}
     </div>

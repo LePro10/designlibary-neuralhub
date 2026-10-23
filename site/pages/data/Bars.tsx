@@ -2,7 +2,8 @@ import { ChevronRight } from 'lucide-react';
 import { BarChart } from '@ui/components/data/BarChart';
 import { bool, Demo, range, select } from '../../kit/Demo';
 import { Doc, DocSection, Props, Rules, Usage, Why } from '../../kit/Doc';
-import { rng, WEEK } from './sample';
+import { PLACES } from '@ui/lib/tokens';
+import { DATA_PLACES, rng, WEEK } from './sample';
 
 const r = rng(11);
 const HOURS = Array.from({ length: 24 }, (_, h) => (h < 7 ? 0 : Math.round(r() * (h > 18 ? 40 : 22))));
@@ -14,15 +15,15 @@ const fmtMin = (m: number) => (m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m` : `
 export default function BarsPage() {
   return (
     <Doc eyebrow="Data" title="Bar chart" source={['ui/components/data/BarChart.tsx', 'ui/components/data/scrub.ts']}
-      lead="Thin bars with round ends, a quiet dashed average, and a headline that shows the value under your finger. Drag across to scrub; a tap pins a bar so the value stays when the finger lifts.">
-      <Demo title="One series" controls={{ data: select(['week', 'hours'] as const), future: bool(true), average: bool(true), height: range(80, 220, 140, 10, 'px') }}
+      lead="Thin bars with round ends, a hairline average, and a headline that shows the value under your finger. The bar you look at wears the place's colour. Drag across to scrub; a tap pins a bar so the value stays when the finger lifts.">
+      <Demo title="One series" controls={{ data: select(['week', 'hours'] as const), place: select(DATA_PLACES, 'screen'), future: bool(true), average: bool(true), height: range(80, 220, 140, 10, 'px') }}
         center={false} minHeight={300}
         code={(v) => `<BarChart\n  values={minutes}\n  labels={${v.data === 'week' ? 'WEEK' : 'hourLabels'}}\n  title={(i) => titles[i]}\n  format={fmtMin}${v.future ? `\n  future={${v.data === 'week' ? 4 : 21}}` : ''}${v.average ? '' : '\n  average={false}'}\n  height={${v.height}}\n/>`}>
         {(v) => (
-          <div className="w-full max-w-[560px]">
+          <div data-signal={PLACES[v.place].signal} className="w-full max-w-[560px]">
             {v.data === 'week'
               ? <BarChart values={DAYS} labels={WEEK} title={(i) => `${WEEK[i]}, ${17 + i} Oct`} format={fmtMin} future={v.future ? 4 : Infinity} average={v.average} height={v.height}
-                  action={(i) => <button type="button" className="flex h-7 items-center gap-0.5 rounded-full bg-fill-3 pr-1.5 pl-2.5 text-meta text-ink hover:bg-white/10">Open {WEEK[i]}<ChevronRight size={13} /></button>} />
+                  action={(i) => <button type="button" className="flex h-6 items-center gap-0.5 rounded-full bg-fill-3 pr-1 pl-2 text-meta text-ink hover:bg-fill-4">Open {WEEK[i]}<ChevronRight size={12} /></button>} />
               : <BarChart values={HOURS} labels={HOURS.map((_, h) => (h % 6 ? '' : String(h)))} title={(i) => `${i}:00 – ${i + 1}:00`} format={fmtMin} future={v.future ? 21 : Infinity} average={v.average} height={v.height} />}
           </div>
         )}
@@ -36,7 +37,7 @@ export default function BarsPage() {
       </Demo>
       <DocSection title="Rules">
         <Rules items={[
-          { do: 'Text stays in ink colours; only the series carry colour.', dont: 'More than four series — split the chart.' },
+          { do: 'Text stays in ink colours; only the bars carry colour.', dont: 'More than four series. Split the chart.' },
           { do: 'Let the page scroll over the chart (touch-pan-y).', dont: 'touch-action: none on a chart — a thumb landing on it gets stuck.' },
         ]} />
         <Why><p>On touch a value is chosen on drag or release, not on touch-down — someone who only wanted to scroll gets no tick. If the browser starts scrolling, <code>pointercancel</code> drops the half-made choice. A tap pins, because on a phone the value would otherwise only show while the finger covers it.</p></Why>

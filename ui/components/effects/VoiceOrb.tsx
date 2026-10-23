@@ -33,8 +33,8 @@ export function VoiceOrb({ size, level, busy, atRest, speed, interactive = true,
   const ref = useRef<HTMLSpanElement>(null);
   const sx = useSpring(useMotionValue(34), { stiffness: 220, damping: 24 });
   const sy = useSpring(useMotionValue(26), { stiffness: 220, damping: 24 });
-  const shine = useMotionTemplate`radial-gradient(circle at ${sx}% ${sy}%, rgb(255 255 255 / .9) 0, rgb(255 255 255 / .18) 20%, transparent 42%)`;
-  const scale = useSpring(useMotionValue(1), { stiffness: 300, damping: 18 });
+  const shine = useMotionTemplate`radial-gradient(circle at ${sx}% ${sy}%, rgb(255 255 255 / .75) 0, rgb(255 255 255 / .14) 20%, transparent 42%)`;
+  const scale = useSpring(useMotionValue(1), { stiffness: 300, damping: 26 });
   useEffect(() => level?.on('change', (v) => scale.set(1 + v * 0.14)), [level, scale]);
   const blur = Math.max(2, size * 0.09);
 

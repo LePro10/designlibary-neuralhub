@@ -19,9 +19,9 @@ export default function SpotlightPage() {
           <div className="grid w-full gap-3 @min-[700px]:grid-cols-3">
             {CARDS.map(({ Icon, title, body }) => (
               <Spotlight key={title} size={v.size} className="card p-5">
-                <span className="grid h-10 w-10 place-items-center rounded-tile border border-line bg-fill-2 text-bright"><Icon size={18} strokeWidth={1.7} /></span>
+                <span className="grid h-10 w-10 place-items-center rounded-tile border-hair border-line-2 bg-fill-2 text-bright"><Icon size={18} strokeWidth={1.7} /></span>
                 <h3 className="mt-4 text-body text-bright">{title}</h3>
-                <p className="mt-1 text-[13px] leading-relaxed text-dim">{body}</p>
+                <p className="mt-1 text-small leading-relaxed text-dim">{body}</p>
               </Spotlight>
             ))}
           </div>

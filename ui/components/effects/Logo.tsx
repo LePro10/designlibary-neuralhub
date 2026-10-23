@@ -97,7 +97,7 @@ export function LogoMark({ size = 24, className = '' }: { size?: number; classNa
       </svg>
       <span
         ref={ringRef}
-        className="absolute rounded-full border border-accent/80 opacity-0"
+        className="absolute rounded-full border-hair border-accent/80 opacity-0"
         style={{ left: DOT_BOX.left, top: DOT_BOX.top, width: DOT_BOX.size, height: DOT_BOX.size }}
       />
       <span

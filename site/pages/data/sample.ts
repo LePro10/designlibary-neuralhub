@@ -14,3 +14,6 @@ export function yearDays(seed = 3) {
     return { date: d.toISOString().slice(0, 10), value: v, detail: `${v} min focused` };
   });
 }
+
+/** Places the data demos can sit in — charts take the place's signal colour. */
+export const DATA_PLACES = ['screen', 'progress', 'plan', 'luna', 'files'] as const;

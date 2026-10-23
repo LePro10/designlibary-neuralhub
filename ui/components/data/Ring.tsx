@@ -1,15 +1,16 @@
 /**
  * Progress ring. One component for what used to be four (Home, charts,
  * screen time, timer) with different strokes and colliding gradient ids.
- * The gradient id is unique per instance; the ring fills once when it
- * scrolls into view (or immediately with `immediate`).
+ * Thin by default, in the place's signal colour (--color-tab). The gradient
+ * id is unique per instance; the ring fills once when it scrolls into view
+ * (or immediately with `immediate`).
  */
 import { motion, useInView } from 'motion/react';
 import { useId, useRef, type ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { EASE } from '../../lib/motion';
 
-export function Ring({ value, size = 64, stroke = 6, colors = ['var(--color-accent)', 'var(--color-lilac)'], track = 'rgb(255 255 255 / .08)', children, caption, immediate, duration = 1.1, className, label }: {
+export function Ring({ value, size = 64, stroke = 4, colors = 'var(--color-tab)', track = 'var(--color-fill-3)', children, caption, immediate, duration = 1.1, className, label }: {
   /** 0–1. Values above 1 are drawn full. */
   value: number;
   size?: number;
@@ -54,8 +55,8 @@ export function Ring({ value, size = 64, stroke = 6, colors = ['var(--color-acce
       </svg>
       {(children !== undefined || caption) && (
         <span className="relative text-center leading-tight">
-          {children !== undefined && <span className="tabular block text-bright" style={{ fontSize: Math.max(11, size * 0.2) }}>{children}</span>}
-          {caption && <span className="block text-dim" style={{ fontSize: Math.max(9, size * 0.13) }}>{caption}</span>}
+          {children !== undefined && <span className="tabular block font-light tracking-[-.02em] text-bright" style={{ fontSize: Math.max(11, size * 0.22) }}>{children}</span>}
+          {caption && <span className="block text-dim" style={{ fontSize: Math.max(9, size * 0.12) }}>{caption}</span>}
         </span>
       )}
     </span>

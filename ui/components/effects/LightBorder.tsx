@@ -1,6 +1,6 @@
 /**
- * Light border — the "Now" frame: a light runs around the edge and a glow
- * breathes behind it. Marks the one item that is happening right now (the
+ * Light border — the "Now" frame: a thin light runs around the edge and a
+ * soft glow breathes behind it. Marks the one item that is happening right now (the
  * running task, the live call, the current lesson). One per screen.
  *
  * Only `transform` (the sweep) and `opacity` (the glow) animate, on their own
@@ -30,7 +30,7 @@ export interface LightBorderProps {
   contentClassName?: string;
 }
 
-export function LightBorder({ children, radius = 22, width = 1.5, speed = 6, glow = 1, colors, surface, paused, className, contentClassName }: LightBorderProps) {
+export function LightBorder({ children, radius = 18, width = 1, speed = 6, glow = 0.7, colors, surface, paused, className, contentClassName }: LightBorderProps) {
   const style = {
     '--lb-radius': `${radius}px`,
     '--lb-width': `${width}px`,

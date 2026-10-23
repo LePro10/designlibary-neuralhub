@@ -26,7 +26,7 @@ export default function LightBorderPage() {
       lead="The “Now” frame from Plan: a light runs around the item that is happening right now, and a glow breathes behind it. It answers one question at a glance — what am I doing? — so there is only ever one per screen.">
       <Demo
         title="Playground"
-        controls={{ speed: range(2, 14, 6, 0.5, 's'), width: range(1, 4, 1.5, 0.5, 'px'), radius: range(8, 36, 22, 1, 'px'), glow: range(0, 1, 1, 0.05), colors: select(['theme', 'ice', 'ember', 'lilac', 'white'] as const), paused: bool(false) }}
+        controls={{ speed: range(2, 14, 6, 0.5, 's'), width: range(0.5, 3, 1, 0.5, 'px'), radius: range(8, 32, 18, 1, 'px'), glow: range(0, 1, 0.7, 0.05), colors: select(['theme', 'ice', 'ember', 'lilac', 'white'] as const), paused: bool(false) }}
         minHeight={280}
         code={(v) => `<LightBorder speed={${v.speed}} width={${v.width}} radius={${v.radius}} glow={${v.glow}}${v.colors !== 'theme' ? ` colors={['${PAIRS[v.colors]![0]}', '${PAIRS[v.colors]![1]}']}` : ''}${v.paused ? ' paused' : ''}>\n  <NowCard />\n</LightBorder>`}
       >
@@ -41,9 +41,9 @@ export default function LightBorderPage() {
         <Grid cols={2}>
           <Tile label="One running item in a list" bg="raised">
             <div className="w-full max-w-[320px] space-y-2">
-              <div className="rounded-list border border-line bg-fill-1 px-4 py-3 text-chip text-dim line-through">Read chapter 3</div>
+              <div className="rounded-list border-hair border-line-2 bg-fill-1 px-4 py-3 text-chip text-dim line-through">Read chapter 3</div>
               <LightBorder radius={22}><div className="px-4 py-3 text-chip text-bright">Write the summary</div></LightBorder>
-              <div className="rounded-list border border-line bg-fill-1 px-4 py-3 text-chip text-ink">Exercise sheet 5</div>
+              <div className="rounded-list border-hair border-line-2 bg-fill-1 px-4 py-3 text-chip text-ink">Exercise sheet 5</div>
             </div>
           </Tile>
           <Tile label="Pill-shaped: a live call" bg="raised">
@@ -66,10 +66,10 @@ export default function LightBorderPage() {
 
       <DocSection title="Props">
         <Props rows={[
-          { name: 'radius', type: 'number', default: '22', description: 'Outer corner radius (999 for pills).' },
-          { name: 'width', type: 'number', default: '1.5', description: 'Width of the light seam.' },
+          { name: 'radius', type: 'number', default: '18', description: 'Outer corner radius (999 for pills).' },
+          { name: 'width', type: 'number', default: '1', description: 'Width of the light seam.' },
           { name: 'speed', type: 'number', default: '6', description: 'Seconds per lap.' },
-          { name: 'glow', type: 'number', default: '1', description: 'Breathing glow strength, 0 = none.' },
+          { name: 'glow', type: 'number', default: '0.7', description: 'Breathing glow strength, 0 = none.' },
           { name: 'colors', type: '[head, tail]', default: 'theme', description: 'Sweep colours (default --ring-a / --ring-b of the accent theme).' },
           { name: 'surface', type: 'string', description: 'Content background (must be opaque).' },
           { name: 'paused', type: 'boolean', description: 'Holds the light where it is.' },

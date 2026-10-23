@@ -9,7 +9,7 @@ import { cn } from '../../lib/cn';
 import { EASE } from '../../lib/motion';
 import { num, useScrub } from './scrub';
 
-export function LineChart({ points, labels, title, format = (v) => (v === null ? '–' : num(v)), color = 'var(--color-bright)', band, secondary, area = true, height = 160, className }: {
+export function LineChart({ points, labels, title, format = (v) => (v === null ? '–' : num(v)), color = 'var(--color-tab)', band, secondary, area = true, height = 160, className }: {
   points: (number | null)[];
   /** Axis labels, spread evenly (need not be one per point). */
   labels: string[];
@@ -46,36 +46,36 @@ export function LineChart({ points, labels, title, format = (v) => (v === null ?
   const line = path(points);
   return (
     <div className={className}>
-      <div className="tabular text-[22px] font-light text-bright">{format(v, i)}</div>
+      <div className="tabular text-title font-light tracking-[-.02em] text-bright">{format(v, i)}</div>
       {title && <div className="mt-0.5 text-detail text-dim">{title(i)}</div>}
       <div data-no-swipe className="relative mt-4 touch-pan-y select-none" style={{ height }} {...handlers}>
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
           <defs>
             <linearGradient id={`la${gid}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" style={{ stopColor: color, stopOpacity: 0.16 }} />
+              <stop offset="0" style={{ stopColor: color, stopOpacity: 0.12 }} />
               <stop offset="1" style={{ stopColor: color, stopOpacity: 0 }} />
             </linearGradient>
           </defs>
           {band && <rect x="0" width="100" y={y(band[1])} height={Math.max(0, y(band[0]) - y(band[1]))} style={{ fill: 'color-mix(in oklab, var(--color-mint) 7%, transparent)' }} />}
           {band && band.map((b) => <line key={b} x1="0" x2="100" y1={y(b)} y2={y(b)} style={{ stroke: 'color-mix(in oklab, var(--color-mint) 35%, transparent)' }} strokeDasharray="2 2" vectorEffect="non-scaling-stroke" strokeWidth="1" />)}
-          {secondary && <path d={path(secondary)} fill="none" stroke="rgb(255 255 255 / .22)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />}
+          {secondary && <path d={path(secondary)} fill="none" stroke="rgb(255 255 255 / .2)" strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />}
           {area && firstIdx >= 0 && !points.includes(null) && <motion.path d={`${line}L${x(lastIdx)},100L${x(firstIdx)},100Z`} fill={`url(#la${gid})`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }} />}
-          <motion.path d={line} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round"
+          <motion.path d={line} fill="none" stroke={color} strokeWidth="1.5" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round"
             initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.1, ease: EASE.outSoft }} />
-          <line x1={x(i)} x2={x(i)} y1="0" y2="100" stroke="rgb(255 255 255 / .18)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          <line x1={x(i)} x2={x(i)} y1="0" y2="100" stroke="rgb(255 255 255 / .14)" strokeWidth=".75" vectorEffect="non-scaling-stroke" />
         </svg>
         {v !== null && (
-          <span className="pointer-events-none absolute h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-card transition-[left,top] duration-150"
+          <span className="pointer-events-none absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-bg transition-[left,top] duration-150"
             style={{ left: `${x(i)}%`, top: `${y(v)}%`, background: color }} />
         )}
       </div>
-      <div className="mt-2 flex justify-between font-mono text-[10px] text-dim">{labels.map((l, k) => <span key={k}>{l}</span>)}</div>
+      <div className="mt-2 flex justify-between font-mono text-[9.5px] text-faint">{labels.map((l, k) => <span key={k}>{l}</span>)}</div>
     </div>
   );
 }
 
 /** Small trend line without axes; the last point is marked. */
-export function Sparkline({ values, width = 88, height = 28, color = 'var(--color-bright)', area, className }: { values: number[]; width?: number; height?: number; color?: string; area?: boolean; className?: string }) {
+export function Sparkline({ values, width = 88, height = 28, color = 'var(--color-tab)', area, className }: { values: number[]; width?: number; height?: number; color?: string; area?: boolean; className?: string }) {
   const gid = useId().replace(/:/g, '');
   if (values.length < 2) return <span className={cn('block', className)} style={{ width, height }} />;
   const min = Math.min(...values), max = Math.max(...values), sp = max - min || 1;
@@ -90,8 +90,8 @@ export function Sparkline({ values, width = 88, height = 28, color = 'var(--colo
           <path d={`${d}L${width - 2},${height}L2,${height}Z`} fill={`url(#sa${gid})`} />
         </>
       )}
-      <path d={d} fill="none" stroke={color} strokeOpacity=".55" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
-      <circle cx={lx} cy={ly} r="3" fill={color} />
+      <path d={d} fill="none" stroke={color} strokeOpacity=".6" strokeWidth="1.25" strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={lx} cy={ly} r="2.25" fill={color} />
     </svg>
   );
 }

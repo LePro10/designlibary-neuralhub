@@ -8,7 +8,7 @@ import { useRef, type ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { prefersReducedMotion } from '../../lib/motion';
 
-export function Magnetic({ children, strength = 0.35, radius = 1.4, className }: {
+export function Magnetic({ children, strength = 0.25, radius = 1.4, className }: {
   children: ReactNode;
   /** Share of the pointer offset the child follows (0–1). */
   strength?: number;
@@ -17,8 +17,9 @@ export function Magnetic({ children, strength = 0.35, radius = 1.4, className }:
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const x = useSpring(useMotionValue(0), { stiffness: 260, damping: 18 });
-  const y = useSpring(useMotionValue(0), { stiffness: 260, damping: 18 });
+  // Damped enough to settle without a wobble.
+  const x = useSpring(useMotionValue(0), { stiffness: 260, damping: 26 });
+  const y = useSpring(useMotionValue(0), { stiffness: 260, damping: 26 });
   return (
     <span
       ref={ref}
