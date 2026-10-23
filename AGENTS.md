@@ -75,7 +75,7 @@ import '@fontsource/ibm-plex-mono/500.css';
 - Titles are `display` (weight 300), never bold. Section labels are `.eyebrow`.
 
 **Layout & mobile**
-- One breakpoint: **900px**. Below: tab bar, menus that pull down from their trigger, choices that expand inline, floating fitted cards (Sheet) only for tasks. Above: sidebar island, popovers, dialogs.
+- One breakpoint: **900px**. Below: tab bar, menus that pull down from their trigger, choices that expand inline, floating fitted cards (Sheet) only for tasks. Above: sidebar island, popovers, side panels (centred dialogs only for confirming the irreversible).
 - **Navigation is one list of places:** `<AppShell nav={{ items, value, onChange }}>`. The shell puts the first four in the tab bar and the rest behind its last cell (the glass grows up into a grid; the cell becomes the place you are in), and lists all of them, grouped, in the sidebar island. Never a "More" sheet, never two hand-kept lists.
 - Wrap the app in `AppShell` — it measures its own width and tells everything inside (`Surface`). Inside pages use **container queries** (`@min-[700px]:`), not viewport breakpoints, in anything that may sit in a narrow pane.
 - **Exactly one owner per space.** `AppShell` owns height and nav; `Page` owns all page padding (safe area + 44px top, 16/32px sides, max width 920/1200, left `var(--sidebar-space)`, bottom `var(--tabbar-space) + 24px`); content owns only itself. No negative margins to cancel padding, no `calc(100vh − …)`, no guessed `pb-[88px]` — use `var(--tabbar-space)`.
@@ -144,7 +144,7 @@ Files are under `ui/components/<folder>/`. Showcase page in brackets.
 | Options / sort / “more” / any select | `Menu` (`overlays/`) | small translucent pull-down from the trigger, phone and desktop; radio/check, sections, shortcuts |
 | A choice inside a form or settings | `InlinePicker` / `Disclosure` | expands under its row; never a sheet |
 | Confirm a reversible-but-careful action | `ConfirmButton` | two taps, reverts after 3 s, optional Undo |
-| A task (add an event, write a mail, pick files) | `Sheet` (`action` top right) | floating card that fits its content on phones, dialog on desktop; compact header: close · title · action |
+| A task (add an event, write a mail, pick files) | `Sheet` (`action` top right) | floating card that fits its content on phones, glass side panel from the right on desktop (no centred dialogs except `desktop="dialog"` for special cases); compact header: close · title · action |
 | Confirm something irreversible or external | `ConfirmSheet` | rare; reversible things get a toast with Undo |
 | Long-press / right-click actions | `ContextMenu` | lifts the item over a blurred backdrop; tap never fires too |
 | Confirmation with undo | `toast()` + one `<Toaster/>` | max 3, sits above the tab bar; `toast.loading → update` |

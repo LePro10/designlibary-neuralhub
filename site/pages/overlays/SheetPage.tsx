@@ -48,7 +48,7 @@ export default function SheetPage() {
   const [confirmPhone, setConfirmPhone] = useState(false);
   return (
     <Doc eyebrow="Overlays" title="Panel" source={['ui/components/overlays/Sheet.tsx', 'ui/components/overlays/ConfirmSheet.tsx']}
-      lead="For tasks — adding an event, writing a mail, picking files. On phones a floating card rises, rounded all round and exactly as tall as its content; on desktop it is a light, centred dialog. One compact header: close, title, the action. Small choices never get one: they are a pull-down menu, an inline picker or a confirm button.">
+      lead="For tasks — adding an event, writing a mail, picking files. On phones a floating card rises, rounded all round and exactly as tall as its content; on desktop a glass panel floats in from the right while the page stays in view — centred dialogs only for special cases. One compact header: close, title, the action. Small choices never get one: they are a pull-down menu, an inline picker or a confirm button.">
       <Demo
         title="Playground"
         center={false}
@@ -134,7 +134,8 @@ export default function SheetPage() {
           { name: 'action', type: 'ReactNode', description: 'Primary action at the top right — a small Button ("Add", "Send").' },
           { name: 'snaps', type: 'readonly number[]', default: 'fit', description: 'Fractions of the surface height; leave out to fit the content.' },
           { name: 'footer', type: 'ReactNode', description: 'Secondary tools under the content (attach, formatting).' },
-          { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Desktop dialog width: 380 / 500 / 1000px.' },
+          { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Desktop width: panel 340 / 420 / 560px (dialog 380 / 500 / 1000).' },
+          { name: 'desktop', type: "'panel' | 'dialog'", default: "'panel'", description: 'Side panel from the right; a centred modal only for special cases (ConfirmSheet).' },
           { name: 'glass', type: 'boolean', description: 'Translucent glass surface (over photos, maps, video).' },
           { name: 'hideClose', type: 'boolean', description: 'No round close button (sheets with their own Cancel).' },
         ]} />
@@ -169,7 +170,7 @@ function Playground({ snaps, content, title, glass, footer }: { snaps: SnapName 
     <Side
       desktop={<>
         <Button onClick={() => setA(true)}>Open panel</Button>
-        <p className="mt-3 max-w-[340px] text-small text-dim">On a wide window this opens as a dialog. Make the window narrow and the same button opens a floating card.</p>
+        <p className="mt-3 max-w-[340px] text-small text-dim">On a wide window this opens as a glass panel at the right. Make the window narrow and the same button opens a floating card.</p>
         {sheet(a, () => setA(false), 'page')}
       </>}
       phone={

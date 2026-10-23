@@ -24,6 +24,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ArrowUp, Camera, FileText, Image as ImageIcon, Mic, Plus, Square, TextQuote, X } from 'lucide-react';
 import { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { cn } from '../../lib/cn';
+import { MENU_SURFACE } from '../overlays/MenuList';
 import { haptic } from '../../lib/haptics';
 import { useFinePointer, useKeyboardOpen } from '../../lib/hooks';
 import { EASE, SPRING } from '../../lib/motion';
@@ -170,7 +171,7 @@ export function Composer({ onSend, placeholder = 'Ask anything', busy, progress,
       <AnimatePresence>
         {menu && (
           <motion.div role="menu" initial={{ opacity: 0, scale: 0.86, y: 4 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.12 } }} transition={SPRING.pop}
-            className="glass absolute bottom-full left-0 z-10 mb-1.5 w-[172px] rounded-menu !bg-popover/[.86] p-1 shadow-menu" style={{ transformOrigin: '18px 100%' }}>
+            className={`absolute bottom-full left-0 z-10 mb-1.5 w-[172px] ${MENU_SURFACE}`} style={{ transformOrigin: '18px 100%' }}>
             {([...(!fine ? [['Take photo', Camera, 'camera']] as const : []), ['Photo', ImageIcon, 'image'], ['File', FileText, 'doc']] as const).map(([label, Icon, kind], i) => (
               <motion.button key={label} role="menuitem" type="button" onClick={() => pick(kind)}
                 initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.03 + i * 0.022 }}

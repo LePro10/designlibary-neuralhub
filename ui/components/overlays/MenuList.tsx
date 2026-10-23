@@ -1,6 +1,6 @@
 /**
- * The one look of every small menu (pull-down, context menu): clear glass
- * with a rim lit from above (no drawn border), 13px corners, rows that are
+ * The one look of every small menu (pull-down, context menu): light glass
+ * like a glass button, a rim lit from above (no drawn border), 13px corners, rows that are
  * 38px on phones and 30px with a pointer. Labels left, icons right (as iOS does), a check column
  * on the left when the menu holds choices, tiny dim section labels, hairline
  * dividers, destructive rows in red.
@@ -12,10 +12,11 @@ import { Check } from 'lucide-react';
 import { cn } from '../../lib/cn';
 import type { MenuEntry } from './Menu';
 
-/** Glass of small menus: clear, strongly blurred so text never fights what is behind, lit at the top edge. */
+/** Glass of small menus: the same light glass as a glass button — a faint white veil, strong blur,
+ *  a rim lit from the top. Never a dark box. */
 export const MENU_SURFACE =
-  'rounded-menu bg-[rgb(26_28_27/.58)] p-1 backdrop-blur-[28px] backdrop-saturate-[180%] ' +
-  'shadow-[inset_0_var(--hair)_0_rgb(255_255_255/.12),inset_0_0_0_var(--hair)_rgb(255_255_255/.05),0_10px_30px_-10px_rgb(0_0_0/.6)]';
+  'rounded-menu bg-[linear-gradient(180deg,rgb(255_255_255/.1),rgb(255_255_255/.055))] p-1 backdrop-blur-[24px] backdrop-saturate-[180%] ' +
+  'shadow-[inset_0_var(--hair)_0_rgb(255_255_255/.2),inset_0_0_0_var(--hair)_rgb(255_255_255/.08),0_8px_24px_-12px_rgb(0_0_0/.45)]';
 
 const list: Variants = { show: { transition: { staggerChildren: 0.018, delayChildren: 0.03 } } };
 const row: Variants = {

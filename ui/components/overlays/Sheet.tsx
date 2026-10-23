@@ -2,7 +2,9 @@
  * Panel for tasks — writing a mail, adding an event, picking files.
  * Phones: a floating card, 8px off the edges and rounded all round (like
  * iOS 26), exactly as tall as its content up to nearly the full screen; drag
- * it or flick down to dismiss. Desktop: a light centred dialog.
+ * it or flick down to dismiss. Desktop: a glass panel that floats in from
+ * the right edge, 8px off it, while the page stays in view — no centred
+ * modal, except `desktop="dialog"` for the rare special case.
  *
  * The header is compact: close on the left, a small centred title, the
  * primary action (`action`) on the right — no big title, no heavy footer.
@@ -48,8 +50,11 @@ export interface SheetProps {
   action?: ReactNode;
   /** Pinned under the content (secondary tools: attach, formatting). */
   footer?: ReactNode;
-  /** Desktop dialog width. */
+  /** Desktop width: side panel 340 / 420 / 560px, dialog 380 / 500 / 1000px. */
   size?: 'sm' | 'md' | 'lg';
+  /** Desktop form. `panel` (default): a glass panel floating in from the right, the page stays in view.
+   *  `dialog`: centred and modal — only for special cases (confirm the irreversible). */
+  desktop?: 'panel' | 'dialog';
   /** Translucent glass instead of the solid sheet colour (over photos, maps, video). */
   glass?: boolean;
   /** Hide the round close button (sheets with their own Cancel/Done). */
@@ -76,7 +81,7 @@ export function Sheet(props: SheetProps) {
   return createPortal(
     <AnimatePresence>
       {open && (mode === 'desktop'
-        ? <Dialog key="d" {...props} boxRef={boxRef} target={target} />
+        ? props.desktop === 'dialog' ? <Dialog key="d" {...props} boxRef={boxRef} target={target} /> : <SidePanel key="s" {...props} boxRef={boxRef} target={target} />
         : <Drawer key="m" {...props} boxRef={boxRef} target={target} />)}
     </AnimatePresence>,
     target,
@@ -322,6 +327,32 @@ function Drawer({ onClose, title, eyebrow, snaps: snapProp, children, footer, ac
         {footer && <div className="shrink-0 px-3 pb-3">{footer}</div>}
       </motion.div>
     </>
+  );
+}
+
+const PANEL_W = { sm: 'w-[340px]', md: 'w-[420px]', lg: 'w-[560px]' } as const;
+
+/** Desktop default: floats in from the right like the sidebar island on the left. Click outside or Escape closes it. */
+function SidePanel({ onClose, title, eyebrow, children, footer, action, size = 'md', boxRef, glass, hideClose, bodyClassName }: Inner) {
+  return (
+    <div className="fixed inset-0 z-[var(--z-sheet)]">
+      {/* No dimming: the page stays readable beside the panel. The layer only catches the click that closes it. */}
+      <div className="absolute inset-0" onClick={onClose} />
+      <motion.div
+        ref={boxRef}
+        role="dialog"
+        aria-label={title}
+        className={cn('absolute top-2 right-2 bottom-2 flex max-w-[calc(100%-16px)] flex-col overflow-hidden rounded-dialog pt-3 outline-none', PANEL_W[size], surfaceCls(glass))}
+        initial={{ opacity: 0, x: 28 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 20, transition: { duration: 0.16, ease: [0.4, 0, 1, 1] } }}
+        transition={OPEN}
+      >
+        <Header title={title} eyebrow={eyebrow} onClose={onClose} hideClose={hideClose} action={action} />
+        <div className={cn('scroller min-h-0 flex-1 px-4 pt-1 pb-5', bodyClassName)}>{children}</div>
+        {footer && <div className="shrink-0 px-3 pb-3">{footer}</div>}
+      </motion.div>
+    </div>
   );
 }
 

@@ -107,6 +107,7 @@
       "files": [
         "ui/components/ai/AssistantOrb.tsx",
         "ui/components/ai/Waveform.tsx",
+        "ui/components/overlays/MenuList.tsx",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
@@ -121,14 +122,20 @@
         "ui/components/ai/AssistantOrb.tsx",
         "ui/components/ai/Waveform.tsx",
         "ui/components/effects/VoiceOrb.tsx",
+        "ui/components/overlays/Menu.tsx",
+        "ui/components/overlays/MenuList.tsx",
+        "ui/components/overlays/geometry.ts",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/hooks.ts",
-        "ui/lib/motion.ts"
+        "ui/lib/layers.ts",
+        "ui/lib/motion.ts",
+        "ui/lib/surface.tsx"
       ],
       "allPackages": [
         "lucide-react",
-        "motion"
+        "motion",
+        "react-dom"
       ]
     },
     "ui/components/ai/ConfirmCard.tsx": {
@@ -252,6 +259,7 @@
         "ModelPill"
       ],
       "files": [
+        "ui/components/overlays/MenuList.tsx",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
         "ui/lib/layers.ts",
@@ -263,14 +271,20 @@
       ],
       "copy": [
         "ui/components/ai/ModelPill.tsx",
+        "ui/components/overlays/Menu.tsx",
+        "ui/components/overlays/MenuList.tsx",
+        "ui/components/overlays/geometry.ts",
         "ui/lib/cn.ts",
         "ui/lib/haptics.ts",
+        "ui/lib/hooks.ts",
         "ui/lib/layers.ts",
-        "ui/lib/motion.ts"
+        "ui/lib/motion.ts",
+        "ui/lib/surface.tsx"
       ],
       "allPackages": [
         "lucide-react",
-        "motion"
+        "motion",
+        "react-dom"
       ]
     },
     "ui/components/ai/QuestionCard.tsx": {
@@ -1558,7 +1572,7 @@
       ]
     },
     "ui/components/overlays/MenuList.tsx": {
-      "summary": "The one look of every small menu (pull-down, context menu): clear glass",
+      "summary": "The one look of every small menu (pull-down, context menu): light glass",
       "exports": [
         "MENU_SURFACE",
         "menuHeight",

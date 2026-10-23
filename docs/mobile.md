@@ -12,7 +12,7 @@
   - Long-Press für Kontextmenüs
 - Darüber:
   - Seitenleiste als schwebende Glasinsel: eingeklappt kompakt und mittig, öffnet sich nach kurzem Verweilen (600 ms) (ein Klick öffnet nie) und wächst dabei nach oben und unten über den Inhalt, ⌘\ pinnt sie, dann macht die Seite Platz
-  - Dialoge mittig
+  - Panels als Glas-Seitenleiste von rechts, die Seite bleibt sichtbar; mittige Dialoge nur für Spezialfälle (Unwiderrufliches bestätigen)
   - Popover-Menüs
   - Rechtsklick
   - ⌘K und ⌘1–9

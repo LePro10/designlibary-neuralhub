@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Check, ChevronDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '../../lib/cn';
+import { MENU_SURFACE } from '../overlays/MenuList';
 import { haptic } from '../../lib/haptics';
 import { useLayer } from '../../lib/layers';
 import { SPRING } from '../../lib/motion';
@@ -53,7 +54,7 @@ export function ModelPill({ models, value, onChange, fallback, align = 'left', c
           <motion.div ref={list} role="listbox" aria-label="Model" onKeyDown={onKey}
             initial={{ opacity: 0, scale: 0.86, y: -2 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.12 } }} transition={SPRING.pop}
             // Translucent but readable: the glass is denser than a bar's, text behind must not compete.
-            className={cn('glass absolute top-[calc(100%+6px)] z-[var(--z-popover)] w-[232px] rounded-menu !bg-popover/[.86] p-1 shadow-menu', align === 'right' ? 'right-0' : align === 'center' ? 'left-1/2' : 'left-0')}
+            className={cn('absolute top-[calc(100%+6px)] z-[var(--z-popover)] w-[232px]', MENU_SURFACE, align === 'right' ? 'right-0' : align === 'center' ? 'left-1/2' : 'left-0')}
             style={{ transformOrigin: align === 'right' ? 'calc(100% - 20px) 0' : align === 'center' ? '50% 0' : '20px 0', x: align === 'center' ? '-50%' : 0 }}>
             {fallback && <p className="mx-1 mt-1 mb-1 rounded-item bg-warning/10 px-2.5 py-1.5 text-meta leading-snug text-warning">{current?.label} is unavailable. {fallback} answers for now.</p>}
             {models.map((m, i) => (
