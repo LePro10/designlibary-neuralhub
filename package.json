@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "NeuralHub design library \u2014 dark, quiet, light-as-content. Copy-in React components, tokens, effects and a live showcase.",
+  "description": "NeuralHub design library — dark, quiet, light-as-content. Copy-in React components, tokens, effects and a live showcase.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "shots": "node scripts/screenshots.mjs",
+    "bundle": "node scripts/bundle.mjs",
+    "mcp": "node mcp/server.mjs",
     "typecheck": "tsc --noEmit",
     "registry": "node scripts/registry.mjs",
     "registry:check": "node scripts/registry.mjs --check"
@@ -27,6 +30,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "playwright-core": "^1.64.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.5"
