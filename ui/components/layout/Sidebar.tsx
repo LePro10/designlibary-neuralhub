@@ -5,14 +5,15 @@
  *
  * Peek: rest the pointer on it (hover intent, 120ms — passing by does
  * nothing) and it opens to 228px *over* the page; leave and it folds back.
- * Pin: ⌘\ or the button at its foot keeps it open, and the page makes room.
+ * Pin: ⌘\ or the small panel icon beside the brand (shown while open) keeps
+ * it open, and the page makes room. The account sits at the foot, set apart. 
  *
  * The active item wears its place's colour and its highlight slides between
  * entries. Groups are labelled when open and become a short hairline when
  * collapsed. ⌘/Ctrl + 1–9 switch, ⌘K searches.
  */
 import { motion } from 'motion/react';
-import { PanelLeftClose, PanelLeftOpen, Search, type LucideIcon } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, Search, Settings, type LucideIcon } from 'lucide-react';
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { haptic } from '../../lib/haptics';
@@ -39,14 +40,18 @@ export interface SidebarItem<T extends string = string> {
 const RAIL = 60, OPEN = 228, INSET = 8;
 const INTENT_IN = 120, INTENT_OUT = 240;
 
-export function Sidebar<T extends string>({ items, value, onChange, brand, footer, search, shortcuts = true, pinned: pinnedProp, onPinnedChange, className }: {
+export function Sidebar<T extends string>({ items, value, onChange, brand, footer, onSettings, settingsActive, search, shortcuts = true, pinned: pinnedProp, onPinnedChange, className }: {
   items: SidebarItem<T>[];
   value: T;
   onChange: (id: T) => void;
   /** Collapsed mark + expanded wordmark: `{ mark, word }`. */
   brand?: { mark: ReactNode; word?: ReactNode; onClick?: () => void };
-  /** Bottom slot (account). Gets `open` to fade its text. */
+  /** Account at the foot (avatar + name). Gets `open` to fade its text. */
   footer?: (open: boolean) => ReactNode;
+  /** A settings button beside the account, shown while open. */
+  onSettings?: () => void;
+  /** Settings is the current page (lights the button). */
+  settingsActive?: boolean;
   /** Shows a search entry that calls this. */
   search?: () => void;
   shortcuts?: boolean;
@@ -104,12 +109,22 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
         style={{ boxShadow: peek && !pinned ? 'var(--shadow-dialog), inset 0 1px 0 var(--glass-hi)' : undefined }}
         transition={SPRING.sheet}
       >
-        {brand && (
-          <button type="button" onClick={brand.onClick} className="group mb-3 flex h-10 shrink-0 items-center gap-3 rounded-field px-[11px]" aria-label="Home">
-            <span className="block">{brand.mark}</span>
-            {brand.word && <span className={fade} style={show}>{brand.word}</span>}
+        {/* Brand, and — only while open — a quiet pin at the far end of the same row. */}
+        <div className="mb-3 flex h-10 shrink-0 items-center">
+          {brand && (
+            <button type="button" onClick={brand.onClick} className="group flex h-10 min-w-0 flex-1 items-center gap-3 rounded-field px-[11px]" aria-label="Home">
+              <span className="block">{brand.mark}</span>
+              {brand.word && <span className={fade} style={show}>{brand.word}</span>}
+            </button>
+          )}
+          <button type="button" onClick={() => { setPinned(!pinned); setPeek(false); }} aria-pressed={pinned} aria-keyshortcuts="Control+\ Meta+\"
+            aria-label={pinned ? 'Collapse sidebar' : 'Keep sidebar open'} title={`${pinned ? 'Collapse' : 'Keep open'}  ${MOD_KEY}\\`}
+            tabIndex={open ? 0 : -1}
+            className={cn('ml-auto grid h-7 w-7 shrink-0 place-items-center rounded-item text-faint transition-[opacity,color,background-color] duration-200 hover:bg-fill-2 hover:text-ink', !open && 'pointer-events-none')}
+            style={show}>
+            {pinned ? <PanelLeftClose size={15} strokeWidth={1.6} /> : <PanelLeftOpen size={15} strokeWidth={1.6} />}
           </button>
-        )}
+        </div>
         {search && (
           <button type="button" onClick={search} aria-keyshortcuts="Control+K Meta+K"
             className="mb-2 flex h-9 w-full shrink-0 items-center gap-3 rounded-field bg-fill-2 px-[13px] text-chip text-dim shadow-edge transition-colors hover:bg-fill-3 hover:text-ink">
@@ -147,16 +162,20 @@ export function Sidebar<T extends string>({ items, value, onChange, brand, foote
             );
           })}
         </ul>
-        <div className="mt-2 flex shrink-0 flex-col gap-1">
-          {footer?.(open)}
-          <button type="button" onClick={() => { setPinned(!pinned); setPeek(false); }} aria-pressed={pinned} aria-keyshortcuts="Control+\ Meta+\"
-            aria-label={pinned ? 'Collapse sidebar' : 'Keep sidebar open'}
-            className="flex h-9 w-full items-center gap-3 rounded-field px-[13px] text-chip text-faint transition-colors hover:bg-fill-1 hover:text-ink">
-            {pinned ? <PanelLeftClose size={17} strokeWidth={1.6} className="shrink-0" /> : <PanelLeftOpen size={17} strokeWidth={1.6} className="shrink-0" />}
-            <span className={fade} style={show}>{pinned ? 'Collapse' : 'Keep open'}</span>
-            <kbd className={cn('ml-auto font-mono text-tiny', fade)} style={show}>{MOD_KEY}\</kbd>
-          </button>
-        </div>
+        {/* You: always at the foot, set apart by a hairline and a slightly deeper ground. */}
+        {(footer || onSettings) && (
+          <div className="-mx-2 -mb-2 mt-2 flex shrink-0 items-center gap-1 border-t-hair border-line bg-black/[.14] p-2">
+            <div className="min-w-0 flex-1">{footer?.(open)}</div>
+            {onSettings && (
+              <button type="button" onClick={() => { haptic('select'); onSettings(); }} aria-label="Settings" title="Settings" tabIndex={open ? 0 : -1}
+                aria-current={settingsActive ? 'page' : undefined}
+                className={cn('grid h-8 w-8 shrink-0 place-items-center rounded-item transition-[opacity,color,background-color] duration-200 hover:bg-fill-2 hover:text-bright', settingsActive ? 'bg-white/[.075] text-bright shadow-edge' : 'text-dim', !open && 'pointer-events-none')}
+                style={show}>
+                <Settings size={16} strokeWidth={1.6} />
+              </button>
+            )}
+          </div>
+        )}
       </motion.nav>
     </div>
   );

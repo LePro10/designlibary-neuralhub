@@ -33,6 +33,8 @@ export interface Nav<T extends string = string> {
   /** Sidebar extras. */
   brand?: { mark: ReactNode; word?: ReactNode; onClick?: () => void };
   account?: (open: boolean) => ReactNode;
+  settings?: () => void;
+  settingsActive?: boolean;
   search?: () => void;
   pinned?: boolean;
   onPinnedChange?: (v: boolean) => void;
@@ -59,7 +61,7 @@ export function AppShell<T extends string>({ nav, sidebar, tabbar, children, mod
   if (nav) {
     const k = nav.items.length <= Math.max(5, (nav.tabs ?? 4) + 1) ? nav.items.length : nav.tabs ?? 4;
     bar ??= <TabBar items={nav.items.slice(0, k)} more={nav.items.slice(k)} value={nav.value} onChange={nav.onChange} />;
-    side ??= <Sidebar items={nav.items} value={nav.value} onChange={nav.onChange} brand={nav.brand} footer={nav.account} search={nav.search} pinned={nav.pinned} onPinnedChange={nav.onPinnedChange} />;
+    side ??= <Sidebar items={nav.items} value={nav.value} onChange={nav.onChange} brand={nav.brand} footer={nav.account} onSettings={nav.settings} settingsActive={nav.settingsActive} search={nav.search} pinned={nav.pinned} onPinnedChange={nav.onPinnedChange} />;
   }
 
   return (

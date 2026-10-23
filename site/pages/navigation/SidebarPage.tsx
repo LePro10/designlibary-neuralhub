@@ -7,7 +7,7 @@ export default function SidebarPage() {
   return (
     <Doc eyebrow="Navigation & Layout" title="Sidebar" source="ui/components/layout/Sidebar.tsx"
       lead="A glass island that floats 8px off the window's edge, with the page's light running underneath — the desktop twin of the tab bar. Rest the pointer on it and it opens over the page; pin it and the page makes room.">
-      <Demo padded={false} minHeight={420} description="Rest the pointer on the rail (passing by does nothing). ⌘/Ctrl + \ or the button at its foot pins it. ⌘1–9 switch, ⌘K searches.">
+      <Demo padded={false} minHeight={420} description="Rest the pointer on the rail (passing by does nothing). ⌘/Ctrl + \ or the small panel icon beside the logo pins it. Account and settings at the foot are clickable. ⌘1–9 switch, ⌘K searches.">
         {() => <div className="w-full p-4 @min-[760px]:p-8"><Browser height={640}><DemoApp mode="desktop" ambient /></Browser></div>}
       </Demo>
       <DocSection title="Behaviour">
@@ -15,6 +15,7 @@ export default function SidebarPage() {
           <li><strong className="font-medium text-bright">Rail</strong> — 60px of icons; the active one wears its place's colour on a raised highlight that slides between entries.</li>
           <li><strong className="font-medium text-bright">Peek</strong> — hover intent: 120ms in, 240ms out. It opens to 228px over the page with a long shadow; nothing underneath moves. Keyboard focus opens it too.</li>
           <li><strong className="font-medium text-bright">Pin</strong> — kept open; the island reports its width to the shell (<code className="inline-code">--sidebar-space</code>) and the page's content slides over, while its light still runs under the glass.</li>
+          <li><strong className="font-medium text-bright">You</strong> — account (and an optional settings button) live at the foot, always, set apart by a hairline and a deeper ground. Both are destinations with an active state. The pin is only a quiet icon beside the logo, shown while open.</li>
           <li><strong className="font-medium text-bright">Groups</strong> — items sharing a <code className="inline-code">group</code> sit under its name when open; collapsed, the name becomes a short hairline of the same height, so nothing jumps.</li>
         </ol>
       </DocSection>
@@ -28,7 +29,8 @@ export default function SidebarPage() {
           { name: 'items', type: 'SidebarItem[]', description: '{ id, label, Icon, place?, signal?, badge?, group? }' },
           { name: 'brand', type: '{ mark, word?, onClick? }', description: 'Logo mark when collapsed, wordmark fades in.' },
           { name: 'search', type: '() => void', description: 'Adds a search entry and ⌘K.' },
-          { name: 'footer', type: '(open) => ReactNode', description: 'Account slot; fade your text with `open`.' },
+          { name: 'footer', type: '(open) => ReactNode', description: 'Account at the foot (a button to your profile); fade your text with `open`.' },
+          { name: 'onSettings / settingsActive', type: '() => void / boolean', description: 'Settings button beside the account, lit while it is the current page.' },
           { name: 'pinned / onPinnedChange', type: 'boolean / (v) => void', description: 'Controlled pin (persist it); uncontrolled if left out.' },
         ]} />
         <Usage code={`<Sidebar items={places} value={tab} onChange={setTab} brand={{ mark: <LogoMark />, word: <Wordmark /> }}

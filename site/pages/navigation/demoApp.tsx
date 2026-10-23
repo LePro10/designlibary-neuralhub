@@ -11,7 +11,7 @@ import { Chips } from '@ui/components/core/Chips';
 import { Avatar } from '@ui/components/core/Avatar';
 import { LogoMark, Wordmark } from '@ui/components/effects/Logo';
 
-export type DemoTab = 'home' | 'luna' | 'plan' | 'files' | 'screen' | 'mail' | 'calendar' | 'notes' | 'progress' | 'tools';
+export type DemoTab = 'home' | 'luna' | 'plan' | 'files' | 'screen' | 'mail' | 'calendar' | 'notes' | 'progress' | 'tools' | 'account' | 'settings';
 /** Places, once. The shell puts the first four in the tab bar and the rest behind its last cell. */
 export const NAV: NavItem<DemoTab>[] = [
   { id: 'home', label: 'Home', Icon: Home, place: 'home', group: 'You' },
@@ -27,7 +27,7 @@ export const NAV: NavItem<DemoTab>[] = [
 ];
 /** The five used by the tab-bar demo. */
 export const TABS: TabItem<DemoTab>[] = NAV.slice(0, 5).map(({ group: _g, ...t }) => t);
-const TITLE: Partial<Record<DemoTab, string>> = { home: 'Friday 24', screen: 'Screen time' };
+const TITLE: Partial<Record<DemoTab, string>> = { home: 'Friday 24', screen: 'Screen time', account: 'Account', settings: 'Settings' };
 
 export function DemoApp({ mode, ambient = true, badges = true, overflow = true }: { mode: 'phone' | 'desktop'; ambient?: boolean; badges?: boolean; overflow?: boolean }) {
   const [tab, setTab] = useState<DemoTab>('home');
@@ -35,13 +35,23 @@ export function DemoApp({ mode, ambient = true, badges = true, overflow = true }
   const items = (overflow ? NAV : NAV.slice(0, 5)).map((t) => ({ ...t, badge: badges ? t.badge : undefined }));
   const pick = (t: DemoTab) => { if (t === tab) setRetap((n) => n + 1); else setTab(t); };
   const title = TITLE[tab] ?? NAV.find((t) => t.id === tab)!.label;
+  const place = NAV.find((t) => t.id === tab)?.place ?? 'account';
   return (
     <AppShell mode={mode} className="!h-full" nav={{
-      items, value: tab, onChange: pick, search: () => {},
+      items, value: tab, onChange: pick, search: () => {}, settings: () => pick('settings'), settingsActive: tab === 'settings',
       brand: { mark: <LogoMark size={22} />, word: <Wordmark /> },
-      account: (open) => <div className="flex h-10 items-center gap-3 px-[9px]"><Avatar name="Leandro P" size={26} /><span className="text-chip text-ink transition-opacity duration-200" style={{ opacity: open ? 1 : 0 }}>Leandro</span></div>,
+      account: (open) => (
+        <button type="button" onClick={() => pick('account')} aria-current={tab === 'account' ? 'page' : undefined} aria-label="Account"
+          className={`flex h-10 w-full items-center gap-2.5 rounded-field px-[9px] text-left transition-colors ${tab === 'account' ? 'bg-white/[.075] shadow-edge' : 'hover:bg-fill-1'}`}>
+          <Avatar name="Leandro P" size={26} />
+          <span className="min-w-0 whitespace-nowrap transition-opacity duration-200" style={{ opacity: open ? 1 : 0 }}>
+            <span className="block text-chip leading-tight text-bright">Leandro</span>
+            <span className="block text-tiny leading-tight text-faint">Pro</span>
+          </span>
+        </button>
+      ),
     }}>
-      <Page key={tab} title={title} eyebrow={tab === 'home' ? 'October · Week 43' : undefined} place={NAV.find((t) => t.id === tab)!.place} ambient={ambient ? undefined : false} scrollTopKey={retap}
+      <Page key={tab} title={title} eyebrow={tab === 'home' ? 'October · Week 43' : undefined} place={place} ambient={ambient ? undefined : false} scrollTopKey={retap}
         actions={<><IconButton label="Search"><Search size={17} strokeWidth={1.75} /></IconButton><IconButton label="New"><Plus size={17} strokeWidth={1.75} /></IconButton></>}>
         <DemoContent tab={tab} />
       </Page>
